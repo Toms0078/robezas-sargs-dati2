@@ -411,6 +411,59 @@ def lv_port_of(dest):
     return None
 
 
+# Aptuvenie kuģu ceļi uz Latvijas ostām (pagrieziena punkti), lai simulētu ceļu,
+# kad kuģis vairs nav dzirdams. Kopējā daļa no Fehmarnas/Bornholmas līdz Kurzemei.
+_COMMON = [(54.55, 11.30), (54.35, 12.30), (55.30, 14.40), (55.90, 17.00), (56.60, 20.40)]
+_IRBE = [(57.20, 20.80), (57.78, 21.75), (57.70, 22.80)]
+ROUTES = {
+    "liepaja": _COMMON + [(56.52, 21.00)],
+    "pavilosta": _COMMON + [(56.89, 21.10)],
+    "ventspils": _COMMON + [(57.20, 20.80), (57.40, 21.50)],
+    "riga": _COMMON + _IRBE + [(57.20, 23.90), (57.05, 24.03)],
+    "skulte": _COMMON + _IRBE + [(57.31, 24.40)],
+    "salacgriva": _COMMON + _IRBE + [(57.75, 24.35)],
+    "mersrags": _COMMON + _IRBE[:2] + [(57.34, 23.13)],
+    "roja": _COMMON + _IRBE[:2] + [(57.51, 22.80)],
+}
+KN_KMH = 1.852
+
+
+def route_remaining(pos, port_id):
+    """Atlikušais ceļš km: tuvākais pagrieziena punkts priekšā + ceļš no tā līdz ostai."""
+    pts = ROUTES[port_id]
+    if pos[0] > 55.9 and pos[1] < 12.8:
+        # Kategats/Skagerraks: ceļš iet caur Ēresundu, nevis pāri Zviedrijai
+        return km(pos, (55.95, 12.65)) + km((55.95, 12.65), (55.40, 12.85)) + \
+            route_remaining((55.40, 12.85), port_id)
+    tail = [0.0] * len(pts)
+    for i in range(len(pts) - 2, -1, -1):
+        tail[i] = tail[i + 1] + km(pts[i], pts[i + 1])
+    return min(km(pos, pts[i]) + tail[i] for i in range(len(pts)))
+
+
+def simulate(sh, now):
+    """Aprēķina prognozēto ierašanos un, ja kuģis nav dzirdams, tā aptuveno progresu."""
+    if sh.get("lat") is None or sh.get("port_id") not in ROUTES:
+        return
+    rem = route_remaining((sh["lat"], sh["lon"]), sh["port_id"])
+    sh["route_km"] = round(rem)
+    sog = sh.get("sog") or 0
+    if sog < 3:            # stāv vai velkas; prognozei vajag ātrumu
+        sh.pop("pred_arrival", None)
+        return
+    seen = datetime.strptime(sh["last_seen"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    speed = sog * KN_KMH * 0.92          # nedaudz lēnāk par pēdējo ātrumu: līkumi, ostas pieeja
+    arrive = seen + timedelta(hours=rem / speed)
+    sh["pred_arrival"] = iso(arrive)
+    hours_silent = (now - seen).total_seconds() / 3600
+    if hours_silent > 0.5:
+        sh["silent_h"] = round(hours_silent, 1)
+        sh["pred_route_km"] = max(0, round(rem - speed * hours_silent))
+    else:
+        sh.pop("silent_h", None)
+        sh.pop("pred_route_km", None)
+
+
 def eta_is_stale(eta, now, days=4):
     """AIS ETA nav gada; ja tas ir vairāk nekā `days` dienas pagātnē, galamērķis ir novecojis."""
     if not eta or not eta.get("Month") or not eta.get("Day") or eta["Month"] > 12 or eta["Day"] > 31:
@@ -475,7 +528,17 @@ def process_inbound(messages, state, vessels, now):
             sh["dist_km"] = round(km((sh["lat"], sh["lon"]), center))
             if sh["dist_km"] <= ARRIVED_KM:
                 arrived.append({"time": iso(now), "name": sh.get("name"), "imo": sh.get("imo"),
-                                "port": sh["port"], "type": sh.get("type"), "draught": sh.get("draught")})
+                                "port": sh["port"], "type": sh.get("type"), "draught": sh.get("draught"),
+                                "how": "AIS"})
+                ships.pop(key)
+                continue
+            simulate(sh, now)
+            pa = sh.get("pred_arrival")
+            if pa and sh.get("silent_h") and pa <= iso(now):
+                # nav dzirdams, bet pēc aprēķina jau ir ostā
+                arrived.append({"time": pa, "name": sh.get("name"), "imo": sh.get("imo"),
+                                "port": sh["port"], "type": sh.get("type"), "draught": sh.get("draught"),
+                                "how": "prognoze", "last_seen": sh.get("last_seen")})
                 ships.pop(key)
                 continue
         seen = sh.get("last_seen") or sh["first_seen"]
