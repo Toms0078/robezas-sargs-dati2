@@ -411,6 +411,20 @@ def lv_port_of(dest):
     return None
 
 
+def eta_is_stale(eta, now, days=4):
+    """AIS ETA nav gada; ja tas ir vairāk nekā `days` dienas pagātnē, galamērķis ir novecojis."""
+    if not eta or not eta.get("Month") or not eta.get("Day") or eta["Month"] > 12 or eta["Day"] > 31:
+        return False
+    for year in (now.year, now.year - 1, now.year + 1):
+        try:
+            d = datetime(year, eta["Month"], eta["Day"], tzinfo=timezone.utc)
+        except ValueError:
+            return False
+        if abs((d - now).days) <= 183:
+            return d < now - timedelta(days=days)
+    return False
+
+
 def process_inbound(messages, state, vessels, now):
     static, pos = {}, {}
     for m in messages:
@@ -435,6 +449,9 @@ def process_inbound(messages, state, vessels, now):
             ships.pop(key, None)                      # galamērķis mainījies
             continue
         pid, pname, _ = hit
+        if eta_is_stale(s.get("Eta"), now):
+            ships.pop(key, None)   # sens ETA = apkalpe nav atjaunojusi galamērķi
+            continue
         dim = s.get("Dimension") or {}
         sh = ships.setdefault(key, {"mmsi": mmsi, "first_seen": iso(now)})
         sh.update({
