@@ -86,8 +86,17 @@ def log(source, ok, **info):
     print(("OK  " if ok else "ERR ") + source, info, flush=True)
 
 
-def get(url, **kw):
-    r = requests.get(url, headers=UA, timeout=60, **kw)
+def get(url, polite=0, **kw):
+    """GET ar atkārtojumu, ja serveris prasa palēnināt (429)."""
+    import time
+    for wait in (0, 10, 30, 60):
+        if wait:
+            time.sleep(wait)
+        if polite:
+            time.sleep(polite)
+        r = requests.get(url, headers=UA, timeout=60, **kw)
+        if r.status_code != 429:
+            break
     r.raise_for_status()
     return r
 
@@ -201,7 +210,7 @@ def fetch_fi():
     missions = {}
     for href, title in links.items():
         try:
-            page = BeautifulSoup(get(href).text, "html.parser")
+            page = BeautifulSoup(get(href, polite=2).text, "html.parser")
         except Exception as e:
             errors.append(f"{href}: {e}")
             continue
@@ -225,6 +234,9 @@ def fetch_fi():
                     if FI_HONORIFIC.match(rank) or rank.startswith("-"):
                         i += 1
                         continue
+                    if loc.startswith("("):  # "(Consular Affairs)" ir amata precizējums, ne vieta
+                        rank, loc = f"{rank} {loc}", body[i + 3] if i + 3 < len(body) else ""
+                        i += 1
                     if FI_HONORIFIC.match(loc) or loc.startswith("-") or len(loc) > 30:
                         loc = ""
                     staff.append({"name": l, "rank": rank, "location": loc or None})

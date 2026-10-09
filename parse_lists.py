@@ -25,6 +25,8 @@ NOW = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 HOSTS = {
     "LV": {"capital": "Riga", "loc_sep": "tab"},
     "EE": {"capital": "Tallinn", "loc_sep": "titlecase"},
+    "PL": {"capital": "Warszawa", "loc_sep": "tab", "heads_only": True},  # Polija publicē tikai vadītājus
+    "FI": {"capital": "Helsinki", "loc_sep": "json"},
 }
 
 MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
@@ -109,6 +111,9 @@ def read_lines(path):
 
 def list_date(lines):
     head = " ".join(l for l in lines[:40] if l.strip())
+    m = re.search(r"\b(\d{1,2})\.(\d{1,2})\.(20\d\d)\b", head)
+    if m:
+        return f"{m.group(3)}-{int(m.group(2)):02d}-{int(m.group(1)):02d}"
     for pat, fmt in ((rf"(\d{{1,2}})\s+({MONTHS})\s+(\d{{4}})", "%d %B %Y"),
                      (rf"({MONTHS})\s+(\d{{1,2}}),?\s+(\d{{4}})", "%B %d %Y")):
         m = re.search(pat, head, re.I)
@@ -136,6 +141,10 @@ def parse(path, host):
     lines = [l for l in read_lines(path) if not FOOTER.match(l)]
     date = list_date(lines)
     nat = [i for i, l in enumerate(lines) if NATDAY.match(l)]
+    if not nat:  # Polijas formāts
+        nat = [i + 1 for i, l in enumerate(lines[:-1])
+               if l.strip() and l.strip().isupper() and not re.search(r"\d", l)
+               and re.match(r"^\s*(EMBASSY|APOSTOLIC|DELEGATION|HIGH COMMISSION|MISSION|ROYAL EMBASSY)", lines[i + 1], re.I)]
     starts = []
     for i in nat:  # misijas nosaukums ir dažas rindas virs "National day"
         j, picked = i - 1, None
@@ -144,7 +153,10 @@ def parse(path, host):
                 j -= 1
             if j < 0:
                 break
-            if MISSION_LINE.search(lines[j]) and not picked:
+            if MISSION_LINE.search(lines[j]) and not picked and not NATDAY.match(lines[i]) and j == i:
+                j -= 1
+                continue
+            if MISSION_LINE.search(lines[j]) and not picked and NATDAY.match(lines[i]):
                 j -= 1
                 continue
             picked = j
@@ -211,6 +223,27 @@ def parse(path, host):
             "missions": missions}
 
 
+def parse_fi_json(path):
+    snap = json.loads(path.read_text(encoding="utf-8"))
+    missions = {}
+    for title, m in snap["missions"].items():
+        t = re.sub(r"^(royal\s+)?(embassy|apostolic nunciature|delegation)\s+(of\s+)?(the\s+)?", "", title, flags=re.I)
+        name, _, city = t.rpartition(",")
+        name, city = (name or t).strip(), city.strip()
+        dips = [d for d in m["staff"] if d.get("rank") and d["rank"].lower() != "hidden"]
+        resident_mission = city.lower() == "helsinki"
+        resident = [d for d in dips if (d.get("location") or "").lower().startswith("helsinki")]
+        head = "ambassador" if any(HEAD_AMB.search(d["rank"]) for d in dips[:2]) else \
+               "chargé" if any(HEAD_CDA.search(d["rank"]) for d in dips[:3]) else "none"
+        code, display = norm_country(name)
+        key = code if code not in missions else f"{code}#{len(missions)}"
+        missions[key] = {"country": display, "code": code, "raw_name": title, "resident_mission": resident_mission,
+                         "head": head, "diplomats": len(dips), "diplomats_resident": len(resident),
+                         "defence": sum(1 for d in dips if DEFENCE.search(d["rank"])), "staff": dips}
+    return {"host": "FI", "list_date": snap["list_date"], "parsed_at": NOW,
+            "source_file": str(path.relative_to(ROOT)), "missions": missions}
+
+
 def summary(snap):
     return {k: {f: v[f] for f in ("country", "resident_mission", "head", "diplomats", "diplomats_resident", "defence")}
             for k, v in snap["missions"].items()}
@@ -227,7 +260,9 @@ def diff(old, new, host):
         elif b and not a:
             ch.append(("mission_new", k, b["country"], None, b))
         else:
-            for f in ("resident_mission", "head", "diplomats_resident", "defence"):
+            fields = ("resident_mission", "head") if HOSTS[host].get("heads_only") else \
+                     ("resident_mission", "head", "diplomats_resident", "defence")
+            for f in fields:
                 if a[f] != b[f]:
                     ch.append((f"mission_{f}", k, b["country"], {f: a[f]}, {f: b[f]}))
     out = []
@@ -247,7 +282,7 @@ def main():
         for e in entries:
             p = ROOT / e["file"]
             try:
-                s = parse(p, host)
+                s = parse_fi_json(p) if p.suffix == ".json" else parse(p, host)
             except Exception as ex:
                 print("ERR", p, ex)
                 continue
@@ -285,6 +320,7 @@ def main():
 
         cur, prev = snaps[-1], (snaps[-2] if len(snaps) > 1 else None)
         latest[host] = {
+            "heads_only": bool(HOSTS[host].get("heads_only")),
             "list_date": cur["list_date"], "previous_list_date": prev["list_date"] if prev else None,
             "missions": summary(cur),
             "previous": summary(prev) if prev else None,
