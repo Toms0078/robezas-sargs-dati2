@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-10-09T08:24:48+00:00",
+  "run_at": "2026-10-09T08:28:05+00:00",
   "sources": {
     "adv_CA": {
       "countries": 9,
@@ -18,12 +18,26 @@
       "ok": true
     },
     "news": {
-      "errors": [
-        "ru_emb_fi: HTTPSConnectionPool(host='finland.mid.ru', port=443): Max retries exceeded with url: /ru/rss/ (Caused by NameResolutionError(\"HTTPSConnection(host='fi"
+      "empty_feeds": [
+        "lv",
+        "lt",
+        "ee",
+        "fi",
+        "emb_de",
+        "fr_emb_lv",
+        "fr_emb_ee",
+        "fr_emb_lt",
+        "fr_emb_pl",
+        "fr_emb_fi",
+        "fr_emb_se",
+        "fr_emb_no",
+        "fr_emb_ru",
+        "fr_emb_by"
       ],
-      "new": 7,
+      "errors": [],
+      "new": 3,
       "ok": true,
-      "total": 175
+      "total": 178
     }
   }
 }
