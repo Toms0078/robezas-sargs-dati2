@@ -86,10 +86,10 @@ def log(source, ok, **info):
     print(("OK  " if ok else "ERR ") + source, info, flush=True)
 
 
-def get(url, polite=0, **kw):
-    """GET ar atkārtojumu, ja serveris prasa palēnināt (429)."""
+def get(url, polite=0, waits=(0, 10, 30, 60), **kw):
+    """GET ar atkārtojumu, ja serveris prasa palēnināt (429/503)."""
     import time
-    for wait in (0, 10, 30, 60):
+    for wait in waits:
         if wait:
             time.sleep(wait)
         if polite:
@@ -505,13 +505,21 @@ def fetch_news():
             if datetime.fromisoformat(it["seen_at"]).timestamp() >= cutoff:
                 keep.append(it)
                 seen.add(it["id"])
-    new, errors, raw_counts = [], [], {}
+    new, errors, raw_counts, g_fail = [], [], {}, 0
     sources = [(tag, GN.format(q=quote_plus(q), hl=hl, gl=gl, lang=lang)) for tag, q, (hl, gl, lang) in NEWS_QUERIES]
     sources += OFFICIAL_FEEDS
     for tag, url in sources:
         try:
-            soup = BeautifulSoup(get(url, polite=3 if "news.google" in url else 1).content, "xml")
+            is_g = "news.google" in url
+            if is_g and g_fail >= 3:
+                errors.append(f"{tag}: izlaists (Google ierobežo pieprasījumus)")
+                continue
+            soup = BeautifulSoup(get(url, polite=3 if is_g else 1, waits=(0, 15) if is_g else (0, 10, 30)).content, "xml")
+            if is_g:
+                g_fail = 0
         except Exception as e:
+            if "news.google" in url:
+                g_fail += 1
             errors.append(f"{tag}: {str(e)[:150]}")
             continue
         raw_counts[tag] = len(soup.find_all(["item", "entry"]))
