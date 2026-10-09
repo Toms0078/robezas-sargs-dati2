@@ -12,6 +12,8 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from lvnames import lv_name
+
 ROOT = Path(__file__).parent
 DATA = ROOT / "data"
 OUT = ROOT / "out"
@@ -54,7 +56,7 @@ def hosts():
                     continue  # nerezidējošas misijas (vēstnieks citā galvaspilsētā) neinteresē
                 p = prev.get(key)
                 ms.append({
-                    "k": key, "c": m["country"], "head": m["head"], "n": m["diplomats_resident"],
+                    "k": key, "c": lv_name(key, m["country"]), "head": m["head"], "n": m["diplomats_resident"],
                     "def": m["defence"],
                     "pn": p["diplomats_resident"] if p else None,
                     "phead": p["head"] if p else None,
