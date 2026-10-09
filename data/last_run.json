@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-10-09T08:17:07+00:00",
+  "run_at": "2026-10-09T08:20:19+00:00",
   "sources": {
     "adv_CA": {
       "countries": 9,
@@ -18,10 +18,17 @@
       "ok": true
     },
     "news": {
-      "errors": [],
-      "new": 7,
+      "errors": [
+        "baltic_en: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%28Latvia+OR+Lithuania+OR+Estonia%29+%28embassy+OR+ambassador+OR+d",
+        "nordic_pl_en: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%28Poland+OR+Finland+OR+Sweden+OR+Norway%29+%28embassy+OR+ambassad",
+        "moscow_minsk_en: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%28%22embassy+in+Moscow%22+OR+%22embassy+in+Minsk%22+OR+%22embassy",
+        "ru: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%D0%BF%D0%BE%D1%81%D0%BE%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%BE+%28%D",
+        "by: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%D0%BF%D0%BE%D1%81%D0%BE%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%BE+%D0%9",
+        "lv: 503 Server Error: Service Unavailable for url: https://news.google.com/rss/search?q=%28v%C4%93stniec%C4%ABba+OR+v%C4%93stnieks+OR+diplom%C4%81ts%29+%2"
+      ],
+      "new": 16,
       "ok": true,
-      "total": 152
+      "total": 168
     }
   }
 }
