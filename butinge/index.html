@@ -39,6 +39,14 @@ h2{font:700 1.35rem var(--display);margin:0 0 10px}
 .note{font-size:.85rem;color:var(--muted)}
 table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
 .tw{overflow-x:auto}
+.ports{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-top:10px}
+.port{border:1px solid var(--line);border-radius:4px;padding:10px 12px;min-width:0}
+.port h3{font:700 1.15rem var(--display);margin:0;display:flex;justify-content:space-between;gap:8px;cursor:pointer}
+.port h3 span{font:500 .8rem var(--mono);color:var(--muted)}
+.port ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font:.8rem var(--mono)}
+.port li{display:flex;justify-content:space-between;gap:8px;border-top:1px dashed var(--line);padding-top:4px;cursor:pointer}
+.port li b{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.port .empty{color:var(--muted);font:.8rem var(--body)}
 </style>
 </head>
 <body>
@@ -51,6 +59,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div id="map"></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
+  <section class="panel"><h2>Tankkuģi Baltijas valstu ostās</h2>
+    <div class="note" id="portsum">Ielādē…</div>
+    <div class="ports" id="ports"></div>
+  </section>
   <section class="panel"><h2>Pēdējie notikumi pie bojas</h2><div class="tw"><table id="calls"><tr><td class="note">Vēl nav notikumu.</td></tr></table></div>
     <p class="note">Noslodze ir novērtējums pēc AIS iegrimes: balasta iegrime pieņemta 45% no maksimālās, kravā 95% no DWT. DWT ar zīmi ~ ir novērtēts pēc kuģa garuma; precīzu var ierakstīt <code>data/butinge/vessels.json</code>. Kartes pamatne © OpenStreetMap, jūras zīmes © OpenSeaMap.</p>
   </section>
@@ -101,7 +113,33 @@ async function load(){
       rows.map(e=>`<tr><td>${e.time.replace('T',' ').slice(0,16)}</td><td>${e.event}</td><td>${esc(e.name||e.mmsi)}</td><td>${e.arrival_draught?e.arrival_draught+' → ':''}${e.draught??'–'} m</td></tr>`).join('');
   }}catch(e){}
 }
-load(); setInterval(load,5*60*1000);
+const portLayer=L.layerGroup().addTo(map);
+L.control.layers(null,{'Tankkuģi Baltijas ostās':portLayer},{collapsed:false}).addTo(map);
+const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
+async function loadPorts(){
+  let d;
+  try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  catch(e){document.getElementById('portsum').textContent='Ostu dati vēl nav savākti.';return;}
+  document.getElementById('portsum').innerHTML=`${d.total_in_ports} tankkuģi ${d.ports.length} ostās · atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}. Tankkuģi tiek atpazīti pēc AIS statiskajiem datiem, tāpēc saraksts pirmajās stundās papildinās. Zila = stāv ostā, brūna = enkurvietā, pelēka = kustībā.`;
+  portLayer.clearLayers(); const box=document.getElementById('ports'); box.innerHTML='';
+  d.ports.forEach(p=>{
+    L.circle([p.lat,p.lon],{radius:p.radius_km*1000,color:'#2563eb',weight:1,fillOpacity:.04,dashArray:'4 4'}).bindTooltip(p.name).addTo(portLayer);
+    const el=document.createElement('div');el.className='port';
+    const h=document.createElement('h3');h.innerHTML=`${esc(p.name)} <span>${p.country} · ${p.tankers.length}</span>`;
+    h.onclick=()=>map.setView([p.lat,p.lon],11);el.append(h);
+    if(!p.tankers.length){const e=document.createElement('div');e.className='empty';e.textContent='Tankkuģu nav';el.append(e);}
+    else{const ul=document.createElement('ul');
+      p.tankers.forEach(t=>{
+        const m=L.circleMarker([t.lat,t.lon],{radius:5,color:'#fff',weight:1,fillColor:PCOL[t.status],fillOpacity:1})
+          .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(p.name)} · ${t.status}<br>Iegrime ${t.draught??'–'} m · DWT ${t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'}<br>${t.empty_pct!=null?'Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}`).addTo(portLayer);
+        const li=document.createElement('li');
+        li.innerHTML=`<b>${esc(t.name||t.mmsi)}</b><span style="color:${PCOL[t.status]}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
+        li.onclick=()=>{map.setView([t.lat,t.lon],13);m.openPopup()};ul.append(li);});
+      el.append(ul);}
+    box.append(el);
+  });
+}
+load(); loadPorts(); setInterval(()=>{load();loadPorts()},5*60*1000);
 </script>
 </body>
 </html>
