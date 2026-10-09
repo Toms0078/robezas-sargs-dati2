@@ -416,7 +416,8 @@ UK_LOC = {"lv": "latvia", "ee": "estonia", "lt": "lithuania", "pl": "poland", "f
 RU_EMB = {"lv": "latvia", "ee": "estonia", "lt": "lithuania", "pl": "poland", "fi": "finland", "se": "sweden", "no": "norway"}
 OFFICIAL_FEEDS += [(f"uk_emb_{cc}", f"https://www.gov.uk/search/news-and-communications.atom?world_locations%5B%5D={loc}")
                    for cc, loc in UK_LOC.items()]
-OFFICIAL_FEEDS += [(f"fr_emb_{cc}", f"https://{cc}.ambafrance.org/spip.php?page=backend") for cc in UK_LOC]
+# Krievijas vēstniecību lapas (Somijas adrese neeksistē; Francijas ambafrance plūsmas ir tukšas — nav iekļautas)
+OFFICIAL_FEEDS += [(f"ru_emb_{cc}", f"https://{loc}.mid.ru/ru/rss/") for cc, loc in RU_EMB.items() if cc != "fi"]
 
 # Vēstniecību paziņojumi Google News (vācu, ķīniešu, Ziemeļvalstu u.c. vēstniecības, kurām nav plūsmu)
 NEWS_QUERIES += [
