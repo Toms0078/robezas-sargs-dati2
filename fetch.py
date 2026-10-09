@@ -450,6 +450,14 @@ def fetch_news():
                 continue
             src = it.find("source")
             pub = it.find(["pubDate", "published", "updated"])
+            try:  # Google News reizēm atgriež vecus rakstus — ņemam tikai pēdējās 7 dienas
+                from email.utils import parsedate_to_datetime
+                ptxt = pub.get_text(strip=True) if pub else ""
+                pdt = parsedate_to_datetime(ptxt) if "," in ptxt else datetime.fromisoformat(ptxt.replace("Z", "+00:00"))
+                if (datetime.now(timezone.utc) - pdt).days > 7:
+                    continue
+            except Exception:
+                pass
             iid = hashlib.sha1((link or title).encode()).hexdigest()[:16]
             if iid in seen:
                 continue
