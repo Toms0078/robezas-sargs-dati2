@@ -470,6 +470,12 @@ NEWS_QUERIES += [
     ("inv_en", '(Latvia OR Lithuania OR Estonia OR Baltic) (investment OR investor OR factory OR plant OR "data center") (announces OR invests OR withdraws OR exits OR halts OR cancels OR relocates) when:3d', ("en", "US", "en")),
     ("inv_lv", '(investīcijas OR investors OR rūpnīca) (Latvijā OR Latvija) (iegulda OR aiziet OR aptur OR pārceļ OR slēdz) when:3d', ("lv", "LV", "lv")),
     ("inv_nordic_pl", '(Poland OR Finland OR Sweden OR Norway) (foreign investment OR investor) (withdraws OR exits OR halts OR relocates OR "security concerns") when:3d', ("en", "US", "en")),
+    ("inv_drop_en", '("foreign direct investment" OR FDI OR "foreign investment") (Latvia OR Lithuania OR Estonia OR Baltic OR Poland OR Finland OR Sweden OR Norway) (fell OR fall OR decline OR drop OR outflow OR lowest OR slump) when:7d', ("en", "US", "en")),
+    ("inv_drop_lv", '("ārvalstu tiešās investīcijas" OR "ārvalstu investīcijas" OR investīciju) (samazinājās OR kritums OR sarukušas OR aizplūde OR zemākais) when:7d', ("lv", "LV", "lv")),
+    ("inv_drop_lt", '("tiesioginės užsienio investicijos" OR "užsienio investicijos") (sumažėjo OR mažėja OR nuosmukis) when:7d', ("lt", "LT", "lt")),
+    ("inv_drop_ee", '("välisinvesteeringud" OR "otseinvesteeringud") (vähenesid OR langus OR kahanes) when:7d', ("et", "EE", "et")),
+    ("inv_drop_pl", '("inwestycje zagraniczne" OR "bezpośrednie inwestycje zagraniczne") (spadek OR spadły OR odpływ) when:7d', ("pl", "PL", "pl")),
+    ("inv_drop_fi", '("ulkomaiset suorat sijoitukset" OR "ulkomaiset investoinnit") (laskivat OR lasku OR vähenivät) when:7d', ("fi", "FI", "fi")),
     ("emb_zh", '(大使馆 OR 使馆) (拉脱维亚 OR 爱沙尼亚 OR 立陶宛 OR 波兰 OR 芬兰) 提醒 when:7d', ("zh-CN", "CN", "zh-Hans")),
 ]
 # ASV vēstniecību paziņojumi: paturam brīdinājumus un visu par personālu/darbību
