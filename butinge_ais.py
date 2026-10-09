@@ -219,6 +219,26 @@ def process(messages, state, vessels, now):
         learned = [round(la, 5), round(lo, 5)] if not learned else \
             [round(0.8 * learned[0] + 0.2 * la, 5), round(0.8 * learned[1] + 0.2 * lo, 5)]
 
+    # diagnostika: vai aisstream vispār dzird kuģus pie Būtiņģes?
+    near = []
+    for mmsi, (p, meta) in pos.items():
+        if p.get("Latitude") is None or abs(p["Latitude"]) > 90:
+            continue
+        d = km((p["Latitude"], p["Longitude"]), buoy)
+        if d <= 60:
+            name = (static.get(mmsi, ({}, {}))[0].get("Name") or meta.get("ShipName") or "").strip()
+            near.append({"mmsi": mmsi, "name": name, "km": round(d, 1), "sog": p.get("Sog")})
+    near.sort(key=lambda x: x["km"])
+    dests = sorted({(s.get("Destination") or "").strip() for s, _ in static.values()
+                    if re.search(r"BUT|LTBOT|PALANG|SVENT", (s.get("Destination") or "").upper())})
+    diag = {
+        "static_msgs": len(static),
+        "ships_heard": len(pos),
+        "within_60km": len(near),
+        "nearest": near[:8],
+        "dest_like_butinge": dests[:20],
+    }
+
     order = {"pie_bojas": 0, "gaida": 1, "ceļā": 2}
     out.sort(key=lambda s: (order[s["status"]], s.get("dist_buoy_km") or 1e9))
     new_state = {
@@ -226,6 +246,7 @@ def process(messages, state, vessels, now):
         "buoy": list(buoy),
         "learned_buoy": learned,
         "messages_heard": len(messages),
+        "diag": diag,
         "ships": out,
     }
     return new_state, events
