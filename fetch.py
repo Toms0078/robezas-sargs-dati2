@@ -417,7 +417,7 @@ RU_EMB = {"lv": "latvia", "ee": "estonia", "lt": "lithuania", "pl": "poland", "f
 OFFICIAL_FEEDS += [(f"uk_emb_{cc}", f"https://www.gov.uk/search/news-and-communications.atom?world_locations%5B%5D={loc}")
                    for cc, loc in UK_LOC.items()]
 OFFICIAL_FEEDS += [(f"fr_emb_{cc}", f"https://{cc}.ambafrance.org/spip.php?page=backend") for cc in UK_LOC]
-OFFICIAL_FEEDS += [(f"ru_emb_{cc}", f"https://{loc}.mid.ru/ru/rss/") for cc, loc in RU_EMB.items()]
+
 # Vēstniecību paziņojumi Google News (vācu, ķīniešu, Ziemeļvalstu u.c. vēstniecības, kurām nav plūsmu)
 NEWS_QUERIES += [
     ("emb_en", '("embassy in Riga" OR "embassy in Tallinn" OR "embassy in Vilnius" OR "embassy in Warsaw" OR "embassy in Helsinki" OR "embassy in Stockholm" OR "embassy in Oslo") (citizens OR alert OR advises OR staff OR closed OR evacuat) when:3d', ("en", "US", "en")),
@@ -452,7 +452,7 @@ def fetch_news():
             if datetime.fromisoformat(it["seen_at"]).timestamp() >= cutoff:
                 keep.append(it)
                 seen.add(it["id"])
-    new, errors = [], []
+    new, errors, raw_counts = [], [], {}
     sources = [(tag, GN.format(q=quote_plus(q), hl=hl, gl=gl, lang=lang)) for tag, q, (hl, gl, lang) in NEWS_QUERIES]
     sources += OFFICIAL_FEEDS
     for tag, url in sources:
@@ -461,6 +461,7 @@ def fetch_news():
         except Exception as e:
             errors.append(f"{tag}: {str(e)[:150]}")
             continue
+        raw_counts[tag] = len(soup.find_all(["item", "entry"]))
         for it in soup.find_all(["item", "entry"]):
             title = (it.title.get_text(" ", strip=True) if it.title else "")
             link_el = it.find("link")
@@ -491,7 +492,8 @@ def fetch_news():
             new.append(item)
     keep += new
     path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in keep), encoding="utf-8")
-    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:40])
+    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:40],
+        empty_feeds=[t for t, n in raw_counts.items() if n == 0])
 
 
 if __name__ == "__main__":
