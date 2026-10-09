@@ -95,7 +95,7 @@ def get(url, polite=0, **kw):
         if polite:
             time.sleep(polite)
         r = requests.get(url, headers=UA, timeout=60, **kw)
-        if r.status_code != 429:
+        if r.status_code not in (429, 503):
             break
     r.raise_for_status()
     return r
@@ -457,7 +457,7 @@ def fetch_news():
     sources += OFFICIAL_FEEDS
     for tag, url in sources:
         try:
-            soup = BeautifulSoup(get(url, polite=1).content, "xml")
+            soup = BeautifulSoup(get(url, polite=3 if "news.google" in url else 1).content, "xml")
         except Exception as e:
             errors.append(f"{tag}: {str(e)[:150]}")
             continue
@@ -491,7 +491,7 @@ def fetch_news():
             new.append(item)
     keep += new
     path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in keep), encoding="utf-8")
-    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:6])
+    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:40])
 
 
 if __name__ == "__main__":
