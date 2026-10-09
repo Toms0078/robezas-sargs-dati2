@@ -1,0 +1,671 @@
+{
+ "bop_c6_q_LV_meta": {
+  "status": 200,
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bop_c6_q?geo=LV&lastTimePeriod=1&currency=MIO_EUR&stk_flow=LIAB",
+  "size": [
+   1,
+   1,
+   200,
+   13,
+   12,
+   1,
+   50,
+   1,
+   1
+  ],
+  "dims": {
+   "freq": [
+    [
+     "Q",
+     "Quarterly"
+    ]
+   ],
+   "currency": [
+    [
+     "MIO_EUR",
+     "Million euro"
+    ]
+   ],
+   "bop_item": [
+    [
+     "CA",
+     "Current account"
+    ],
+    [
+     "CKA",
+     "Current plus capital account (balance = net lending (+) / net borrowing (-))"
+    ],
+    [
+     "GS",
+     "Goods and services"
+    ],
+    [
+     "G",
+     "Goods"
+    ],
+    [
+     "G1",
+     "General merchandise on a balance of payments basis"
+    ],
+    [
+     "G2",
+     "Net exports of goods under merchanting"
+    ],
+    [
+     "G21",
+     "Goods acquired under merchanting"
+    ],
+    [
+     "G22",
+     "Goods sold under merchanting"
+    ],
+    [
+     "G3",
+     "Non-monetary gold"
+    ],
+    [
+     "S",
+     "Services"
+    ],
+    [
+     "SA",
+     "Services: manufacturing services on physical inputs owned by others"
+    ],
+    [
+     "SB",
+     "Services: maintenance and repair services n.i.e."
+    ],
+    [
+     "SC",
+     "Services: transport"
+    ],
+    [
+     "SC1",
+     "Services: sea transport"
+    ],
+    [
+     "SC11",
+     "Services: sea transport; passenger"
+    ],
+    [
+     "SC12",
+     "Services: sea transport; freight"
+    ],
+    [
+     "SC13",
+     "Services: sea transport; other than passenger and freight"
+    ],
+    [
+     "SC2",
+     "Services: air transport"
+    ],
+    [
+     "SC21",
+     "Services: air transport; passenger"
+    ],
+    [
+     "SC22",
+     "Services: air transport; freight"
+    ],
+    [
+     "SC23",
+     "Services: air transport; other than passenger and freight"
+    ],
+    [
+     "SC3",
+     "Services: other modes of transport"
+    ],
+    [
+     "SC31",
+     "Services: other modes of transport; passenger"
+    ],
+    [
+     "SC32",
+     "Services: other modes of transport; freight"
+    ],
+    [
+     "SC33",
+     "Services: other modes of transport; other than passenger and freight"
+    ],
+    [
+     "SC4",
+     "Services: postal and courier services"
+    ],
+    [
+     "SD",
+     "Services: travel"
+    ],
+    [
+     "SD1",
+     "Services: travel; goods (travel)"
+    ],
+    [
+     "SD2",
+     "Services: travel; local transport services"
+    ],
+    [
+     "SD3",
+     "Services: travel; accommodation services"
+    ],
+    [
+     "SD4",
+     "Services: travel; food-serving services"
+    ],
+    [
+     "SD5",
+     "Services: travel; other services than goods (travel), local transport services, accommodation services, and food-serving services"
+    ],
+    [
+     "SE",
+     "Services: construction"
+    ],
+    [
+     "SE1",
+     "Services: construction abroad"
+    ],
+    [
+     "SE2",
+     "Services: construction in the reporting economy"
+    ],
+    [
+     "SF",
+     "Services: insurance and pension services"
+    ],
+    [
+     "SF1",
+     "Services: direct insurance"
+    ],
+    [
+     "SF2",
+     "Services: reinsurance"
+    ],
+    [
+     "SF3",
+     "Services: auxiliary insurance services"
+    ],
+    [
+     "SF4",
+     "Services: pension and standardized guarantee services"
+    ],
+    [
+     "SG",
+     "Services: financial services"
+    ],
+    [
+     "SG1",
+     "Services: financial services explicitly charged and other financial services"
+    ],
+    [
+     "SG2",
+     "Services: financial intermediation services indirectly measured (FISIM)"
+    ],
+    [
+     "SH",
+     "Services: charges for the use of intellectual property n.i.e."
+    ],
+    [
+     "SI",
+     "Services: telecommunications, computer, and information services"
+    ],
+    [
+     "SI1",
+     "Services: telecommunications services"
+    ],
+    [
+     "SI2",
+     "Services: computer services"
+    ],
+    [
+     "SI3",
+     "Services: information services"
+    ],
+    [
+     "SJ",
+     "Services: other business services"
+    ],
+    [
+     "SJ1",
+     "Services: research and development services"
+    ],
+    [
+     "SJ2",
+     "Services: professional and management consulting services"
+    ],
+    [
+     "SJ3",
+     "Services: technical, trade-related, and other business services"
+    ],
+    [
+     "SK",
+     "Services: personal, cultural, and recreational services"
+    ],
+    [
+     "SK1",
+     "Services: audiovisual and related services"
+    ],
+    [
+     "SK2",
+     "Services: personal, cultural, and recreational services other than audiovisual and related services"
+    ],
+    [
+     "SL",
+     "Services: government goods and services n.i.e."
+    ],
+    [
+     "SOX",
+     "Services: commercial services"
+    ],
+    [
+     "SN",
+     "Services: services not allocated"
+    ],
+    [
+     "S_X_CG",
+     "Services excluding transport and financial services"
+    ],
+    [
+     "IN1",
+     "Primary income"
+    ]
+   ],
+   "sector10": [
+    [
+     "S1",
+     "Total economy"
+    ],
+    [
+     "S121",
+     "Central Bank"
+    ],
+    [
+     "S12T",
+     "Monetary Financial Institutions (MFI) other than central bank"
+    ],
+    [
+     "S122",
+     "Deposit-taking corporations except the central bank"
+    ],
+    [
+     "S123",
+     "Money market funds"
+    ],
+    [
+     "S13",
+     "General Government"
+    ],
+    [
+     "S1P",
+     "Other sectors than MFIs and general government"
+    ],
+    [
+     "S12M",
+     "Financial corporations other than MFIs"
+    ],
+    [
+     "S1V",
+     "Non-financial corporations, households and non-profit institutions serving households"
+    ],
+    [
+     "S1W",
+     "Other sectors than General Government"
+    ],
+    [
+     "S1Z",
+     "Sectors other than deposit-taking corporations and general government"
+    ],
+    [
+     "S1X",
+     "Monetary authorities"
+    ],
+    [
+     "S12R",
+     "Other financial corporations"
+    ]
+   ],
+   "sectpart": [
+    [
+     "S1",
+     "Total economy"
+    ],
+    [
+     "S121",
+     "Central Bank"
+    ],
+    [
+     "S12T",
+     "Monetary Financial Institutions (MFI) other than central bank"
+    ],
+    [
+     "S122",
+     "Deposit-taking corporations except the central bank"
+    ],
+    [
+     "S123",
+     "Money market funds"
+    ],
+    [
+     "S13",
+     "General Government"
+    ],
+    [
+     "S1P",
+     "Other sectors than MFIs and general government"
+    ],
+    [
+     "S12M",
+     "Financial corporations other than MFIs"
+    ],
+    [
+     "S1V",
+     "Non-financial corporations, households and non-profit institutions serving households"
+    ],
+    [
+     "S1Z",
+     "Sectors other than deposit-taking corporations and general government"
+    ],
+    [
+     "S1N",
+     "Not sectorised"
+    ],
+    [
+     "S12K",
+     "Monetary financial institutions (MFI)"
+    ]
+   ],
+   "stk_flow": [
+    [
+     "LIAB",
+     "Liabilities"
+    ]
+   ],
+   "partner": [
+    [
+     "EU27_2020",
+     "European Union - 27 countries (from 2020)"
+    ],
+    [
+     "EU28",
+     "European Union - 28 countries (2013-2020)"
+    ],
+    [
+     "EA21",
+     "Euro area – 21 countries (from 2026)"
+    ],
+    [
+     "EA20",
+     "Euro area – 20 countries (2023-2025)"
+    ],
+    [
+     "EA19",
+     "Euro area - 19 countries  (2015-2022)"
+    ],
+    [
+     "BE",
+     "Belgium"
+    ],
+    [
+     "BG",
+     "Bulgaria"
+    ],
+    [
+     "CZ",
+     "Czechia"
+    ],
+    [
+     "DK",
+     "Denmark"
+    ],
+    [
+     "DE",
+     "Germany"
+    ],
+    [
+     "EE",
+     "Estonia"
+    ],
+    [
+     "IE",
+     "Ireland"
+    ],
+    [
+     "EL",
+     "Greece"
+    ],
+    [
+     "ES",
+     "Spain"
+    ],
+    [
+     "FR",
+     "France"
+    ],
+    [
+     "HR",
+     "Croatia"
+    ],
+    [
+     "IT",
+     "Italy"
+    ],
+    [
+     "CY",
+     "Cyprus"
+    ],
+    [
+     "LV",
+     "Latvia"
+    ],
+    [
+     "LT",
+     "Lithuania"
+    ],
+    [
+     "LU",
+     "Luxembourg"
+    ],
+    [
+     "HU",
+     "Hungary"
+    ],
+    [
+     "MT",
+     "Malta"
+    ],
+    [
+     "NL",
+     "Netherlands"
+    ],
+    [
+     "AT",
+     "Austria"
+    ],
+    [
+     "PL",
+     "Poland"
+    ],
+    [
+     "PT",
+     "Portugal"
+    ],
+    [
+     "RO",
+     "Romania"
+    ],
+    [
+     "SI",
+     "Slovenia"
+    ],
+    [
+     "SK",
+     "Slovakia"
+    ],
+    [
+     "FI",
+     "Finland"
+    ],
+    [
+     "SE",
+     "Sweden"
+    ],
+    [
+     "CH",
+     "Switzerland"
+    ],
+    [
+     "UK",
+     "United Kingdom"
+    ],
+    [
+     "RU",
+     "Russia"
+    ],
+    [
+     "EXT_EU27_2020",
+     "Extra-EU27 (from 2020)"
+    ],
+    [
+     "EXT_EU28",
+     "Extra-EU28 (2013-2020)"
+    ],
+    [
+     "EXT_EA21",
+     "Extra-euro area - 21 countries (from 2026)"
+    ],
+    [
+     "EXT_EA20",
+     "Extra-euro area - 20 countries (2023-2025)"
+    ],
+    [
+     "EXT_EA19",
+     "Extra-euro area - 19 countries (2015-2022)"
+    ],
+    [
+     "CA",
+     "Canada"
+    ],
+    [
+     "US",
+     "United States"
+    ],
+    [
+     "BR",
+     "Brazil"
+    ],
+    [
+     "CN_X_HK",
+     "China except Hong Kong"
+    ],
+    [
+     "HK",
+     "Hong Kong"
+    ],
+    [
+     "JP",
+     "Japan"
+    ],
+    [
+     "IN",
+     "India"
+    ],
+    [
+     "EUI",
+     "Institutions and bodies of the European Union"
+    ],
+    [
+     "OFFSHO",
+     "Offshore financial centers"
+    ],
+    [
+     "WRL_REST",
+     "Rest of the world"
+    ]
+   ],
+   "geo": [
+    [
+     "LV",
+     "Latvia"
+    ]
+   ],
+   "time": [
+    [
+     "2026-Q2",
+     "2026-Q2"
+    ]
+   ]
+  },
+  "n_values": 1745,
+  "sample": [
+   [
+    "990649",
+    461.0
+   ],
+   [
+    "1084202",
+    -35.0
+   ],
+   [
+    "1084200",
+    160.0
+   ],
+   [
+    "1084237",
+    191.0
+   ],
+   [
+    "1084235",
+    -5.0
+   ],
+   [
+    "1084249",
+    155.0
+   ],
+   [
+    "1060802",
+    34.0
+   ],
+   [
+    "1060800",
+    30.0
+   ],
+   [
+    "1060837",
+    -6.0
+   ],
+   [
+    "1060835",
+    -3.0
+   ]
+  ],
+  "error": null
+ },
+ "bop_c6_q_FDI": {
+  "status": 400,
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bop_c6_q?geo=LV&geo=LT&geo=EE&geo=PL&geo=FI&geo=SE&geo=NO&bop_item=FA__D__F&stk_flow=LIAB&currency=MIO_EUR&partner=WRL_REST&sector10=S1&sectpart=S1&s_adj=NSA&lastTimePeriod=8",
+  "size": null,
+  "dims": {},
+  "n_values": 0,
+  "sample": [],
+  "error": [
+   {
+    "status": 400,
+    "id": 150,
+    "label": "INVALID_QUERY_DIMENSION: Query is invalid as per its structure's definition. Dimension \"S_ADJ\" is not defined"
+   }
+  ]
+ },
+ "bop_fdi6_flow_meta": {
+  "status": 413,
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bop_fdi6_flow?geo=LV&lastTimePeriod=1",
+  "size": null,
+  "dims": {},
+  "n_values": 0,
+  "sample": [],
+  "error": [
+   {
+    "status": 413,
+    "id": 413,
+    "label": "ASYNCHRONOUS_RESPONSE. Your request will be treated asynchronously. Please try again later."
+   }
+  ]
+ }
+}
