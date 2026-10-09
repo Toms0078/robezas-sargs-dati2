@@ -386,6 +386,83 @@ def fetch_advisories():
     save_json(DATA / "advisories.json", cur)
 
 
+# ------------------------------------------------------- 3. ziņas
+# Google News RSS meklējumi + oficiālās ĀM plūsmas. Claude vēlāk tās klasificē (ieplānotais uzdevums).
+from urllib.parse import quote_plus
+
+GN = "https://news.google.com/rss/search?q={q}&hl={hl}&gl={gl}&ceid={gl}:{lang}"
+NEWS_QUERIES = [
+    # (birka, vaicājums, valoda/reģions)
+    ("baltic_en", '(Latvia OR Lithuania OR Estonia) (embassy OR ambassador OR diplomats) (expel OR expelled OR "persona non grata" OR closes OR closure OR evacuate OR "ordered departure" OR recall OR "reduce staff") when:3d', ("en", "US", "en")),
+    ("nordic_pl_en", '(Poland OR Finland OR Sweden OR Norway) (embassy OR ambassador OR diplomats) (expel OR expelled OR "persona non grata" OR closes OR closure OR evacuate OR recall OR consulate) when:3d', ("en", "US", "en")),
+    ("moscow_minsk_en", '("embassy in Moscow" OR "embassy in Minsk" OR "embassy in Belarus" OR "embassy in Russia") (closes OR suspend OR expel OR diplomats OR staff OR reopen OR ambassador) when:3d', ("en", "US", "en")),
+    ("ru", 'посольство (высылка OR выслать OR "персона нон грата" OR закрытие OR консульство OR дипломаты) (Латвия OR Литва OR Эстония OR Польша OR Финляндия OR Швеция OR Норвегия) when:3d', ("ru", "RU", "ru")),
+    ("by", 'посольство Беларусь (дипломаты OR высылка OR закрытие OR посол OR поверенный) when:3d', ("ru", "BY", "ru")),
+    ("lv", '(vēstniecība OR vēstnieks OR diplomāts) (izraida OR izraidīts OR slēdz OR "persona non grata" OR atsauc) when:3d', ("lv", "LV", "lv")),
+    ("lt", '(ambasada OR ambasadorius OR diplomatas) (išsiųsti OR išsiunčia OR uždaro OR "persona non grata") when:3d', ("lt", "LT", "lt")),
+    ("ee", '(saatkond OR suursaadik OR diplomaat) (välja saadetud OR saadab välja OR sulgeb OR "persona non grata") when:3d', ("et", "EE", "et")),
+    ("pl", '(ambasada OR ambasador OR dyplomata OR konsulat) (wydalenie OR wydalony OR zamknięcie OR "persona non grata") when:3d', ("pl", "PL", "pl")),
+    ("fi", '(suurlähetystö OR suurlähettiläs OR diplomaatti) (karkottaa OR karkotettu OR sulkee OR "persona non grata") when:3d', ("fi", "FI", "fi")),
+    ("se", '(ambassad OR ambassadör OR diplomat) (utvisa OR utvisas OR stänger OR "persona non grata") when:3d', ("sv", "SE", "sv")),
+    ("no", '(ambassade OR ambassadør OR diplomat) (utvise OR utvist OR stenger OR "persona non grata") when:3d', ("no", "NO", "no")),
+]
+OFFICIAL_FEEDS = [
+    ("uk_fcdo", "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=foreign-commonwealth-development-office"),
+    ("us_state", "https://www.state.gov/rss-feed/press-releases/feed/"),
+]
+NEWS_KEYWORDS = re.compile(
+    r"embass|ambassad|diplomat|consul|persona non grata|expel|chargé|charge d|ordered departure|authorized departure|"
+    r"посол|посольств|дипломат|консул|высыл|vēstn|diplomāt|ambasad|saatkond|suurlähet|utvis|wydal", re.I)
+REGION_WORDS = re.compile(
+    r"latvia|lithuania|estonia|poland|finland|sweden|norway|baltic|russia|moscow|belarus|minsk|kaliningrad|"
+    r"латви|литв|эстон|польш|финлянд|швец|норвег|росси|москв|беларус|минск|калининград", re.I)
+
+
+def fetch_news():
+    path = DATA / "news.jsonl"
+    seen, keep = set(), []
+    cutoff = datetime.now(timezone.utc).timestamp() - 60 * 86400
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            try:
+                it = json.loads(line)
+            except Exception:
+                continue
+            if datetime.fromisoformat(it["seen_at"]).timestamp() >= cutoff:
+                keep.append(it)
+                seen.add(it["id"])
+    new, errors = [], []
+    sources = [(tag, GN.format(q=quote_plus(q), hl=hl, gl=gl, lang=lang)) for tag, q, (hl, gl, lang) in NEWS_QUERIES]
+    sources += OFFICIAL_FEEDS
+    for tag, url in sources:
+        try:
+            soup = BeautifulSoup(get(url, polite=1).content, "xml")
+        except Exception as e:
+            errors.append(f"{tag}: {str(e)[:150]}")
+            continue
+        for it in soup.find_all(["item", "entry"]):
+            title = (it.title.get_text(" ", strip=True) if it.title else "")
+            link_el = it.find("link")
+            link = (link_el.get("href") or link_el.get_text(strip=True)) if link_el else ""
+            summ = it.find(["description", "summary"])
+            text = f"{title} {summ.get_text(' ', strip=True) if summ else ''}"
+            if tag in ("uk_fcdo", "us_state") and not (NEWS_KEYWORDS.search(text) and REGION_WORDS.search(text)):
+                continue
+            src = it.find("source")
+            pub = it.find(["pubDate", "published", "updated"])
+            iid = hashlib.sha1((link or title).encode()).hexdigest()[:16]
+            if iid in seen:
+                continue
+            seen.add(iid)
+            item = {"id": iid, "tag": tag, "title": title[:300], "url": link,
+                    "source": src.get_text(strip=True) if src else tag,
+                    "published": pub.get_text(strip=True) if pub else None, "seen_at": NOW}
+            new.append(item)
+    keep += new
+    path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in keep), encoding="utf-8")
+    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:6])
+
+
 if __name__ == "__main__":
     what = sys.argv[1] if len(sys.argv) > 1 else "all"
     if what in ("all", "lists"):
@@ -393,4 +470,5 @@ if __name__ == "__main__":
         fetch_fi()
     if what in ("all", "advisories"):
         fetch_advisories()
+        fetch_news()
     save_json(DATA / "last_run.json", run_log)
