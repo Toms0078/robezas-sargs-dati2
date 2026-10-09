@@ -321,7 +321,21 @@ def process_ports(messages, cache, vessels, now):
     ports = []
     for pid, name, cc, lat, lon, r in PORTS:
         ports.append({"id": pid, "name": name, "country": cc, "lat": lat, "lon": lon,
-                      "radius_km": r, "tankers": []})
+                      "radius_km": r, "ships_heard": 0, "tankers": []})
+    for mmsi, (p, meta) in pos.items():
+        la, lo = p.get("Latitude"), p.get("Longitude")
+        if la is None or abs(la) > 90:
+            continue
+        for port in ports:
+            if km((la, lo), (port["lat"], port["lon"])) <= port["radius_km"]:
+                port["ships_heard"] += 1
+                break
+    # kur atrodas zināmie tankkuģi (diagnostika)
+    where = {}
+    for mmsi, (p, meta) in pos.items():
+        if str(mmsi) in cache and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
+            k = f"{round(p['Latitude'])},{round(p['Longitude'])}"
+            where[k] = where.get(k, 0) + 1
     for mmsi, (p, meta) in pos.items():
         c = cache.get(str(mmsi))
         if not c:
@@ -354,6 +368,8 @@ def process_ports(messages, cache, vessels, now):
         "updated": iso(now),
         "tankers_known": len(cache),
         "total_in_ports": sum(len(p["tankers"]) for p in ports),
+        "tankers_heard_now": sum(1 for m in pos if str(m) in cache),
+        "tanker_cells": dict(sorted(where.items(), key=lambda x: -x[1])[:25]),
         "ports": ports,
     }
     return summary, cache
