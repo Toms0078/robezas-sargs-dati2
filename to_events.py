@@ -51,6 +51,9 @@ for c in json.loads((OUT / "changes.json").read_text()):
                "data": {"date": date, "host": h, "sender": s, "kind": k, "text": txt, "level": lvl,
                         "source": "Oficiālais diplomātu saraksts" if k.startswith("mission") else "Ceļošanas brīdinājumi",
                         "auto": True}})
+(OUT / "ev").mkdir(exist_ok=True)
+for e in ev:  # viens fails katram notikumam (ArtifactData file_path)
+    (OUT / "ev" / f"{e['doc_id']}.json").write_text(json.dumps(e["data"], ensure_ascii=False))
 for i in range(0, len(ev), 50):
     (OUT / f"events_batch_{i // 50}.json").write_text(json.dumps(ev[i:i + 50], ensure_ascii=False))
 print(len(ev), "notikumi")
