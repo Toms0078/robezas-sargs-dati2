@@ -309,6 +309,7 @@ PORTS_FILE = Path(__file__).parent / "data" / "ports" / "latest.json"
 TANKER_CACHE = Path(__file__).parent / "data" / "ports" / "tankers_cache.json"
 PORTS = [
     # id, nosaukums, valsts, lat, lon, rādiuss km
+    # Lietuva, Latvija, Igaunija
     ("klaipeda", "Klaipēda", "LT", 55.705, 21.090, 14),
     ("butinge", "Būtiņģe", "LT", 56.062, 20.958, 6),
     ("liepaja", "Liepāja", "LV", 56.525, 20.990, 10),
@@ -319,7 +320,51 @@ PORTS = [
     ("paldiski", "Paldiski", "EE", 59.345, 24.060, 9),
     ("tallinn", "Tallina / Muuga", "EE", 59.480, 24.880, 16),
     ("sillamae", "Sillamē", "EE", 59.415, 27.740, 8),
+    # Somija
+    ("helsinki", "Helsinki / Vuosāri", "FI", 60.170, 25.050, 14),
+    ("porvoo", "Porvo / Šēldvika", "FI", 60.300, 25.550, 8),
+    ("hamina_kotka", "Hamina-Kotka", "FI", 60.480, 26.980, 14),
+    ("hanko", "Hanko", "FI", 59.820, 22.970, 6),
+    ("turku_naantali", "Turku / Nāntali", "FI", 60.450, 22.120, 10),
+    ("rauma", "Rauma", "FI", 61.130, 21.460, 6),
+    ("pori", "Pori", "FI", 61.600, 21.450, 8),
+    ("kokkola", "Kokola", "FI", 63.860, 23.030, 7),
+    ("oulu", "Oulu", "FI", 65.000, 25.400, 10),
+    # Krievija
+    ("st_petersburg", "Sanktpēterburga", "RU", 59.880, 30.150, 14),
+    ("ust_luga", "Ustjluga", "RU", 59.680, 28.400, 12),
+    ("primorsk", "Primorska", "RU", 60.350, 28.620, 10),
+    ("vysotsk", "Visocka", "RU", 60.620, 28.570, 7),
+    ("kaliningrad", "Kaļiņingrada / Baltijska", "RU", 54.660, 20.000, 18),
+    # Polija
+    ("gdansk", "Gdaņska", "PL", 54.400, 18.680, 12),
+    ("gdynia", "Gdiņa", "PL", 54.540, 18.570, 7),
+    ("swinoujscie", "Svinoujsce / Ščecina", "PL", 53.920, 14.270, 12),
+    # Vācija
+    ("rostock", "Rostoka", "DE", 54.170, 12.100, 10),
+    ("kiel", "Kīle", "DE", 54.380, 10.180, 10),
+    ("travemunde", "Lībeka / Travemünde", "DE", 53.960, 10.870, 8),
+    ("wismar", "Vismāra", "DE", 53.910, 11.460, 6),
+    ("sassnitz", "Zasnica / Mukrāna", "DE", 54.500, 13.640, 7),
+    # Dānija
+    ("copenhagen", "Kopenhāgena", "DK", 55.700, 12.610, 7),
+    ("ronne", "Rēne (Bornholma)", "DK", 55.100, 14.690, 6),
+    # Zviedrija
+    ("stockholm", "Stokholma", "SE", 59.330, 18.110, 10),
+    ("nynashamn", "Nīneshamna", "SE", 58.900, 17.950, 7),
+    ("oxelosund", "Ūkselēsunda", "SE", 58.670, 17.120, 7),
+    ("norrkoping", "Norčēpinga", "SE", 58.600, 16.230, 8),
+    ("visby", "Visbija", "SE", 57.640, 18.280, 5),
+    ("karlshamn", "Karlshamna", "SE", 56.170, 14.860, 7),
+    ("malmo", "Malme", "SE", 55.620, 12.980, 7),
+    ("trelleborg", "Trelleborga", "SE", 55.370, 13.150, 6),
+    ("gavle", "Jēvle", "SE", 60.680, 17.220, 8),
+    ("sundsvall", "Sundsvalla", "SE", 62.390, 17.330, 8),
+    ("lulea", "Luleo", "SE", 65.580, 22.150, 9),
+    ("gothenburg", "Gēteborga", "SE", 57.690, 11.850, 12),
 ]
+COUNTRY_LV = {"LT": "Lietuva", "LV": "Latvija", "EE": "Igaunija", "FI": "Somija", "RU": "Krievija",
+              "PL": "Polija", "DE": "Vācija", "DK": "Dānija", "SE": "Zviedrija"}
 CACHE_DAYS = 14
 
 
@@ -348,7 +393,7 @@ def process_ports(messages, cache, vessels, now):
     cache = dict(cache)
     for mmsi, s in static.items():
         key = str(mmsi)
-        if is_tanker(s.get("Type")):
+        if 70 <= (s.get("Type") or 0) <= 89:      # kravas un tankkuģi
             dim = s.get("Dimension") or {}
             cache[key] = {
                 "name": (s.get("Name") or "").strip(),
@@ -361,7 +406,7 @@ def process_ports(messages, cache, vessels, now):
                 "seen": iso(now),
             }
         elif key in cache:
-            cache.pop(key)  # tips mainījies, vairs nav tankkuģis
+            cache.pop(key)  # tips mainījies, vairs nav kravas/tankkuģis
     for mmsi in pos:
         if str(mmsi) in cache:
             cache[str(mmsi)]["seen"] = iso(now)
@@ -371,7 +416,7 @@ def process_ports(messages, cache, vessels, now):
     ports = []
     for pid, name, cc, lat, lon, r in PORTS:
         ports.append({"id": pid, "name": name, "country": cc, "lat": lat, "lon": lon,
-                      "radius_km": r, "ships_heard": 0, "tankers": []})
+                      "radius_km": r, "ships_heard": 0, "tankers": [], "cargo": []})
     for mmsi, (p, meta) in pos.items():
         la, lo = p.get("Latitude"), p.get("Longitude")
         if la is None or abs(la) > 90:
@@ -383,7 +428,7 @@ def process_ports(messages, cache, vessels, now):
     # kur atrodas zināmie tankkuģi (diagnostika)
     where = {}
     for mmsi, (p, meta) in pos.items():
-        if str(mmsi) in cache and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
+        if str(mmsi) in cache and is_tanker(cache[str(mmsi)].get("type")) and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
             k = f"{round(p['Latitude'])},{round(p['Longitude'])}"
             where[k] = where.get(k, 0) + 1
     for mmsi, (p, meta) in pos.items():
@@ -410,15 +455,23 @@ def process_ports(messages, cache, vessels, now):
                   "destination": c["destination"], "eta": c["eta"],
                   "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"),
                   "cog": p.get("Cog"), "status": st, "dist_km": round(d, 1)}
-            port["tankers"].append(cargo_guess(load_estimate(sh, vessels), port["id"]))
+            if is_tanker(c.get("type")):
+                port["tankers"].append(cargo_guess(load_estimate(sh, vessels), port["id"]))
+            else:
+                sh["ais_type"] = c.get("type")
+                port["cargo"].append(sh)
             break
     for port in ports:
         port["tankers"].sort(key=lambda s: (s["status"] == "kustībā", s.get("name") or ""))
+        port["cargo"].sort(key=lambda s: (s["status"] == "kustībā", s.get("name") or ""))
+        port["country_name"] = COUNTRY_LV.get(port["country"], port["country"])
     summary = {
         "updated": iso(now),
-        "tankers_known": len(cache),
+        "tankers_known": sum(1 for v in cache.values() if is_tanker(v.get("type"))),
+        "ships_known": len(cache),
         "total_in_ports": sum(len(p["tankers"]) for p in ports),
-        "tankers_heard_now": sum(1 for m in pos if str(m) in cache),
+        "cargo_in_ports": sum(len(p["cargo"]) for p in ports),
+        "tankers_heard_now": sum(1 for m in pos if str(m) in cache and is_tanker(cache[str(m)].get("type"))),
         "tanker_cells": dict(sorted(where.items(), key=lambda x: -x[1])[:25]),
         "ports": ports,
     }

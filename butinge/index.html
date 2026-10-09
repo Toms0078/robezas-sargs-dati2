@@ -50,6 +50,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .badge{display:inline-flex;vertical-align:middle;margin-right:6px;transform:rotate(90deg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font:.8rem var(--body);color:var(--muted);margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:2px}
+.country{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.country summary{cursor:pointer;font:700 1.15rem var(--display);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.country summary span{font:500 .8rem var(--mono);color:var(--muted)}
+.cargolist{opacity:.9}
 .port .empty{color:var(--muted);font:.8rem var(--body)}
 </style>
 </head>
@@ -70,7 +74,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div class="tw"><table id="inbarr"></table></div>
     <p class="note">Kad kuģis vairs nav dzirdams, tā ceļš tiek simulēts pa parasto kuģu ceļu ar pēdējo zināmo ātrumu. "Ienāca pēc prognozes" nozīmē aprēķinu, nevis apstiprinājumu. Tankkuģu "iespējamā krava" ir novērtējums pēc ostas, kuģa izmēra, nosaukuma un iegrimes: AIS kravu nepārraida, tāpēc dīzeli no benzīna atšķirt nevar.</p>
   </section>
-  <section class="panel"><h2>Tankkuģi Baltijas valstu ostās</h2>
+  <section class="panel"><h2>Kuģi Baltijas jūras ostās</h2>
     <div class="note" id="portsum">Ielādē…</div>
     <div class="ports" id="ports"></div>
   </section>
@@ -149,30 +153,47 @@ async function load(){
   }}catch(e){}
 }
 document.getElementById('legend').innerHTML=['tank','cargo','pass','tug','fish','other'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
-const portLayer=L.layerGroup().addTo(map);
-L.control.layers(null,{'Tankkuģi Baltijas ostās':portLayer},{collapsed:false}).addTo(map);
+const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
+L.control.layers(null,{'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
+const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
+let openCountries=new Set(['LV','LT','EE']);
+try{const o=JSON.parse(localStorage.getItem('openCountries')||'null');if(Array.isArray(o))openCountries=new Set(o);}catch(e){}
+function shipLi(t,kind,portName,layer){
+  const col=PCOL[t.status];
+  const m=L.marker([t.lat,t.lon],{icon:shipIcon(kind,col,t.cog)})
+    .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(portName)} · ${t.status}<br>Iegrime ${t.draught??'–'} m${kind==='tank'?' · DWT '+(t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'):''}${t.empty_pct!=null?'<br>Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}${t.cargo_guess?'<br><b>Iespējamā krava:</b> '+esc(t.cargo_guess)+(t.cargo_state?' · '+esc(t.cargo_state):''):''}`).addTo(layer);
+  const li=document.createElement('li');
+  li.innerHTML=`<b>${badge(kind,col)}${esc(t.name||t.mmsi)}</b><span style="color:${col}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
+  li.onclick=()=>{if(!map.hasLayer(layer))layer.addTo(map);map.setView([t.lat,t.lon],13);m.openPopup()};
+  return li;
+}
 async function loadPorts(){
   let d;
   try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
   catch(e){document.getElementById('portsum').textContent='Ostu dati vēl nav savākti.';return;}
-  document.getElementById('portsum').innerHTML=`${d.total_in_ports} tankkuģi ${d.ports.length} ostās · atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}. Tankkuģi tiek atpazīti pēc AIS statiskajiem datiem, tāpēc saraksts pirmajās stundās papildinās. Zila = stāv ostā, brūna = enkurvietā, pelēka = kustībā.`;
-  portLayer.clearLayers(); const box=document.getElementById('ports'); box.innerHTML='';
-  d.ports.forEach(p=>{
-    L.circle([p.lat,p.lon],{radius:p.radius_km*1000,color:'#2563eb',weight:1,fillOpacity:.04,dashArray:'4 4'}).bindTooltip(p.name).addTo(portLayer);
-    const el=document.createElement('div');el.className='port';
-    const h=document.createElement('h3');h.innerHTML=`${esc(p.name)} <span>${p.country} · ${p.tankers.length}</span>`;
-    h.onclick=()=>map.setView([p.lat,p.lon],11);el.append(h);
-    if(!p.tankers.length){const e=document.createElement('div');e.className='empty';e.textContent='Tankkuģu nav';el.append(e);}
-    else{const ul=document.createElement('ul');
-      p.tankers.forEach(t=>{
-        const m=L.marker([t.lat,t.lon],{icon:shipIcon('tank',PCOL[t.status],t.cog)})
-          .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(p.name)} · ${t.status}<br>Iegrime ${t.draught??'–'} m · DWT ${t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'}<br>${t.empty_pct!=null?'Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}${t.cargo_guess?'<br><b>Iespējamā krava:</b> '+esc(t.cargo_guess)+(t.cargo_state?' · '+esc(t.cargo_state):''):''}`).addTo(portLayer);
-        const li=document.createElement('li');
-        li.innerHTML=`<b>${badge('tank',PCOL[t.status])}${esc(t.name||t.mmsi)}</b><span style="color:${PCOL[t.status]}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
-        li.onclick=()=>{map.setView([t.lat,t.lon],13);m.openPopup()};ul.append(li);});
-      el.append(ul);}
-    box.append(el);
+  document.getElementById('portsum').innerHTML=`${d.total_in_ports} tankkuģi un ${d.cargo_in_ports??0} kravas kuģi ${d.ports.length} Baltijas jūras ostās · atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}. Kuģu tipu atpazīst pēc AIS statiskajiem datiem, tāpēc saraksts pirmajās stundās papildinās. Ostas bez neviena dzirdama kuģa var būt ārpus aisstream pārklājuma. Zila = stāv ostā, brūna = enkurvietā, pelēka = kustībā.`;
+  portLayer.clearLayers(); cargoLayer.clearLayers();
+  const box=document.getElementById('ports'); box.innerHTML='';
+  const by={}; d.ports.forEach(p=>(by[p.country]=by[p.country]||[]).push(p));
+  CORDER.filter(c=>by[c]).forEach(c=>{
+    const ps=by[c], nt=ps.reduce((a,p)=>a+p.tankers.length,0), nc=ps.reduce((a,p)=>a+(p.cargo||[]).length,0);
+    const det=document.createElement('details');det.className='country';det.open=openCountries.has(c);
+    det.innerHTML=`<summary><b>${esc(ps[0].country_name||c)}</b> <span>${ps.length} ostas · ${nt} tankkuģi · ${nc} kravas</span></summary>`;
+    det.addEventListener('toggle',()=>{det.open?openCountries.add(c):openCountries.delete(c);try{localStorage.setItem('openCountries',JSON.stringify([...openCountries]))}catch(e){}});
+    const grid=document.createElement('div');grid.className='ports';
+    ps.forEach(p=>{
+      L.circle([p.lat,p.lon],{radius:p.radius_km*1000,color:'#2563eb',weight:1,fillOpacity:.04,dashArray:'4 4'}).bindTooltip(p.name).addTo(portLayer);
+      const el=document.createElement('div');el.className='port';
+      const h=document.createElement('h3');
+      h.innerHTML=`${esc(p.name)} <span>${p.tankers.length} T · ${(p.cargo||[]).length} K${p.ships_heard===0?' · nav pārklājuma?':''}</span>`;
+      h.onclick=()=>map.setView([p.lat,p.lon],11);el.append(h);
+      if(!p.tankers.length&&!(p.cargo||[]).length){const e=document.createElement('div');e.className='empty';e.textContent=p.ships_heard?`Dzirdami ${p.ships_heard} kuģi, bet neviens kravas vai tankkuģis`:'Neviens kuģis nav dzirdams';el.append(e);}
+      if(p.tankers.length){const ul=document.createElement('ul');p.tankers.forEach(t=>ul.append(shipLi(t,'tank',p.name,portLayer)));el.append(ul);}
+      if((p.cargo||[]).length){const ul=document.createElement('ul');ul.className='cargolist';p.cargo.forEach(t=>ul.append(shipLi(t,'cargo',p.name,cargoLayer)));el.append(ul);}
+      grid.append(el);
+    });
+    det.append(grid);box.append(det);
   });
 }
 const inbLayer=L.layerGroup();
