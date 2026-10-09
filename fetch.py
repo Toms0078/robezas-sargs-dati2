@@ -409,7 +409,10 @@ NEWS_QUERIES = [
 OFFICIAL_FEEDS = [
     ("uk_fcdo", "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=foreign-commonwealth-development-office"),
     ("us_state", "https://www.state.gov/rss-feed/press-releases/feed/"),
-]
+] + [(f"us_emb_{cc}", f"https://{cc}.usembassy.gov/feed/") for cc in ("lv", "ee", "lt", "pl", "fi", "se", "no", "ru", "by")]
+# ASV vēstniecību paziņojumi: paturam brīdinājumus un visu par personālu/darbību
+US_EMB_KEEP = re.compile(r"alert|departure|evacuat|staff|suspend|clos|reduc|ordered|authorized|message to u\.s\. citizens|"
+                         r"security|consular services|embassy operations", re.I)
 NEWS_KEYWORDS = re.compile(
     r"embass|ambassad|diplomat|consul|persona non grata|expel|chargé|charge d|ordered departure|authorized departure|"
     r"посол|посольств|дипломат|консул|высыл|vēstn|diplomāt|ambasad|saatkond|suurlähet|utvis|wydal", re.I)
@@ -447,6 +450,8 @@ def fetch_news():
             summ = it.find(["description", "summary"])
             text = f"{title} {summ.get_text(' ', strip=True) if summ else ''}"
             if tag in ("uk_fcdo", "us_state") and not (NEWS_KEYWORDS.search(text) and REGION_WORDS.search(text)):
+                continue
+            if tag.startswith("us_emb_") and not US_EMB_KEEP.search(text):
                 continue
             src = it.find("source")
             pub = it.find(["pubDate", "published", "updated"])
