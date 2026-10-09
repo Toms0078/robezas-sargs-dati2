@@ -1,62 +1,16 @@
 {
-  "run_at": "2026-10-09T10:11:47+00:00",
+  "run_at": "2026-10-09T11:57:36+00:00",
   "sources": {
-    "fdi": {
-      "errors": [],
-      "last_quarter": "2026-Q2",
-      "ok": true
-    },
-    "list_EE": {
-      "errors": [],
-      "new": [],
-      "ok": true,
-      "tried": 2
-    },
-    "list_FI": {
-      "errors": [],
-      "missions": 167,
-      "new": [],
-      "ok": true,
-      "with_staff": 143
-    },
-    "list_LV": {
-      "errors": [],
-      "new": [],
-      "ok": true,
-      "tried": 2
-    },
-    "list_NO": {
-      "errors": [
-        "https://www.regjeringen.no/contentassets/3818fa2f0ec449689f40fd6fbeb99df2/the-oslo-diplomatic-list-march-2026.pdf: HTTP 403 server=cloudflare cf=a47c9ab9bc612be6-IAD body='<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm'",
-        "https://www.regjeringen.no/contentassets/18034c600ad5476fb3b7434525620f25/all-missions-accredited-to-norway-24-june-2026.pdf: HTTP 403 server=cloudflare cf=a47c9ab9fa2bda96-IAD body='<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm'"
+    "bio": {
+      "empty_feeds": [
+        "cdc_han"
       ],
-      "new": [],
-      "ok": false,
-      "tried": 2
-    },
-    "list_PL": {
-      "errors": [],
-      "new": [],
+      "errors": [
+        "cidrap: 404 Client Error: Not Found for url: https://www.cidrap.umn.edu/news/rss.xml"
+      ],
+      "new": 614,
       "ok": true,
-      "tried": 1
-    },
-    "list_SE": {
-      "errors": [],
-      "new": [],
-      "ok": false,
-      "tried": 0
-    },
-    "list_index_LV": {
-      "errors": [
-        "https://www.mfa.gov.lv/en/diplomatic-list: 404 Client Error: Not Found for url: https://www.mfa.gov.lv/en/diplomatic-list"
-      ],
-      "ok": false
-    },
-    "list_index_SE": {
-      "errors": [
-        "https://government.se/government-of-sweden/ministry-for-foreign-affairs/diplomatic-portal/the-stockholm-diplomatic-list/: 403 Client Error: Forbidden for url: https://government.se/government-of-sweden/ministry-for-foreign-affairs/diplomatic-portal/the-stockholm-diplomatic-list/"
-      ],
-      "ok": false
+      "total": 614
     }
   }
 }
