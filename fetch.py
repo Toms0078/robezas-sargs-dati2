@@ -60,10 +60,10 @@ LIST_SOURCES = {
         "match": r"diplomatic\s*list",
         "seeds": ["https://www.vm.ee/sites/default/files/documents/2026-04/The%20Tallinn%20Diplomatic%20List%20-%2023%20April%202026.pdf"],
     },
-    "FI": {
-        "index": ["https://um.fi/the-helsinki-diplomatic-list"],
-        "match": r"diplomatic|helsinki|\.pdf",
-        "seeds": [],
+    "PL": {
+        "index": ["https://www.gov.pl/web/diplomacy/diplomatic-protocol"],
+        "match": r"list of diplomatic missions",
+        "seeds": ["https://www.gov.pl/attachment/f5a342bb-0ef6-482b-b9ec-a3f57fbc8c75"],
     },
     "SE": {
         "index": ["https://government.se/government-of-sweden/ministry-for-foreign-affairs/diplomatic-portal/the-stockholm-diplomatic-list/"],
@@ -125,7 +125,7 @@ def find_pdf_links(cc, cfg):
             text = " ".join(a.get_text(" ").split())
             href = urljoin(page, a["href"])
             hay = f"{text} {href}"
-            if re.search(r"\.pdf|\.docx|download|documents|getfile", href, re.I):
+            if re.search(r"\.pdf|\.docx|download|documents|getfile|/attachment/", href, re.I):
                 sample.append(f"{text[:60]} -> {href}")
                 if re.search(cfg["match"], hay, re.I):
                     links.append(href)
@@ -147,6 +147,11 @@ def fetch_lists():
             tried += 1
             try:
                 r = get(url)
+            except requests.HTTPError as e:
+                resp = e.response
+                errors.append(f"{url}: HTTP {resp.status_code} server={resp.headers.get('server')} "
+                              f"cf={resp.headers.get('cf-ray')} body={resp.text[:120]!r}")
+                continue
             except Exception as e:
                 errors.append(f"{url}: {e}")
                 continue
@@ -173,6 +178,76 @@ def fetch_lists():
         log(f"list_{cc}", bool(new_files) or (tried > 0 and len(errors) < tried),
             tried=tried, new=new_files, errors=errors[:5])
     save_json(LISTS / "index.json", index)
+
+
+FI_INDEX = "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland"
+FI_HONORIFIC = re.compile(r"^(H\.?E\.?\s+)?(Mr|Ms|Mrs|Miss|Dr|Prof|Col|Lt|Cdr|Capt|Maj|Brig|Gen|Rev|Msgr|Colonel|Commander|Captain)\b", re.I)
+
+
+def fetch_fi():
+    """Somija: katras vēstniecības lapā ir sadaļa "Personnel" (vārds, amats, vieta)."""
+    errors = []
+    try:
+        soup = BeautifulSoup(get(FI_INDEX).text, "html.parser")
+    except Exception as e:
+        log("list_FI", False, errors=[f"{FI_INDEX}: {e}"])
+        return
+    links = {}
+    for a in soup.find_all("a", href=True):
+        href = urljoin(FI_INDEX, a["href"])
+        t = " ".join(a.get_text(" ").split())
+        if "contactInfoOrganization/id/" in href and re.search(r"embassy|nunciature|delegation", t, re.I):
+            links[href.split("?")[0]] = t
+    missions = {}
+    for href, title in links.items():
+        try:
+            page = BeautifulSoup(get(href).text, "html.parser")
+        except Exception as e:
+            errors.append(f"{href}: {e}")
+            continue
+        main = page.find("main") or page
+        lines = [l.strip() for l in main.get_text("\n").split("\n") if l.strip()]
+        try:
+            start = next(i for i, l in enumerate(lines) if l.lower() == "personnel")
+        except StopIteration:
+            start = None
+        staff = []
+        if start is not None:
+            body = lines[start + 1:]
+            i = 0
+            while i < len(body):
+                l = body[i]
+                if re.match(r"^(share|print|back|top|feedback|contact information)$", l, re.I):
+                    break
+                if FI_HONORIFIC.match(l) and not l.startswith("-"):
+                    rank = body[i + 1] if i + 1 < len(body) else ""
+                    loc = body[i + 2] if i + 2 < len(body) else ""
+                    if FI_HONORIFIC.match(rank) or rank.startswith("-"):
+                        i += 1
+                        continue
+                    if FI_HONORIFIC.match(loc) or loc.startswith("-") or len(loc) > 30:
+                        loc = ""
+                    staff.append({"name": l, "rank": rank, "location": loc or None})
+                    i += 3 if loc else 2
+                    continue
+                i += 1
+        missions[title] = {"url": href, "staff": staff}
+    snap = {"host": "FI", "list_date": NOW[:10], "source": FI_INDEX, "missions": missions}
+    body = json.dumps(snap["missions"], ensure_ascii=False, sort_keys=True).encode()
+    h = hashlib.sha256(body).hexdigest()
+    index = load_json(LISTS / "index.json", {})
+    known = {e["sha256"] for e in index.get("FI", [])}
+    new = []
+    if missions and h not in known:
+        fn = LISTS / "FI" / f"{NOW[:10]}_{h[:10]}.json"
+        save_json(fn, snap)
+        index.setdefault("FI", []).append({"file": str(fn.relative_to(ROOT)), "url": FI_INDEX, "sha256": h,
+                                           "bytes": len(body), "downloaded_at": NOW})
+        save_json(LISTS / "index.json", index)
+        new.append(str(fn.relative_to(ROOT)))
+        record_change("diplomatic_list_new", "FI", FI_INDEX, None, new[0], "Jauna saraksta versija")
+    log("list_FI", bool(missions), missions=len(missions),
+        with_staff=sum(1 for m in missions.values() if m["staff"]), new=new, errors=errors[:5])
 
 
 # ------------------------------------------------------- 2. brīdinājumi
@@ -303,6 +378,7 @@ if __name__ == "__main__":
     what = sys.argv[1] if len(sys.argv) > 1 else "all"
     if what in ("all", "lists"):
         fetch_lists()
+        fetch_fi()
     if what in ("all", "advisories"):
         fetch_advisories()
     save_json(DATA / "last_run.json", run_log)
