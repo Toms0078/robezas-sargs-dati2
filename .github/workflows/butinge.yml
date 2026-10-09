@@ -1,0 +1,52 @@
+name: Būtiņģes boja (AIS)
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # ik 15 minūtes (GitHub var aizkavēt dažas minūtes)
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "Cik sekundes klausīties AIS"
+        default: "240"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: butinge
+  cancel-in-progress: false
+
+jobs:
+  ais:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install "websockets>=12,<16"
+
+      - name: Klausās AIS un atjauno datus
+        env:
+          AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
+        run: python butinge_ais.py "${{ inputs.seconds || '240' }}"
+
+      - name: Saglabā izmaiņas repozitorijā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/butinge
+          if git diff --cached --quiet; then
+            echo "Nav izmaiņu"
+            exit 0
+          fi
+          git commit -m "Būtiņģe: AIS $(date -u +%Y-%m-%dT%H:%MZ)"
+          # otra darbplūsma (Vākt datus) var būt iestūmusi pa vidu
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1

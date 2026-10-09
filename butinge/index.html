@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Būtiņģes boja</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef3f6; --panel:#fff; --ink:#14232f; --muted:#5a6b78; --line:#cfdbe3; --track:#d6e8f2;
+  --accent:#c2410c; --buoy:#d61f69; --wait:#b45309;
+  --display:"Saira Condensed","Arial Narrow",sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root{--bg:#0b141c;--panel:#111e29;--ink:#e3ecf2;--muted:#93a6b4;--line:#243645;--track:#143042;--accent:#fb923c;--buoy:#f472b6;--wait:#fbbf24;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 40px;display:grid;gap:18px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+h1{font:700 2.4rem/1 var(--display);margin:0}
+h1 small{display:block;font:400 .78rem var(--mono);color:var(--muted);margin-top:6px}
+h2{font:700 1.35rem var(--display);margin:0 0 10px}
+#upd{font:.8rem var(--mono);color:var(--muted);text-align:right}
+.grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}
+#map{height:520px;border-radius:6px;border:1px solid var(--line)}
+.ship{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px;padding:12px;display:grid;gap:8px;cursor:pointer}
+.ship.pie_bojas{border-left-color:var(--buoy)} .ship.gaida{border-left-color:var(--wait)}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
+.top b{font:700 1.25rem var(--display)}
+.pill{font:.72rem var(--mono);padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;font:.85rem var(--mono);font-variant-numeric:tabular-nums}
+@media(max-width:480px){.row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.row span{display:block;font:.68rem var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.gauge{height:14px;border-radius:3px;background:var(--track);overflow:hidden}.gauge div{height:100%;background:var(--accent)}
+.gtext{display:flex;justify-content:space-between;font:.8rem var(--mono);color:var(--muted)}
+.list{display:grid;gap:10px}
+.note{font-size:.85rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
+.tw{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Būtiņģes SPM boja<small>ORLEN Lietuva · AIS dati no aisstream.io · atjaunojas ik ~15 min</small></h1>
+    <div id="upd">Ielādē…</div>
+  </header>
+  <div class="grid">
+    <div id="map"></div>
+    <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
+  </div>
+  <section class="panel"><h2>Pēdējie notikumi pie bojas</h2><div class="tw"><table id="calls"><tr><td class="note">Vēl nav notikumu.</td></tr></table></div>
+    <p class="note">Noslodze ir novērtējums pēc AIS iegrimes: balasta iegrime pieņemta 45% no maksimālās, kravā 95% no DWT. DWT ar zīmi ~ ir novērtēts pēc kuģa garuma; precīzu var ierakstīt <code>data/butinge/vessels.json</code>. Kartes pamatne © OpenStreetMap, jūras zīmes © OpenSeaMap.</p>
+  </section>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const LABEL={pie_bojas:'pie bojas',gaida:'gaida reidā','ceļā':'ceļā'};
+const COLOR={pie_bojas:'#d61f69',gaida:'#b45309','ceļā':'#c2410c'};
+const map=L.map('map').setView([56.06,20.96],10);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenSeaMap'}).addTo(map);
+const layer=L.layerGroup().addTo(map); let buoyMarker=null, first=true;
+const nf=n=>n==null?'–':Number(n).toLocaleString('lv-LV');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function ago(t){if(!t)return'';const m=Math.round((Date.now()-new Date(t))/60000);return m<60?m+' min':Math.round(m/60)+' h'}
+
+async function load(){
+  let d;
+  try{const r=await fetch('../data/butinge/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  catch(e){document.getElementById('upd').textContent='Dati vēl nav savākti. Pirmā palaišana notiek GitHub Actions.';
+    document.getElementById('list').innerHTML='<p class="note">Kad darbplūsma “Būtiņģes boja (AIS)” būs palaista, šeit parādīsies kuģi.</p>';return;}
+  document.getElementById('upd').innerHTML='Atjaunots '+new Date(d.updated).toLocaleString('lv-LV')+' ('+ago(d.updated)+' atpakaļ)<br>'+nf(d.messages_heard)+' AIS ziņas pēdējā reizē';
+  const b=d.learned_buoy||d.buoy;
+  if(buoyMarker)buoyMarker.remove();
+  buoyMarker=L.circleMarker(b,{radius:7,color:'#fff',weight:2,fillColor:'#d61f69',fillOpacity:1}).bindTooltip(d.learned_buoy?'SPM boja (pēc AIS)':'SPM boja (aptuveni)').addTo(map);
+  layer.clearLayers(); const list=document.getElementById('list'); list.innerHTML='';
+  if(!d.ships.length)list.innerHTML='<p class="note">Šobrīd nav neviena tankkuģa pie bojas, un neviens nav ziņojis Būtiņģi kā galamērķi.</p>';
+  const pts=[b];
+  d.ships.forEach(s=>{
+    let m=null;
+    if(s.lat!=null){pts.push([s.lat,s.lon]);
+      m=L.marker([s.lat,s.lon],{icon:L.divIcon({className:'',iconSize:[18,18],
+        html:`<svg width="18" height="18" viewBox="-9 -9 18 18" style="transform:rotate(${s.cog||0}deg)"><path d="M0 -8 L5 7 L0 4 L-5 7Z" fill="${COLOR[s.status]}" stroke="#fff"/></svg>`})})
+        .bindPopup(`<b>${esc(s.name||s.mmsi)}</b><br>${LABEL[s.status]} · ${s.sog??'–'} kn<br>Iegrime ${s.draught??'–'} m · Galamērķis ${esc(s.destination||'–')}`).addTo(layer);}
+    const el=document.createElement('article');el.className='ship '+s.status;
+    const dwt=s.dwt?(s.dwt_source==='novērtēts'?'~':'')+nf(s.dwt)+' t':'–';
+    el.innerHTML=`<div class="top"><b>${esc(s.name||('MMSI '+s.mmsi))}</b><span class="pill" style="color:${COLOR[s.status]}">${LABEL[s.status]}${s.eta&&s.status!=='pie_bojas'?' · ETA '+esc(s.eta):''}</span></div>
+      <div class="row"><div><span>Iegrime</span>${s.draught??'–'} m</div><div><span>Maks. iegrime</span>${s.max_draught?'~'+s.max_draught+' m':'–'}</div><div><span>Ietilpība</span>${dwt}</div><div><span>Kravā ~</span>${nf(s.cargo_t_est)} t</div></div>
+      ${s.load_pct!=null?`<div class="gauge"><div style="width:${s.load_pct}%"></div></div><div class="gtext"><span>Pilns ~${s.load_pct}%</span><span style="color:var(--ink)"><b>Tukšs ~${s.empty_pct}%</b></span></div>`:'<p class="note">Iegrime vēl nav saņemta.</p>'}
+      <div class="note">${s.dist_buoy_km!=null?s.dist_buoy_km+' km no bojas · ':''}galamērķis „${esc(s.destination||'–')}” · ${s.arrival_draught?'ieradās ar '+s.arrival_draught+' m · ':''}redzēts ${ago(s.last_seen)} atpakaļ${s.imo?' · IMO '+s.imo:''}</div>`;
+    if(m)el.onclick=()=>{map.setView([s.lat,s.lon],12);m.openPopup()};
+    list.append(el);
+  });
+  if(first&&pts.length>1){map.fitBounds(pts,{padding:[30,30],maxZoom:11});first=false}
+  try{const r=await fetch('../data/butinge/calls.jsonl?t='+Date.now());if(r.ok){
+    const rows=(await r.text()).trim().split('\n').filter(Boolean).map(l=>JSON.parse(l)).reverse().slice(0,15);
+    if(rows.length)document.getElementById('calls').innerHTML='<tr><th>Laiks (UTC)</th><th>Notikums</th><th>Kuģis</th><th>Iegrime</th></tr>'+
+      rows.map(e=>`<tr><td>${e.time.replace('T',' ').slice(0,16)}</td><td>${e.event}</td><td>${esc(e.name||e.mmsi)}</td><td>${e.arrival_draught?e.arrival_draught+' → ':''}${e.draught??'–'} m</td></tr>`).join('');
+  }}catch(e){}
+}
+load(); setInterval(load,5*60*1000);
+</script>
+</body>
+</html>
