@@ -46,6 +46,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .port ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font:.8rem var(--mono)}
 .port li{display:flex;justify-content:space-between;gap:8px;border-top:1px dashed var(--line);padding-top:4px;cursor:pointer}
 .port li b{font-weight:500;min-width:0;overflow-wrap:anywhere}
+.cargo{font-size:.88rem}.cargo b{font-weight:600}
 .badge{display:inline-flex;vertical-align:middle;margin-right:6px;transform:rotate(90deg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font:.8rem var(--body);color:var(--muted);margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:2px}
@@ -67,7 +68,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div class="tw"><table id="inb"></table></div>
     <h2 style="margin-top:14px;font-size:1.1rem">Pēdējās ierašanās</h2>
     <div class="tw"><table id="inbarr"></table></div>
-    <p class="note">Kad kuģis vairs nav dzirdams, tā ceļš tiek simulēts pa parasto kuģu ceļu ar pēdējo zināmo ātrumu. "Ienāca pēc prognozes" nozīmē aprēķinu, nevis apstiprinājumu.</p>
+    <p class="note">Kad kuģis vairs nav dzirdams, tā ceļš tiek simulēts pa parasto kuģu ceļu ar pēdējo zināmo ātrumu. "Ienāca pēc prognozes" nozīmē aprēķinu, nevis apstiprinājumu. Tankkuģu "iespējamā krava" ir novērtējums pēc ostas, kuģa izmēra, nosaukuma un iegrimes: AIS kravu nepārraida, tāpēc dīzeli no benzīna atšķirt nevar.</p>
   </section>
   <section class="panel"><h2>Tankkuģi Baltijas valstu ostās</h2>
     <div class="note" id="portsum">Ielādē…</div>
@@ -135,6 +136,7 @@ async function load(){
     el.innerHTML=`<div class="top"><b>${badge(kindOf(s.ais_type),COLOR[s.status])}${esc(s.name||('MMSI '+s.mmsi))}</b><span class="pill" style="color:${COLOR[s.status]}">${LABEL[s.status]}${s.eta&&s.status!=='pie_bojas'?' · ETA '+esc(s.eta):''}</span></div>
       <div class="row"><div><span>Iegrime</span>${s.draught??'–'} m</div><div><span>Maks. iegrime</span>${s.max_draught?'~'+s.max_draught+' m':'–'}</div><div><span>Ietilpība</span>${dwt}</div><div><span>Kravā ~</span>${nf(s.cargo_t_est)} t</div></div>
       ${s.load_pct!=null?`<div class="gauge"><div style="width:${s.load_pct}%"></div></div><div class="gtext"><span>Pilns ~${s.load_pct}%</span><span style="color:var(--ink)"><b>Tukšs ~${s.empty_pct}%</b></span></div>`:'<p class="note">Iegrime vēl nav saņemta.</p>'}
+      ${s.cargo_guess?`<div class="cargo"><b>Iespējamā krava:</b> ${esc(s.cargo_guess)}${s.cargo_state?' · '+esc(s.cargo_state):''} <span class="note">(${esc(s.cargo_basis)})</span></div>`:''}
       <div class="note">${s.dist_buoy_km!=null?s.dist_buoy_km+' km no bojas · ':''}galamērķis „${esc(s.destination||'–')}” · ${s.arrival_draught?'ieradās ar '+s.arrival_draught+' m · ':''}redzēts ${ago(s.last_seen)} atpakaļ${s.imo?' · IMO '+s.imo:''}</div>`;
     if(m)el.onclick=()=>{map.setView([s.lat,s.lon],12);m.openPopup()};
     list.append(el);
@@ -165,7 +167,7 @@ async function loadPorts(){
     else{const ul=document.createElement('ul');
       p.tankers.forEach(t=>{
         const m=L.marker([t.lat,t.lon],{icon:shipIcon('tank',PCOL[t.status],t.cog)})
-          .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(p.name)} · ${t.status}<br>Iegrime ${t.draught??'–'} m · DWT ${t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'}<br>${t.empty_pct!=null?'Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}`).addTo(portLayer);
+          .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(p.name)} · ${t.status}<br>Iegrime ${t.draught??'–'} m · DWT ${t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'}<br>${t.empty_pct!=null?'Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}${t.cargo_guess?'<br><b>Iespējamā krava:</b> '+esc(t.cargo_guess)+(t.cargo_state?' · '+esc(t.cargo_state):''):''}`).addTo(portLayer);
         const li=document.createElement('li');
         li.innerHTML=`<b>${badge('tank',PCOL[t.status])}${esc(t.name||t.mmsi)}</b><span style="color:${PCOL[t.status]}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
         li.onclick=()=>{map.setView([t.lat,t.lon],13);m.openPopup()};ul.append(li);});
@@ -185,7 +187,7 @@ async function loadInbound(){
     const k=kindOf(s.ais_type,s.type), col=k==='tank'?'#c2410c':'#0f766e';
     if(s.lat!=null)L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1})
       .bindPopup(`<b>${esc(s.name)}</b><br>${s.type} → ${esc(s.port)}<br>${s.dist_km??'–'} km līdz ostai · ETA ${esc(s.eta||'–')}`).addTo(inbLayer);
-    return `<tr><td>${esc(s.port)} <span class="note">${s.country||''}</span></td><td>${badge(k,col)}${esc(s.name||s.mmsi)}</td><td>${s.type}</td><td>${esc(s.from_area||'–')}</td><td>${s.silent_h?'~'+nf(s.pred_route_km)+' km <span class="note">(nav dzirdēts '+s.silent_h+' h, simulēts)</span>':(s.route_km!=null?nf(s.route_km)+' km':'–')}</td><td>${esc(s.eta||'–')}</td><td>${s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–'}</td><td>${s.draught??'–'} m${s.empty_pct!=null?' · tukšs '+s.empty_pct+'%':''}</td></tr>`}).join('');
+    return `<tr><td>${esc(s.port)} <span class="note">${s.country||''}</span></td><td>${badge(k,col)}${esc(s.name||s.mmsi)}</td><td>${s.type}${s.cargo_guess?'<br><span class="note">'+esc(s.cargo_guess)+(s.cargo_state?' · '+esc(s.cargo_state):'')+'</span>':''}</td><td>${esc(s.from_area||'–')}</td><td>${s.silent_h?'~'+nf(s.pred_route_km)+' km <span class="note">(nav dzirdēts '+s.silent_h+' h, simulēts)</span>':(s.route_km!=null?nf(s.route_km)+' km':'–')}</td><td>${esc(s.eta||'–')}</td><td>${s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–'}</td><td>${s.draught??'–'} m${s.empty_pct!=null?' · tukšs '+s.empty_pct+'%':''}</td></tr>`}).join('');
   const arr=(d.arrived||[]).slice().reverse().slice(0,12).map(a=>`<tr><td>${esc(a.port)}</td><td>${esc(a.name)}</td><td>${a.type||''}</td><td colspan="3">${a.how==='AIS'?'ienāca (AIS)':'ienāca pēc prognozes'}</td><td>${new Date(a.time).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${a.draught??'–'} m</td></tr>`).join('');
   document.getElementById('inbarr').innerHTML=arr?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th colspan="3">Kā noteikts</th><th>Laiks</th><th>Iegrime</th></tr>'+arr:'<tr><td class="note">Vēl neviena.</td></tr>';
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';

@@ -97,6 +97,56 @@ def load_estimate(ship, vessels):
     return ship
 
 
+# Kravas novērtējums. AIS kravu nepārraida, tāpēc šis ir minējums pēc ostas,
+# kuģa izmēra, nosaukuma un iegrimes. Dīzeli no benzīna atšķirt nevar.
+PORT_CARGO = {
+    "butinge": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+}
+
+
+def cargo_guess(ship, port_id=None):
+    name = (ship.get("name") or "").upper()
+    length = ship.get("length") or 0
+    why = []
+    if re.search(r"\b(LPG|LNG|GAS)\b", name):
+        kind = "sašķidrināta gāze (LPG/LNG)"
+        why.append("nosaukumā gāze")
+    elif re.search(r"CHEM|ESSBERGER|STOLT|ODFJELL", name):
+        kind = "ķīmikālijas vai naftas produkti"
+        why.append("nosaukums norāda uz ķīmikāliju tankkuģi")
+    elif port_id in PORT_CARGO:
+        kind = PORT_CARGO[port_id]
+        why.append("Būtiņģe ir jēlnaftas terminālis")
+    elif length >= 235:
+        kind = "visticamāk jēlnafta"
+        why.append(f"liels tankkuģis ({length} m, Aframax+)")
+    elif length >= 120:
+        kind = "naftas produkti: dīzelis, benzīns vai aviodegviela"
+        why.append(f"produktu tankkuģa izmērs ({length} m)")
+    elif length > 0:
+        kind = "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)"
+        why.append(f"mazs tankkuģis ({length} m)")
+    else:
+        kind = "nav zināms"
+    lp = ship.get("load_pct")
+    if lp is not None:
+        if lp >= 70:
+            state = "pilns"
+        elif lp <= 25:
+            state = "tukšs / balastā"
+            if port_id:
+                state += " — brauc iekraut"
+        else:
+            state = "daļēji pilns"
+        why.append(f"iegrime {ship.get('draught')} m")
+    else:
+        state = None
+    ship["cargo_guess"] = kind
+    ship["cargo_state"] = state
+    ship["cargo_basis"] = ", ".join(why)
+    return ship
+
+
 def status_of(ship, buoy):
     pos = ship.get("lat"), ship.get("lon")
     if pos[0] is None:
@@ -208,7 +258,7 @@ def process(messages, state, vessels, now):
             sh.pop("arrived", None)
             sh.pop("arrival_draught", None)
         if keep:
-            out.append(load_estimate(sh, vessels))
+            out.append(cargo_guess(load_estimate(sh, vessels), "butinge"))
 
     moored = [s for s in out if s["status"] == "pie_bojas" and s.get("lat")]
     learned = state.get("learned_buoy")
@@ -360,7 +410,7 @@ def process_ports(messages, cache, vessels, now):
                   "destination": c["destination"], "eta": c["eta"],
                   "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"),
                   "cog": p.get("Cog"), "status": st, "dist_km": round(d, 1)}
-            port["tankers"].append(load_estimate(sh, vessels))
+            port["tankers"].append(cargo_guess(load_estimate(sh, vessels), port["id"]))
             break
     for port in ports:
         port["tankers"].sort(key=lambda s: (s["status"] == "kustībā", s.get("name") or ""))
@@ -607,7 +657,8 @@ def process_inbound(messages, state, vessels, now):
         if seen < iso(now - timedelta(days=INBOUND_DAYS)):
             ships.pop(key)
 
-    out = [load_estimate(s, vessels) if s.get("type") == "tankkuģis" else s for s in ships.values()]
+    out = [cargo_guess(load_estimate(s, vessels), s.get("port_id")) if s.get("type") == "tankkuģis" else s
+           for s in ships.values()]
     out.sort(key=lambda s: (s["port"], s.get("dist_km") or 1e9))
     counts = {}
     for s in out:
