@@ -386,6 +386,50 @@ def fetch_advisories():
     save_json(DATA / "advisories.json", cur)
 
 
+# ------------------------------------------------------- 2b. ārvalstu tiešās investīcijas (Eurostat, ceturkšņi)
+FDI_GEOS = ["LV", "LT", "EE", "PL", "FI", "SE", "NO"]
+EUROSTAT = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bop_c6_q"
+
+
+def _jsonstat_series(j):
+    """bop_c6_q JSON-stat → {geo: {quarter: value}} (pārējās dimensijas ir viena vērtība)."""
+    ids, size = j["id"], j["size"]
+    geo_idx = j["dimension"]["geo"]["category"]["index"]
+    t_idx = j["dimension"]["time"]["category"]["index"]
+    gi, ti = ids.index("geo"), ids.index("time")
+    stride = [1] * len(ids)
+    for k in range(len(ids) - 2, -1, -1):
+        stride[k] = stride[k + 1] * size[k + 1]
+    out = {}
+    for geo, g in geo_idx.items():
+        for t, tt in t_idx.items():
+            v = j.get("value", {}).get(str(g * stride[gi] + tt * stride[ti]))
+            if v is not None:
+                out.setdefault(geo, {})[t] = v
+    return out
+
+
+def fetch_fdi():
+    res, errors = {}, []
+    for partner in ("WRL_REST", "RU"):
+        params = {"geo": FDI_GEOS, "bop_item": "FA__D__F", "stk_flow": "LIAB", "currency": "MIO_EUR",
+                  "partner": partner, "sector10": "S1", "sectpart": "S1", "sinceTimePeriod": "2019-Q1"}
+        try:
+            r = requests.get(EUROSTAT, params=params, timeout=120)
+            j = r.json()
+            if "error" in j and not j.get("value"):
+                raise RuntimeError(str(j["error"])[:200])
+            res[partner] = _jsonstat_series(j)
+        except Exception as e:
+            errors.append(f"{partner}: {e}")
+    if res:
+        save_json(DATA / "fdi.json", {"updated_at": NOW, "unit": "milj. EUR", "source": "Eurostat bop_c6_q",
+                                      "measure": "Ārvalstu tiešās investīcijas valstī (finanšu konts, saistības, plūsma)",
+                                      "world": res.get("WRL_REST", {}), "russia": res.get("RU", {})})
+    last = max((q for g in res.get("WRL_REST", {}).values() for q in g), default=None)
+    log("fdi", bool(res), last_quarter=last, errors=errors)
+
+
 # ------------------------------------------------------- 3. ziņas
 # Google News RSS meklējumi + oficiālās ĀM plūsmas. Claude vēlāk tās klasificē (ieplānotais uzdevums).
 from urllib.parse import quote_plus
@@ -423,6 +467,9 @@ NEWS_QUERIES += [
     ("emb_en", '("embassy in Riga" OR "embassy in Tallinn" OR "embassy in Vilnius" OR "embassy in Warsaw" OR "embassy in Helsinki" OR "embassy in Stockholm" OR "embassy in Oslo") (citizens OR alert OR advises OR staff OR closed OR evacuat) when:3d', ("en", "US", "en")),
     ("emb_ru", '("посольство России в Латвии" OR "посольство России в Эстонии" OR "посольство России в Литве" OR "посольство России в Польше" OR "посольство России в Финляндии" OR "посольство Беларуси") when:3d', ("ru", "RU", "ru")),
     ("emb_de", '("Botschaft Riga" OR "Botschaft Tallinn" OR "Botschaft Vilnius" OR "Botschaft Warschau" OR "Botschaft Moskau" OR "Botschaft Minsk") when:3d', ("de", "DE", "de")),
+    ("inv_en", '(Latvia OR Lithuania OR Estonia OR Baltic) (investment OR investor OR factory OR plant OR "data center") (announces OR invests OR withdraws OR exits OR halts OR cancels OR relocates) when:3d', ("en", "US", "en")),
+    ("inv_lv", '(investīcijas OR investors OR rūpnīca) (Latvijā OR Latvija) (iegulda OR aiziet OR aptur OR pārceļ OR slēdz) when:3d', ("lv", "LV", "lv")),
+    ("inv_nordic_pl", '(Poland OR Finland OR Sweden OR Norway) (foreign investment OR investor) (withdraws OR exits OR halts OR relocates OR "security concerns") when:3d', ("en", "US", "en")),
     ("emb_zh", '(大使馆 OR 使馆) (拉脱维亚 OR 爱沙尼亚 OR 立陶宛 OR 波兰 OR 芬兰) 提醒 when:7d', ("zh-CN", "CN", "zh-Hans")),
 ]
 # ASV vēstniecību paziņojumi: paturam brīdinājumus un visu par personālu/darbību
@@ -501,6 +548,7 @@ if __name__ == "__main__":
     if what in ("all", "lists"):
         fetch_lists()
         fetch_fi()
+        fetch_fdi()
     if what in ("all", "advisories"):
         fetch_advisories()
         fetch_news()

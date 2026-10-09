@@ -119,8 +119,23 @@ def news_recent():
     return out
 
 
+def fdi():
+    f = load(DATA / "fdi.json", None)
+    if not f:
+        return {}
+    names = {"LV": "Latvija", "LT": "Lietuva", "EE": "Igaunija", "PL": "Polija", "FI": "Somija", "SE": "Zviedrija", "NO": "Norvēģija"}
+    rows = []
+    for cc, nm in names.items():
+        w = f.get("world", {}).get(cc, {})
+        ru = f.get("russia", {}).get(cc, {})
+        qs = sorted(w)[-12:]
+        rows.append({"cc": cc, "c": nm, "q": qs, "v": [w[q] for q in qs], "ru": [ru.get(q) for q in qs]})
+    return {"updatedAt": f.get("updated_at"), "unit": f.get("unit"), "source": f.get("source"),
+            "measure": f.get("measure"), "rows": rows}
+
+
 if __name__ == "__main__":
-    for name, fn in (("hosts", hosts), ("advisories", advisories), ("changes", changes), ("news_recent", news_recent)):
+    for name, fn in (("hosts", hosts), ("advisories", advisories), ("changes", changes), ("news_recent", news_recent), ("fdi", fdi)):
         obj = fn()
         (OUT / f"{name}.json").write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
         size = (OUT / f"{name}.json").stat().st_size
