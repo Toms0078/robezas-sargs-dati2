@@ -376,21 +376,30 @@ def process_ports(messages, cache, vessels, now):
 
 
 # ---------------------------------------------------------------------------
-# Kuģi ceļā uz Latvijas ostām (pēc AIS galamērķa)
-INBOUND_FILE = Path(__file__).parent / "data" / "ports" / "inbound_lv.json"
-LV_DEST = [
-    # id, nosaukums, galamērķa paraugs (AIS teksts lielajiem burtiem), ostas centrs
-    ("riga", "Rīga", r"(^|[^A-Z])RIGA|LV\s*RIX", (57.05, 24.03)),
-    ("ventspils", "Ventspils", r"VENTSP|LV\s*VNT", (57.40, 21.55)),
-    ("liepaja", "Liepāja", r"LIEPA|LV\s*LPX", (56.52, 21.00)),
-    ("skulte", "Skulte", r"SKULTE|LV\s*SKU", (57.31, 24.40)),
-    ("salacgriva", "Salacgrīva", r"SALACG|LV\s*SAL", (57.75, 24.35)),
-    ("mersrags", "Mērsrags", r"MERSRAG|LV\s*MRS", (57.34, 23.13)),
-    ("roja", "Roja", r"(^|[^A-Z])ROJA($|[^A-Z])|LV\s*ROJ", (57.51, 22.80)),
-    ("pavilosta", "Pāvilosta", r"PAVILOST|LV\s*PAV", (56.89, 21.18)),
+# Kuģi ceļā uz Baltijas valstu ostām (pēc AIS galamērķa)
+INBOUND_FILE = Path(__file__).parent / "data" / "ports" / "inbound_baltic.json"
+DEST_PORTS = [
+    # id, nosaukums, valsts, galamērķa paraugs (AIS teksts lielajiem burtiem), ostas centrs, pieejas mezgls
+    ("riga", "Rīga", "LV", r"(^|[^A-Z])RIGA|LV\s*RIX", (57.05, 24.03), "rigaApp"),
+    ("ventspils", "Ventspils", "LV", r"VENTSP|LV\s*VNT", (57.40, 21.55), "ventspilsW"),
+    ("liepaja", "Liepāja", "LV", r"LIEPA|LV\s*LPX", (56.52, 21.00), "liepajaW"),
+    ("skulte", "Skulte", "LV", r"SKULTE|LV\s*SKU", (57.31, 24.40), "rigaApp"),
+    ("salacgriva", "Salacgrīva", "LV", r"SALACG|LV\s*SAL", (57.75, 24.35), "gorNorth"),
+    ("mersrags", "Mērsrags", "LV", r"MERSRAG|LV\s*MRS", (57.34, 23.13), "gorMid"),
+    ("roja", "Roja", "LV", r"(^|[^A-Z])ROJA($|[^A-Z])|LV\s*ROJ", (57.51, 22.80), "gorMid"),
+    ("pavilosta", "Pāvilosta", "LV", r"PAVILOST|LV\s*PAV", (56.89, 21.18), "liepajaW"),
+    ("klaipeda", "Klaipēda", "LT", r"KLAIP|LT\s*KLJ", (55.70, 21.12), "klaipedaW"),
+    ("butinge", "Būtiņģe", "LT", r"BUT[I1]NG|LT\s*BOT", (56.06, 20.96), "klaipedaW"),
+    ("tallinn", "Tallina", "EE", r"TALLIN|EE\s*TLL", (59.45, 24.77), "tallinnApp"),
+    ("muuga", "Muuga", "EE", r"MUUGA|EE\s*MUG", (59.50, 24.95), "tallinnApp"),
+    ("paldiski", "Paldiski", "EE", r"PALDISK|EE\s*PLA", (59.35, 24.05), "paldiskiApp"),
+    ("sillamae", "Sillamē", "EE", r"SILLAM|EE\s*SLM", (59.41, 27.74), "gofEast"),
+    ("kunda", "Kunda", "EE", r"KUNDA|EE\s*KUN", (59.52, 26.53), "gofEast"),
+    ("parnu", "Pērnava", "EE", r"P[AÄ]RNU|EE\s*PRN", (58.37, 24.48), "parnuApp"),
 ]
+LV_DEST = DEST_PORTS     # vecais nosaukums
 INBOUND_DAYS = 7         # kuģi, kas nav dzirdēti tik ilgi, izmet
-ARRIVED_KM = 15          # tuvāk ostai par šo = ieradies, izņem no saraksta
+ARRIVED_KM = 12          # tuvāk ostai par šo = ieradies, izņem no saraksta
 
 TYPE_LV = [(80, 89, "tankkuģis"), (70, 79, "kravas kuģis"), (60, 69, "pasažieru/prāmis"),
            (30, 30, "zvejas"), (31, 32, "velkonis"), (52, 52, "velkonis")]
@@ -403,42 +412,90 @@ def type_name(t):
     return "cits"
 
 
-def lv_port_of(dest):
+def dest_port_of(dest):
     d = (dest or "").upper()
-    for pid, name, rx, center in LV_DEST:
+    for pid, name, cc, rx, center, _ in DEST_PORTS:
         if re.search(rx, d):
             return pid, name, center
     return None
 
 
-# Aptuvenie kuģu ceļi uz Latvijas ostām (pagrieziena punkti), lai simulētu ceļu,
-# kad kuģis vairs nav dzirdams. Kopējā daļa no Fehmarnas/Bornholmas līdz Kurzemei.
-_COMMON = [(54.55, 11.30), (54.35, 12.30), (55.30, 14.40), (55.90, 17.00), (56.60, 20.40)]
-_IRBE = [(57.20, 20.80), (57.78, 21.75), (57.70, 22.80)]
-ROUTES = {
-    "liepaja": _COMMON + [(56.52, 21.00)],
-    "pavilosta": _COMMON + [(56.89, 21.10)],
-    "ventspils": _COMMON + [(57.20, 20.80), (57.40, 21.50)],
-    "riga": _COMMON + _IRBE + [(57.20, 23.90), (57.05, 24.03)],
-    "skulte": _COMMON + _IRBE + [(57.31, 24.40)],
-    "salacgriva": _COMMON + _IRBE + [(57.75, 24.35)],
-    "mersrags": _COMMON + _IRBE[:2] + [(57.34, 23.13)],
-    "roja": _COMMON + _IRBE[:2] + [(57.51, 22.80)],
+lv_port_of = dest_port_of
+
+# Kuģu ceļu tīkls Baltijas jūrā un tās pieejās (mezgli un jūras ceļi starp tiem).
+# Ar to aprēķina ceļa garumu un simulē kustību, kad kuģis vairs nav dzirdams.
+NODES = {
+    "norwayW": (60.30, 4.60, "Norvēģijas rietumi"), "lindesnes": (57.90, 7.00, "Norvēģijas dienvidi"), "skagen": (57.85, 10.70, "Skagena"),
+    "oresundN": (55.95, 12.65, "Ēresunds"), "oresundS": (55.40, 12.85, "Ēresunds"),
+    "fehmarn": (54.55, 11.30, "Fehmarna / Kīle"), "gedser": (54.35, 12.30, "Gēdsera"),
+    "bornholm": (55.30, 14.40, "Bornholma"), "bornholmE": (55.50, 16.00, "Bornholma"),
+    "hoburg": (56.80, 18.30, "Gotlande"), "gotlandE": (57.80, 19.60, "Gotlande"),
+    "faro": (58.60, 19.80, "Gotlande"), "aland": (59.70, 19.50, "Ālandu jūra"),
+    "bothnia": (61.00, 19.80, "Botnijas jūra"), "gofW": (59.40, 22.80, "Somu līcis"),
+    "tallinnApp": (59.55, 24.70, "Somu līcis"), "gofEast": (59.90, 26.50, "Somu līcis"),
+    "paldiskiApp": (59.45, 23.90, "Somu līcis"),
+    "klaipedaW": (55.80, 20.70, "Lietuvas piekraste"), "liepajaW": (56.60, 20.40, "Kurzemes piekraste"),
+    "ventspilsW": (57.20, 20.80, "Kurzemes piekraste"), "irbe": (57.78, 21.75, "Irbes šaurums"),
+    "gorMid": (57.70, 22.80, "Rīgas līcis"), "rigaApp": (57.20, 23.90, "Rīgas līcis"),
+    "gorNorth": (57.95, 23.80, "Rīgas līcis"), "parnuApp": (58.15, 23.95, "Rīgas līcis"),
+    "gdanskBay": (54.70, 18.90, "Gdaņskas līcis"),
 }
+EDGES = [
+    ("norwayW", "lindesnes"), ("lindesnes", "skagen"), ("skagen", "oresundN"), ("oresundN", "oresundS"), ("oresundS", "bornholm"),
+    ("fehmarn", "gedser"), ("gedser", "bornholm"), ("gedser", "oresundS"), ("bornholm", "bornholmE"),
+    ("bornholmE", "hoburg"), ("bornholmE", "klaipedaW"), ("bornholmE", "gdanskBay"), ("gdanskBay", "klaipedaW"),
+    ("klaipedaW", "liepajaW"), ("liepajaW", "ventspilsW"), ("hoburg", "liepajaW"), ("hoburg", "gotlandE"),
+    ("gotlandE", "ventspilsW"), ("gotlandE", "faro"), ("faro", "gofW"), ("faro", "aland"), ("aland", "bothnia"),
+    ("aland", "gofW"), ("gofW", "paldiskiApp"), ("paldiskiApp", "tallinnApp"), ("tallinnApp", "gofEast"),
+    ("ventspilsW", "irbe"), ("irbe", "gorMid"), ("gorMid", "rigaApp"), ("gorMid", "gorNorth"),
+    ("gorNorth", "parnuApp"), ("gorNorth", "rigaApp"),
+]
 KN_KMH = 1.852
+_DIST_CACHE = {}
+
+
+def _node_dist_to(port_id):
+    """Dijkstra: īsākais ceļš no katra mezgla līdz ostai (km)."""
+    if port_id in _DIST_CACHE:
+        return _DIST_CACHE[port_id]
+    port = next(p for p in DEST_PORTS if p[0] == port_id)
+    adj = {n: [] for n in NODES}
+    for u, v in EDGES:
+        w = km(NODES[u][:2], NODES[v][:2])
+        adj[u].append((v, w))
+        adj[v].append((u, w))
+    start = port[5]
+    dist = {n: float("inf") for n in NODES}
+    dist[start] = km(NODES[start][:2], port[4])
+    todo = set(NODES)
+    while todo:
+        u = min(todo, key=lambda n: dist[n])
+        todo.discard(u)
+        for v, w in adj[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+    _DIST_CACHE[port_id] = dist
+    return dist
 
 
 def route_remaining(pos, port_id):
-    """Atlikušais ceļš km: tuvākais pagrieziena punkts priekšā + ceļš no tā līdz ostai."""
-    pts = ROUTES[port_id]
-    if pos[0] > 55.9 and pos[1] < 12.8:
-        # Kategats/Skagerraks: ceļš iet caur Ēresundu, nevis pāri Zviedrijai
-        return km(pos, (55.95, 12.65)) + km((55.95, 12.65), (55.40, 12.85)) + \
-            route_remaining((55.40, 12.85), port_id)
-    tail = [0.0] * len(pts)
-    for i in range(len(pts) - 2, -1, -1):
-        tail[i] = tail[i + 1] + km(pts[i], pts[i + 1])
-    return min(km(pos, pts[i]) + tail[i] for i in range(len(pts)))
+    """Atlikušais ceļš km: tuvākais ceļu tīkla mezgls + īsākais ceļš no tā līdz ostai."""
+    port = next(p for p in DEST_PORTS if p[0] == port_id)
+    direct = km(pos, port[4])
+    dist = _node_dist_to(port_id)
+    # ieeja tīklā tikai caur 2 tuvākajiem mezgliem, lai ceļš neietu pāri sauszemei
+    near = sorted(NODES, key=lambda n: km(pos, NODES[n][:2]))[:2]
+    best = min(km(pos, NODES[n][:2]) + dist[n] for n in near)
+    # pavisam tuvu ostai — taisni
+    return min(best, direct) if direct < 60 else best
+
+
+def area_name(pos):
+    n = min(NODES, key=lambda k: km(pos, NODES[k][:2]))
+    return NODES[n][2]
+
+
+ROUTES = {p[0]: True for p in DEST_PORTS}
 
 
 def simulate(sh, now):
@@ -514,6 +571,7 @@ def process_inbound(messages, state, vessels, now):
             "draught": s.get("MaximumStaticDraught"),
             "destination": (s.get("Destination") or "").strip(),
             "port_id": pid, "port": pname, "eta": eta_str(s.get("Eta")),
+            "country": next(x[2] for x in DEST_PORTS if x[0] == pid),
         })
 
     for key, sh in list(ships.items()):
@@ -521,9 +579,10 @@ def process_inbound(messages, state, vessels, now):
         if p and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
             la, lo = round(p["Latitude"], 4), round(p["Longitude"], 4)
             sh.setdefault("first_pos", [la, lo])
+            sh.setdefault("from_area", area_name((la, lo)))
             sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"),
                        "last_seen": iso(now)})
-        center = next(c for i, _, _, c in LV_DEST if i == sh["port_id"])
+        center = next(p[4] for p in DEST_PORTS if p[0] == sh["port_id"])
         if sh.get("lat") is not None:
             sh["dist_km"] = round(km((sh["lat"], sh["lon"]), center))
             if sh["dist_km"] <= ARRIVED_KM:
@@ -595,10 +654,12 @@ def main():
     summary, cache = process_ports(msgs, cache, vessels, now_utc())
     PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
-    inbound_state = json.loads(INBOUND_FILE.read_text()) if INBOUND_FILE.exists() else {}
+    old_lv = INBOUND_FILE.parent / "inbound_lv.json"
+    src = INBOUND_FILE if INBOUND_FILE.exists() else old_lv
+    inbound_state = json.loads(src.read_text()) if src.exists() else {}
     inbound = process_inbound(msgs, inbound_state, vessels, now_utc())
     INBOUND_FILE.write_text(json.dumps(inbound, ensure_ascii=False, indent=1))
-    print(f"Ceļā uz Latvijas ostām: {inbound['total']} {inbound['by_port']}")
+    print(f"Ceļā uz Baltijas ostām: {inbound['total']} {inbound['by_port']}")
     print(f"Tankkuģi ostās: {summary['total_in_ports']} (zināmi tankkuģi: {summary['tankers_known']})")
     for p in summary["ports"]:
         print(f"  {p['name']:<16} {len(p['tankers'])}")

@@ -62,7 +62,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div><div id="map"></div><div class="legend" id="legend"></div></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
-  <section class="panel"><h2>Ceļā uz Latvijas ostām</h2>
+  <section class="panel"><h2>Ceļā uz Latvijas, Lietuvas un Igaunijas ostām</h2>
     <div class="note" id="inbsum">Ielādē…</div>
     <div class="tw"><table id="inb"></table></div>
     <h2 style="margin-top:14px;font-size:1.1rem">Pēdējās ierašanās</h2>
@@ -176,21 +176,21 @@ async function loadPorts(){
 const inbLayer=L.layerGroup();
 async function loadInbound(){
   let d;
-  try{const r=await fetch('../data/ports/inbound_lv.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  try{const r=await fetch('../data/ports/inbound_baltic.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
   catch(e){document.getElementById('inbsum').textContent='Dati vēl nav savākti.';return;}
   const by=Object.entries(d.by_port).map(([k,v])=>k+' '+v).join(' · ');
-  document.getElementById('inbsum').textContent=`${d.total} kravas un tankkuģi ar galamērķi Latvijā${by?': '+by:''}. Pēc AIS galamērķa, ko ievada kuģa apkalpe. Atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}.`;
+  document.getElementById('inbsum').textContent=`${d.total} kravas un tankkuģi ar galamērķi Baltijas valstīs${by?': '+by:''}. Pēc AIS galamērķa, ko ievada kuģa apkalpe. Atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}.`;
   inbLayer.clearLayers();
   const rows=d.ships.map(s=>{
     const k=kindOf(s.ais_type,s.type), col=k==='tank'?'#c2410c':'#0f766e';
     if(s.lat!=null)L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1})
       .bindPopup(`<b>${esc(s.name)}</b><br>${s.type} → ${esc(s.port)}<br>${s.dist_km??'–'} km līdz ostai · ETA ${esc(s.eta||'–')}`).addTo(inbLayer);
-    return `<tr><td>${esc(s.port)}</td><td>${badge(k,col)}${esc(s.name||s.mmsi)}</td><td>${s.type}</td><td>${s.silent_h?'~'+nf(s.pred_route_km)+' km <span class="note">(nav dzirdēts '+s.silent_h+' h, simulēts)</span>':(s.route_km!=null?nf(s.route_km)+' km':'–')}</td><td>${esc(s.eta||'–')}</td><td>${s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–'}</td><td>${s.draught??'–'} m${s.empty_pct!=null?' · tukšs '+s.empty_pct+'%':''}</td></tr>`}).join('');
-  const arr=(d.arrived||[]).slice().reverse().slice(0,12).map(a=>`<tr><td>${esc(a.port)}</td><td>${esc(a.name)}</td><td>${a.type||''}</td><td colspan="2">${a.how==='AIS'?'ienāca (AIS)':'ienāca pēc prognozes'}</td><td>${new Date(a.time).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${a.draught??'–'} m</td></tr>`).join('');
-  document.getElementById('inbarr').innerHTML=arr?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th colspan="2">Kā noteikts</th><th>Laiks</th><th>Iegrime</th></tr>'+arr:'<tr><td class="note">Vēl neviena.</td></tr>';
-  document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
+    return `<tr><td>${esc(s.port)} <span class="note">${s.country||''}</span></td><td>${badge(k,col)}${esc(s.name||s.mmsi)}</td><td>${s.type}</td><td>${esc(s.from_area||'–')}</td><td>${s.silent_h?'~'+nf(s.pred_route_km)+' km <span class="note">(nav dzirdēts '+s.silent_h+' h, simulēts)</span>':(s.route_km!=null?nf(s.route_km)+' km':'–')}</td><td>${esc(s.eta||'–')}</td><td>${s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–'}</td><td>${s.draught??'–'} m${s.empty_pct!=null?' · tukšs '+s.empty_pct+'%':''}</td></tr>`}).join('');
+  const arr=(d.arrived||[]).slice().reverse().slice(0,12).map(a=>`<tr><td>${esc(a.port)}</td><td>${esc(a.name)}</td><td>${a.type||''}</td><td colspan="3">${a.how==='AIS'?'ienāca (AIS)':'ienāca pēc prognozes'}</td><td>${new Date(a.time).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${a.draught??'–'} m</td></tr>`).join('');
+  document.getElementById('inbarr').innerHTML=arr?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th colspan="3">Kā noteikts</th><th>Laiks</th><th>Iegrime</th></tr>'+arr:'<tr><td class="note">Vēl neviena.</td></tr>';
+  document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
 }
-L.control.layers(null,{'Ceļā uz Latviju':inbLayer},{collapsed:false}).addTo(map);
+L.control.layers(null,{'Ceļā uz Baltiju':inbLayer},{collapsed:false}).addTo(map);
 load(); loadPorts(); loadInbound(); setInterval(()=>{load();loadPorts();loadInbound()},5*60*1000);
 </script>
 </body>
