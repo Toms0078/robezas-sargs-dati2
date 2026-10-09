@@ -252,6 +252,113 @@ def process(messages, state, vessels, now):
     return new_state, events
 
 
+# ---------------------------------------------------------------------------
+# Tankkuģi Baltijas valstu ostās
+# Aplis ap ostu ietver arī tās enkurvietu (reidu).
+PORTS_FILE = Path(__file__).parent / "data" / "ports" / "latest.json"
+TANKER_CACHE = Path(__file__).parent / "data" / "ports" / "tankers_cache.json"
+PORTS = [
+    # id, nosaukums, valsts, lat, lon, rādiuss km
+    ("klaipeda", "Klaipēda", "LT", 55.705, 21.090, 14),
+    ("butinge", "Būtiņģe", "LT", 56.062, 20.958, 6),
+    ("liepaja", "Liepāja", "LV", 56.525, 20.990, 10),
+    ("ventspils", "Ventspils", "LV", 57.405, 21.520, 14),
+    ("riga", "Rīga", "LV", 57.050, 24.030, 16),
+    ("skulte", "Skulte", "LV", 57.315, 24.390, 6),
+    ("parnu", "Pērnava", "EE", 58.370, 24.450, 10),
+    ("paldiski", "Paldiski", "EE", 59.345, 24.060, 9),
+    ("tallinn", "Tallina / Muuga", "EE", 59.480, 24.880, 16),
+    ("sillamae", "Sillamē", "EE", 59.415, 27.740, 8),
+]
+CACHE_DAYS = 14
+
+
+def is_tanker(t):
+    return t is not None and 80 <= t <= 89
+
+
+def process_ports(messages, cache, vessels, now):
+    """Atgriež (ostu pārskats, atjaunots tankkuģu kešs).
+
+    Kešs glabā tankkuģu statiskos datus (tips, izmēri, iegrime, galamērķis),
+    jo vienā palaišanā statisko ziņu dzird tikai daļai kuģu."""
+    static, pos = {}, {}
+    for m in messages:
+        meta = m.get("MetaData", {})
+        mmsi = meta.get("MMSI")
+        body = m.get("Message", {})
+        if not mmsi:
+            continue
+        if "ShipStaticData" in body:
+            static[mmsi] = body["ShipStaticData"]
+        for k in ("PositionReport", "StandardClassBPositionReport"):
+            if k in body:
+                pos[mmsi] = (body[k], meta)
+
+    cache = dict(cache)
+    for mmsi, s in static.items():
+        key = str(mmsi)
+        if is_tanker(s.get("Type")):
+            dim = s.get("Dimension") or {}
+            cache[key] = {
+                "name": (s.get("Name") or "").strip(),
+                "imo": s.get("ImoNumber"),
+                "type": s.get("Type"),
+                "length": (dim.get("A") or 0) + (dim.get("B") or 0) or None,
+                "draught": s.get("MaximumStaticDraught"),
+                "destination": (s.get("Destination") or "").strip(),
+                "eta": eta_str(s.get("Eta")),
+                "seen": iso(now),
+            }
+        elif key in cache:
+            cache.pop(key)  # tips mainījies, vairs nav tankkuģis
+    for mmsi in pos:
+        if str(mmsi) in cache:
+            cache[str(mmsi)]["seen"] = iso(now)
+    cutoff = iso(now - timedelta(days=CACHE_DAYS))
+    cache = {k: v for k, v in cache.items() if v["seen"] >= cutoff}
+
+    ports = []
+    for pid, name, cc, lat, lon, r in PORTS:
+        ports.append({"id": pid, "name": name, "country": cc, "lat": lat, "lon": lon,
+                      "radius_km": r, "tankers": []})
+    for mmsi, (p, meta) in pos.items():
+        c = cache.get(str(mmsi))
+        if not c:
+            continue
+        la, lo = p.get("Latitude"), p.get("Longitude")
+        if la is None or abs(la) > 90:
+            continue
+        for port in ports:
+            d = km((la, lo), (port["lat"], port["lon"]))
+            if d > port["radius_km"]:
+                continue
+            sog = p.get("Sog") or 0
+            ns = p.get("NavigationalStatus")
+            if sog >= 1:
+                st = "kustībā"
+            elif ns in ANCHOR_STATUS:
+                st = "enkurvietā"
+            else:
+                st = "stāv ostā"
+            sh = {"mmsi": mmsi, "name": c["name"] or (meta.get("ShipName") or "").strip(),
+                  "imo": c["imo"], "length": c["length"], "draught": c["draught"],
+                  "destination": c["destination"], "eta": c["eta"],
+                  "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"),
+                  "cog": p.get("Cog"), "status": st, "dist_km": round(d, 1)}
+            port["tankers"].append(load_estimate(sh, vessels))
+            break
+    for port in ports:
+        port["tankers"].sort(key=lambda s: (s["status"] == "kustībā", s.get("name") or ""))
+    summary = {
+        "updated": iso(now),
+        "tankers_known": len(cache),
+        "total_in_ports": sum(len(p["tankers"]) for p in ports),
+        "ports": ports,
+    }
+    return summary, cache
+
+
 async def listen(key, seconds):
     import websockets  # importē tikai šeit, lai process() var testēt bez tā
     sub = {"APIKey": key, "BoundingBoxes": BOXES,
@@ -288,6 +395,14 @@ def main():
         with CALLS.open("a") as f:
             for e in events:
                 f.write(json.dumps(e, ensure_ascii=False) + "\n")
+    PORTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    cache = json.loads(TANKER_CACHE.read_text()) if TANKER_CACHE.exists() else {}
+    summary, cache = process_ports(msgs, cache, vessels, now_utc())
+    PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
+    TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
+    print(f"Tankkuģi ostās: {summary['total_in_ports']} (zināmi tankkuģi: {summary['tankers_known']})")
+    for p in summary["ports"]:
+        print(f"  {p['name']:<16} {len(p['tankers'])}")
     print(f"Ziņas: {len(msgs)}, kuģi sarakstā: {len(new_state['ships'])}, notikumi: {len(events)}")
     for s in new_state["ships"][:10]:
         print(f"  {s['status']:<9} {s.get('name') or s['mmsi']:<24} iegrime {s.get('draught')} m  galamērķis {s.get('destination')}")
