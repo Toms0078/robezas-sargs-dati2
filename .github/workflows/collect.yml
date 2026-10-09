@@ -45,6 +45,10 @@ jobs:
       - name: Vāc
         run: python fetch.py "${{ steps.pick.outputs.what }}"
 
+      - name: Saskaita diplomātus sarakstos
+        if: steps.pick.outputs.what != 'advisories'
+        run: python parse_lists.py
+
       - name: Saglabā izmaiņas repozitorijā
         run: |
           git config user.name "robezas-sargs-bot"
