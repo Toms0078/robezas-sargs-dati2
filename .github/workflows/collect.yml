@@ -1,0 +1,58 @@
+name: Vākt datus
+
+on:
+  schedule:
+    - cron: "17 * * * *"    # brīdinājumi ik stundu
+    - cron: "43 4 * * *"    # diplomātu saraksti reizi dienā
+  workflow_dispatch:
+    inputs:
+      what:
+        description: "Ko vākt: all, lists vai advisories"
+        default: "all"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Izvēlas, ko vākt
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "what=${{ inputs.what }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "43 4 * * *" ]; then
+            echo "what=all" >> "$GITHUB_OUTPUT"
+          else
+            echo "what=advisories" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Vāc
+        run: python fetch.py "${{ steps.pick.outputs.what }}"
+
+      - name: Saglabā izmaiņas repozitorijā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Nav izmaiņu"
+          else
+            git commit -m "Dati: ${{ steps.pick.outputs.what }} $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
