@@ -26,7 +26,11 @@ ROOT = Path(__file__).parent
 DATA = ROOT / "data"
 LISTS = DATA / "lists"
 NOW = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-UA = {"User-Agent": "Mozilla/5.0 (RobezasSargs data collector; github.com/Toms0078)"}
+UA = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/pdf,*/*;q=0.8",
+    "Accept-Language": "en-GB,en;q=0.9,lv;q=0.8",
+}
 
 # Valstis, kas ir Robežas sargā (ISO kods → nosaukumi dažādos avotos)
 WATCH = {
@@ -58,7 +62,7 @@ LIST_SOURCES = {
     },
     "FI": {
         "index": ["https://um.fi/the-helsinki-diplomatic-list"],
-        "match": r"diplomatic\s*list|\.pdf",
+        "match": r"diplomatic|helsinki|\.pdf",
         "seeds": [],
     },
     "SE": {
@@ -116,12 +120,19 @@ def find_pdf_links(cc, cfg):
         except Exception as e:
             run_log["sources"].setdefault(f"list_index_{cc}", {"ok": False, "errors": []})["errors"].append(f"{page}: {e}")
             continue
+        found_here, sample = 0, []
         for a in soup.find_all("a", href=True):
             text = " ".join(a.get_text(" ").split())
             href = urljoin(page, a["href"])
             hay = f"{text} {href}"
-            if re.search(cfg["match"], hay, re.I) and (".pdf" in href.lower() or "download" in href.lower()):
-                links.append(href)
+            if re.search(r"\.pdf|\.docx|download|documents|getfile", href, re.I):
+                sample.append(f"{text[:60]} -> {href}")
+                if re.search(cfg["match"], hay, re.I):
+                    links.append(href)
+                    found_here += 1
+        if not found_here:  # atkļūdošanai: kādas dokumentu saites lapā vispār ir
+            run_log["sources"].setdefault(f"list_index_{cc}", {"ok": False, "errors": []}).update(
+                {"page": page, "page_bytes": len(soup.text), "doc_links_sample": sample[:15]})
     links += cfg["seeds"]
     # unikāli, saglabājot secību (indeksa lapas saites vispirms = jaunākās)
     return list(dict.fromkeys(links))
@@ -140,13 +151,17 @@ def fetch_lists():
                 errors.append(f"{url}: {e}")
                 continue
             body = r.content
-            if not body.startswith(b"%PDF"):
-                errors.append(f"{url}: nav PDF ({r.headers.get('content-type')})")
+            if body.startswith(b"%PDF"):
+                ext = "pdf"
+            elif body.startswith(b"PK") and "word" in r.headers.get("content-type", "") or url.lower().endswith(".docx"):
+                ext = "docx"   # Latvija publicē sarakstu kā Word failu
+            else:
+                errors.append(f"{url}: nezināms formāts ({r.headers.get('content-type')})")
                 continue
             h = hashlib.sha256(body).hexdigest()
             if h in known:
                 continue
-            fn = LISTS / cc / f"{NOW[:10]}_{h[:10]}.pdf"
+            fn = LISTS / cc / f"{NOW[:10]}_{h[:10]}.{ext}"
             fn.parent.mkdir(parents=True, exist_ok=True)
             fn.write_bytes(body)
             known.add(h)
