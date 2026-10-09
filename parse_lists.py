@@ -51,6 +51,11 @@ ALIASES = {
     "CZECH REPUBLIC": "CZ", "CZECHIA": "CZ", "VIETNAM": "VN", "VIET NAM": "VN",
     "SOCIALIST REPUBLIC OF VIETNAM": "VN", "PALESTINE": "PS", "KOSOVO": "XK", "LAOS": "LA",
     "LAO PEOPLE'S DEMOCRATIC REPUBLIC": "LA", "SOVEREIGN MILITARY ORDER OF MALTA": "SMOM",
+    "AUSTRALIAN": "AU", "HIS BRITANNIC MAJESTY'S": "GB", "BRITISH": "GB", "CAPE VERDE": "CV", "CABO VERDE": "CV",
+    "DEMOCRATIC PEOPLE'S REPUBLIC OF KOREA": "KP", "PEOPLE'S REPUBLIC OF KOREA": "KP", "DPRK": "KP",
+    "DEMOCRATIC REPUBLIC OF THE CONGO": "CD", "DEMOCRATIC REPUBLIC OF CONGO": "CD",
+    "REPUBLIC OF THE CONGO": "CG", "REPUBLIC OF CONGO": "CG", "CONGO": "CG",
+    "PEOPLE'S DEMOCRATIC REPUBLIC OF ALGERIA": "DZ", "PEOPLE'S REPUBLIC OF BANGLADESH": "BD",
     "BELARUS": "BY", "SLOVAKIA": "SK", "SLOVAK REPUBLIC": "SK", "SYRIA": "SY",
     "ARGENTINE REPUBLIC": "AR", "HELLENIC REPUBLIC": "GR", "ITALIAN REPUBLIC": "IT", "PORTUGUESE REPUBLIC": "PT",
     "SWISS CONFEDERATION": "CH", "FRENCH REPUBLIC": "FR", "UNITED ARAB EMIRATES": "AE", "UNITED MEXICAN STATES": "MX",
@@ -71,7 +76,8 @@ PREFIXES = r"^(THE\s+)?((ISLAMIC|FEDERAL|DEMOCRATIC|SOCIALIST|PEOPLE'?S|ORIENTAL
 
 
 def norm_country(name):
-    raw = " ".join(name.replace("’", "'").split()).upper()
+    raw = " ".join(name.replace("’", "'").replace("´", "'").replace("`", "'").split()).upper()
+    raw = re.sub(r"\s+EMBASSY$", "", raw)
     m = re.match(r"^CONSULATE[\s-]GENERAL OF (.*)$", raw)
     if m:
         code, disp = norm_country(m.group(1))
