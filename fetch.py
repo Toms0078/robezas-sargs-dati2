@@ -410,9 +410,27 @@ OFFICIAL_FEEDS = [
     ("uk_fcdo", "https://www.gov.uk/search/news-and-communications.atom?organisations%5B%5D=foreign-commonwealth-development-office"),
     ("us_state", "https://www.state.gov/rss-feed/press-releases/feed/"),
 ] + [(f"us_emb_{cc}", f"https://{cc}.usembassy.gov/feed/") for cc in ("lv", "ee", "lt", "pl", "fi", "se", "no", "ru", "by")]
+# Citu valstu vēstniecības (pārbaudīts automātiski; strādājošās paliek, pārējās redzamas last_run.json kļūdās)
+UK_LOC = {"lv": "latvia", "ee": "estonia", "lt": "lithuania", "pl": "poland", "fi": "finland", "se": "sweden",
+          "no": "norway", "ru": "russia", "by": "belarus"}
+RU_EMB = {"lv": "latvia", "ee": "estonia", "lt": "lithuania", "pl": "poland", "fi": "finland", "se": "sweden", "no": "norway"}
+OFFICIAL_FEEDS += [(f"uk_emb_{cc}", f"https://www.gov.uk/search/news-and-communications.atom?world_locations%5B%5D={loc}")
+                   for cc, loc in UK_LOC.items()]
+OFFICIAL_FEEDS += [(f"fr_emb_{cc}", f"https://{cc}.ambafrance.org/spip.php?page=backend") for cc in UK_LOC]
+OFFICIAL_FEEDS += [(f"ru_emb_{cc}", f"https://{loc}.mid.ru/ru/rss/") for cc, loc in RU_EMB.items()]
+# Vēstniecību paziņojumi Google News (vācu, ķīniešu, Ziemeļvalstu u.c. vēstniecības, kurām nav plūsmu)
+NEWS_QUERIES += [
+    ("emb_en", '("embassy in Riga" OR "embassy in Tallinn" OR "embassy in Vilnius" OR "embassy in Warsaw" OR "embassy in Helsinki" OR "embassy in Stockholm" OR "embassy in Oslo") (citizens OR alert OR advises OR staff OR closed OR evacuat) when:3d', ("en", "US", "en")),
+    ("emb_ru", '("посольство России в Латвии" OR "посольство России в Эстонии" OR "посольство России в Литве" OR "посольство России в Польше" OR "посольство России в Финляндии" OR "посольство Беларуси") when:3d', ("ru", "RU", "ru")),
+    ("emb_de", '("Botschaft Riga" OR "Botschaft Tallinn" OR "Botschaft Vilnius" OR "Botschaft Warschau" OR "Botschaft Moskau" OR "Botschaft Minsk") when:3d', ("de", "DE", "de")),
+    ("emb_zh", '(大使馆 OR 使馆) (拉脱维亚 OR 爱沙尼亚 OR 立陶宛 OR 波兰 OR 芬兰) 提醒 when:7d', ("zh-CN", "CN", "zh-Hans")),
+]
 # ASV vēstniecību paziņojumi: paturam brīdinājumus un visu par personālu/darbību
 US_EMB_KEEP = re.compile(r"alert|departure|evacuat|staff|suspend|clos|reduc|ordered|authorized|message to u\.s\. citizens|"
                          r"security|consular services|embassy operations", re.I)
+EMB_KEEP_ML = re.compile(r"предупрежд|рекоменд|выезд|эвакуац|закрыт|консульск|безопасн|персонал|высыл|"
+                         r"alerte|sécurité|fermeture|évacuation|recommand|consulaire|"
+                         r"travel advice|ambassador|embassy|diplomat", re.I)
 NEWS_KEYWORDS = re.compile(
     r"embass|ambassad|diplomat|consul|persona non grata|expel|chargé|charge d|ordered departure|authorized departure|"
     r"посол|посольств|дипломат|консул|высыл|vēstn|diplomāt|ambasad|saatkond|suurlähet|utvis|wydal", re.I)
@@ -451,7 +469,7 @@ def fetch_news():
             text = f"{title} {summ.get_text(' ', strip=True) if summ else ''}"
             if tag in ("uk_fcdo", "us_state") and not (NEWS_KEYWORDS.search(text) and REGION_WORDS.search(text)):
                 continue
-            if tag.startswith("us_emb_") and not US_EMB_KEEP.search(text):
+            if re.match(r"(us|uk|fr|ru)_emb_", tag) and not (US_EMB_KEEP.search(text) or EMB_KEEP_ML.search(text)):
                 continue
             src = it.find("source")
             pub = it.find(["pubDate", "published", "updated"])
