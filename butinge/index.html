@@ -59,6 +59,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div id="map"></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
+  <section class="panel"><h2>Ceļā uz Latvijas ostām</h2>
+    <div class="note" id="inbsum">Ielādē…</div>
+    <div class="tw"><table id="inb"></table></div>
+  </section>
   <section class="panel"><h2>Tankkuģi Baltijas valstu ostās</h2>
     <div class="note" id="portsum">Ielādē…</div>
     <div class="ports" id="ports"></div>
@@ -139,7 +143,22 @@ async function loadPorts(){
     box.append(el);
   });
 }
-load(); loadPorts(); setInterval(()=>{load();loadPorts()},5*60*1000);
+const inbLayer=L.layerGroup();
+async function loadInbound(){
+  let d;
+  try{const r=await fetch('../data/ports/inbound_lv.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  catch(e){document.getElementById('inbsum').textContent='Dati vēl nav savākti.';return;}
+  const by=Object.entries(d.by_port).map(([k,v])=>k+' '+v).join(' · ');
+  document.getElementById('inbsum').textContent=`${d.total} kravas un tankkuģi ar galamērķi Latvijā${by?': '+by:''}. Pēc AIS galamērķa, ko ievada kuģa apkalpe. Atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}.`;
+  inbLayer.clearLayers();
+  const rows=d.ships.map(s=>{
+    if(s.lat!=null)L.circleMarker([s.lat,s.lon],{radius:4,color:'#fff',weight:1,fillColor:s.type==='tankkuģis'?'#c2410c':'#0f766e',fillOpacity:1})
+      .bindPopup(`<b>${esc(s.name)}</b><br>${s.type} → ${esc(s.port)}<br>${s.dist_km??'–'} km līdz ostai · ETA ${esc(s.eta||'–')}`).addTo(inbLayer);
+    return `<tr><td>${esc(s.port)}</td><td>${esc(s.name||s.mmsi)}</td><td>${s.type}</td><td>${s.dist_km!=null?nf(s.dist_km)+' km':'–'}</td><td>${esc(s.eta||'–')}</td><td>${s.draught??'–'} m${s.empty_pct!=null?' · tukšs '+s.empty_pct+'%':''}</td></tr>`}).join('');
+  document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Attālums</th><th>ETA</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
+}
+L.control.layers(null,{'Ceļā uz Latviju':inbLayer},{collapsed:false}).addTo(map);
+load(); loadPorts(); loadInbound(); setInterval(()=>{load();loadPorts();loadInbound()},5*60*1000);
 </script>
 </body>
 </html>

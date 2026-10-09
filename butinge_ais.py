@@ -375,6 +375,105 @@ def process_ports(messages, cache, vessels, now):
     return summary, cache
 
 
+# ---------------------------------------------------------------------------
+# Kuģi ceļā uz Latvijas ostām (pēc AIS galamērķa)
+INBOUND_FILE = Path(__file__).parent / "data" / "ports" / "inbound_lv.json"
+LV_DEST = [
+    # id, nosaukums, galamērķa paraugs (AIS teksts lielajiem burtiem), ostas centrs
+    ("riga", "Rīga", r"(^|[^A-Z])RIGA|LV\s*RIX", (57.05, 24.03)),
+    ("ventspils", "Ventspils", r"VENTSP|LV\s*VNT", (57.40, 21.55)),
+    ("liepaja", "Liepāja", r"LIEPA|LV\s*LPX", (56.52, 21.00)),
+    ("skulte", "Skulte", r"SKULTE|LV\s*SKU", (57.31, 24.40)),
+    ("salacgriva", "Salacgrīva", r"SALACG|LV\s*SAL", (57.75, 24.35)),
+    ("mersrags", "Mērsrags", r"MERSRAG|LV\s*MRS", (57.34, 23.13)),
+    ("roja", "Roja", r"(^|[^A-Z])ROJA($|[^A-Z])|LV\s*ROJ", (57.51, 22.80)),
+    ("pavilosta", "Pāvilosta", r"PAVILOST|LV\s*PAV", (56.89, 21.18)),
+]
+INBOUND_DAYS = 7         # kuģi, kas nav dzirdēti tik ilgi, izmet
+ARRIVED_KM = 15          # tuvāk ostai par šo = ieradies, izņem no saraksta
+
+TYPE_LV = [(80, 89, "tankkuģis"), (70, 79, "kravas kuģis"), (60, 69, "pasažieru/prāmis"),
+           (30, 30, "zvejas"), (31, 32, "velkonis"), (52, 52, "velkonis")]
+
+
+def type_name(t):
+    for a, b, n in TYPE_LV:
+        if t is not None and a <= t <= b:
+            return n
+    return "cits"
+
+
+def lv_port_of(dest):
+    d = (dest or "").upper()
+    for pid, name, rx, center in LV_DEST:
+        if re.search(rx, d):
+            return pid, name, center
+    return None
+
+
+def process_inbound(messages, state, vessels, now):
+    static, pos = {}, {}
+    for m in messages:
+        meta = m.get("MetaData", {})
+        mmsi = meta.get("MMSI")
+        body = m.get("Message", {})
+        if not mmsi:
+            continue
+        if "ShipStaticData" in body:
+            static[mmsi] = body["ShipStaticData"]
+        for k in ("PositionReport", "StandardClassBPositionReport"):
+            if k in body:
+                pos[mmsi] = body[k]
+    ships = {str(s["mmsi"]): dict(s) for s in state.get("ships", [])}
+    arrived = list(state.get("arrived", []))
+
+    for mmsi, s in static.items():
+        key = str(mmsi)
+        hit = lv_port_of(s.get("Destination"))
+        t = s.get("Type")
+        if not hit or not (70 <= (t or 0) <= 89):     # tikai kravas un tankkuģi
+            ships.pop(key, None)                      # galamērķis mainījies
+            continue
+        pid, pname, _ = hit
+        dim = s.get("Dimension") or {}
+        sh = ships.setdefault(key, {"mmsi": mmsi, "first_seen": iso(now)})
+        sh.update({
+            "name": (s.get("Name") or "").strip(), "imo": s.get("ImoNumber"),
+            "type": type_name(t), "ais_type": t,
+            "length": (dim.get("A") or 0) + (dim.get("B") or 0) or None,
+            "draught": s.get("MaximumStaticDraught"),
+            "destination": (s.get("Destination") or "").strip(),
+            "port_id": pid, "port": pname, "eta": eta_str(s.get("Eta")),
+        })
+
+    for key, sh in list(ships.items()):
+        p = pos.get(sh["mmsi"])
+        if p and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
+            la, lo = round(p["Latitude"], 4), round(p["Longitude"], 4)
+            sh.setdefault("first_pos", [la, lo])
+            sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"),
+                       "last_seen": iso(now)})
+        center = next(c for i, _, _, c in LV_DEST if i == sh["port_id"])
+        if sh.get("lat") is not None:
+            sh["dist_km"] = round(km((sh["lat"], sh["lon"]), center))
+            if sh["dist_km"] <= ARRIVED_KM:
+                arrived.append({"time": iso(now), "name": sh.get("name"), "imo": sh.get("imo"),
+                                "port": sh["port"], "type": sh.get("type"), "draught": sh.get("draught")})
+                ships.pop(key)
+                continue
+        seen = sh.get("last_seen") or sh["first_seen"]
+        if seen < iso(now - timedelta(days=INBOUND_DAYS)):
+            ships.pop(key)
+
+    out = [load_estimate(s, vessels) if s.get("type") == "tankkuģis" else s for s in ships.values()]
+    out.sort(key=lambda s: (s["port"], s.get("dist_km") or 1e9))
+    counts = {}
+    for s in out:
+        counts[s["port"]] = counts.get(s["port"], 0) + 1
+    return {"updated": iso(now), "total": len(out), "by_port": counts,
+            "ships": out, "arrived": arrived[-60:]}
+
+
 async def listen(key, seconds):
     import websockets  # importē tikai šeit, lai process() var testēt bez tā
     sub = {"APIKey": key, "BoundingBoxes": BOXES,
@@ -416,6 +515,10 @@ def main():
     summary, cache = process_ports(msgs, cache, vessels, now_utc())
     PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
+    inbound_state = json.loads(INBOUND_FILE.read_text()) if INBOUND_FILE.exists() else {}
+    inbound = process_inbound(msgs, inbound_state, vessels, now_utc())
+    INBOUND_FILE.write_text(json.dumps(inbound, ensure_ascii=False, indent=1))
+    print(f"Ceļā uz Latvijas ostām: {inbound['total']} {inbound['by_port']}")
     print(f"Tankkuģi ostās: {summary['total_in_ports']} (zināmi tankkuģi: {summary['tankers_known']})")
     for p in summary["ports"]:
         print(f"  {p['name']:<16} {len(p['tankers'])}")
