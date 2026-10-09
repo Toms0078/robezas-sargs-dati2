@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-10-09T07:39:43+00:00",
+  "run_at": "2026-10-09T07:44:09+00:00",
   "sources": {
     "list_EE": {
       "errors": [],
@@ -8,10 +8,19 @@
       "tried": 2
     },
     "list_FI": {
-      "errors": [],
-      "new": [],
-      "ok": false,
-      "tried": 0
+      "errors": [
+        "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122936: 429 Client Error: Too Many Requests for url: https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122936",
+        "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122930: 429 Client Error: Too Many Requests for url: https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122930",
+        "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122924: 429 Client Error: Too Many Requests for url: https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122924",
+        "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122920: 429 Client Error: Too Many Requests for url: https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/122920",
+        "https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/123880: 429 Client Error: Too Many Requests for url: https://um.fi/representation-of-foreign-states-in-finland-or-in-the-nearest-country-to-finland/-/asset_publisher/eSWq5XE6v1DV/contactInfoOrganization/id/123880"
+      ],
+      "missions": 6,
+      "new": [
+        "data/lists/FI/2026-10-09_7fa4d4a838.json"
+      ],
+      "ok": true,
+      "with_staff": 6
     },
     "list_LV": {
       "errors": [],
@@ -21,31 +30,26 @@
     },
     "list_NO": {
       "errors": [
-        "https://www.regjeringen.no/contentassets/3818fa2f0ec449689f40fd6fbeb99df2/the-oslo-diplomatic-list-march-2026.pdf: 403 Client Error: Forbidden for url: https://www.regjeringen.no/contentassets/3818fa2f0ec449689f40fd6fbeb99df2/the-oslo-diplomatic-list-march-2026.pdf",
-        "https://www.regjeringen.no/contentassets/18034c600ad5476fb3b7434525620f25/all-missions-accredited-to-norway-24-june-2026.pdf: 403 Client Error: Forbidden for url: https://www.regjeringen.no/contentassets/18034c600ad5476fb3b7434525620f25/all-missions-accredited-to-norway-24-june-2026.pdf"
+        "https://www.regjeringen.no/contentassets/3818fa2f0ec449689f40fd6fbeb99df2/the-oslo-diplomatic-list-march-2026.pdf: HTTP 403 server=cloudflare cf=a47bc280ba8b72cf-LAX body='<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm'",
+        "https://www.regjeringen.no/contentassets/18034c600ad5476fb3b7434525620f25/all-missions-accredited-to-norway-24-june-2026.pdf: HTTP 403 server=cloudflare cf=a47bc2810b7d5846-LAX body='<!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/htm'"
       ],
       "new": [],
       "ok": false,
       "tried": 2
+    },
+    "list_PL": {
+      "errors": [],
+      "new": [
+        "data/lists/PL/2026-10-09_3181ab5dcb.pdf"
+      ],
+      "ok": true,
+      "tried": 1
     },
     "list_SE": {
       "errors": [],
       "new": [],
       "ok": false,
       "tried": 0
-    },
-    "list_index_FI": {
-      "doc_links_sample": [
-        "Visa requirement and travel documents accepted by Finland -> https://um.fi/visa-requirement-and-travel-documents-accepted-by-finland",
-        "Passport and other travel documents – Finnish citizens' -> https://um.fi/passport-and-other-travel-documents-finnish-citizens-",
-        "Legalising documents abroad -> https://um.fi/legalising-documents-abroad",
-        "Documents or addresses from abroad -> https://um.fi/documents-or-addresses-from-abroad",
-        "Legalisation of documents for use abroad -> https://um.fi/legalisation-of-documents-for-use-abroad"
-      ],
-      "errors": [],
-      "ok": false,
-      "page": "https://um.fi/the-helsinki-diplomatic-list",
-      "page_bytes": 20751
     },
     "list_index_LV": {
       "errors": [
