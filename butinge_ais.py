@@ -583,6 +583,9 @@ def process_inbound(messages, state, vessels, now):
             sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"),
                        "last_seen": iso(now)})
         center = next(p[4] for p in DEST_PORTS if p[0] == sh["port_id"])
+        sh.setdefault("country", next(p[2] for p in DEST_PORTS if p[0] == sh["port_id"]))
+        if sh.get("first_pos") and not sh.get("from_area"):
+            sh["from_area"] = area_name(tuple(sh["first_pos"]))
         if sh.get("lat") is not None:
             sh["dist_km"] = round(km((sh["lat"], sh["lon"]), center))
             if sh["dist_km"] <= ARRIVED_KM:
