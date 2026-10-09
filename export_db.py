@@ -7,6 +7,7 @@ Izvade mapē out/:
     advisories.json   → diplomacy/advisories  (ASV, UK, Vācijas, Kanādas brīdinājumi 9 valstīm)
     changes.json      → saraksts izmaiņām pēdējās 120 dienās (Claude ieraksta diplomacy_events)
     news_recent.json  → pēdējo 3 dienu ziņu virsraksti, ko Claude klasificē
+    bio_recent.json   → pēdējo 3 dienu bioincidentu virsraksti (PVO, ECDC, UKHSA, ziņas) → bio/current
 """
 import json
 from datetime import datetime, timedelta, timezone
@@ -119,6 +120,21 @@ def news_recent():
     return out
 
 
+def bio_recent():
+    """Bioincidentu virsraksti (pēdējās 3 dienas) — Claude tos klasificē un ieraksta bio/current."""
+    cut = NOW - timedelta(days=3)
+    out = []
+    p = DATA / "bio.jsonl"
+    for line in p.read_text(encoding="utf-8").splitlines() if p.exists() else []:
+        try:
+            it = json.loads(line)
+        except Exception:
+            continue
+        if datetime.fromisoformat(it["seen_at"]) >= cut:
+            out.append({k: it.get(k) for k in ("id", "tag", "title", "source", "published", "url")})
+    return out
+
+
 def fdi():
     f = load(DATA / "fdi.json", None)
     if not f:
@@ -135,7 +151,7 @@ def fdi():
 
 
 if __name__ == "__main__":
-    for name, fn in (("hosts", hosts), ("advisories", advisories), ("changes", changes), ("news_recent", news_recent), ("fdi", fdi)):
+    for name, fn in (("hosts", hosts), ("advisories", advisories), ("changes", changes), ("news_recent", news_recent), ("bio_recent", bio_recent), ("fdi", fdi)):
         obj = fn()
         (OUT / f"{name}.json").write_text(json.dumps(obj, ensure_ascii=False), encoding="utf-8")
         size = (OUT / f"{name}.json").stat().st_size

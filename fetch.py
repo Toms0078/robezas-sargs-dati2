@@ -492,8 +492,10 @@ REGION_WORDS = re.compile(
     r"латви|литв|эстон|польш|финлянд|швец|норвег|росси|москв|беларус|минск|калининград", re.I)
 
 
-def fetch_news():
-    path = DATA / "news.jsonl"
+def fetch_news(queries=None, feeds=None, path=None, logname="news", json_feeds=()):
+    queries = NEWS_QUERIES if queries is None else queries
+    feeds = OFFICIAL_FEEDS if feeds is None else feeds
+    path = path or (DATA / "news.jsonl")
     seen, keep = set(), []
     cutoff = datetime.now(timezone.utc).timestamp() - 60 * 86400
     if path.exists():
@@ -506,8 +508,21 @@ def fetch_news():
                 keep.append(it)
                 seen.add(it["id"])
     new, errors, raw_counts, g_fail = [], [], {}, 0
-    sources = [(tag, GN.format(q=quote_plus(q), hl=hl, gl=gl, lang=lang)) for tag, q, (hl, gl, lang) in NEWS_QUERIES]
-    sources += OFFICIAL_FEEDS
+    sources = [(tag, GN.format(q=quote_plus(q), hl=hl, gl=gl, lang=lang)) for tag, q, (hl, gl, lang) in queries]
+    sources += feeds
+    for tag, url, conv in json_feeds:  # JSON avoti (piem. PVO API) → tie paši ieraksti
+        try:
+            items = conv(get(url, polite=1, waits=(0, 10, 30)).json())
+            raw_counts[tag] = len(items)
+            for title, link, pub in items:
+                iid = hashlib.sha1((link or title).encode()).hexdigest()[:16]
+                if iid in seen:
+                    continue
+                seen.add(iid)
+                new.append({"id": iid, "tag": tag, "title": title[:300], "url": link, "source": tag,
+                            "published": pub, "seen_at": NOW})
+        except Exception as e:
+            errors.append(f"{tag}: {str(e)[:150]}")
     for tag, url in sources:
         try:
             is_g = "news.google" in url
@@ -553,8 +568,53 @@ def fetch_news():
             new.append(item)
     keep += new
     path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in keep), encoding="utf-8")
-    log("news", len(errors) < len(sources), new=len(new), total=len(keep), errors=errors[:40],
+    log(logname, len(errors) < len(sources) + len(json_feeds), new=len(new), total=len(keep), errors=errors[:40],
         empty_feeds=[t for t, n in raw_counts.items() if n == 0])
+
+
+# ------------------------------------------------------- 4. bioincidenti
+BIO_QUERIES = [
+    ("bio_ru", '(вспышка OR чума OR сибирская язва OR туляремия OR холера OR карантин OR "неизвестной этиологии" OR эпидемия) Роспотребнадзор when:3d', ("ru", "RU", "ru")),
+    ("bio_ru_plague", '(чума OR "легочная чума") (Иркутск OR Россия) when:3d', ("ru", "RU", "ru")),
+    ("bio_by", '(вспышка OR карантин OR эпидемия OR "африканская чума свиней" OR "птичий грипп") Беларусь when:7d', ("ru", "BY", "ru")),
+    ("bio_world_en", '("outbreak" OR "epidemic" OR "public health emergency" OR PHEIC) (WHO OR "World Health Organization" OR ECDC OR "Africa CDC") when:3d', ("en", "US", "en")),
+    ("bio_rare_en", '(plague OR anthrax OR Ebola OR Marburg OR Nipah OR "H5N1 human" OR "bird flu human" OR smallpox OR mpox OR cholera OR "unknown disease") (outbreak OR cases OR deaths) when:3d', ("en", "US", "en")),
+    ("bio_russia_en", '(Russia OR Belarus OR Kaliningrad OR Siberia) (outbreak OR plague OR quarantine OR epidemic OR "unknown pneumonia") when:3d', ("en", "US", "en")),
+    ("bio_animal_en", '("African swine fever" OR "avian influenza" OR "bird flu" OR "foot-and-mouth" OR "lumpy skin" OR "bluetongue") (Latvia OR Lithuania OR Estonia OR Poland OR Finland OR Sweden OR Norway OR Belarus OR Russia) when:7d', ("en", "US", "en")),
+    ("bio_lv", '("Āfrikas cūku mēris" OR "putnu gripa" OR uzliesmojums OR saslimšanas OR "zivju bojāeja" OR "beigtas zivis" OR "slimību profilakses") when:7d', ("lv", "LV", "lv")),
+    ("bio_lt", '("afrikinis kiaulių maras" OR "paukščių gripas" OR protrūkis OR "žuvų dvėsimas" OR "negyvos žuvys") when:7d', ("lt", "LT", "lt")),
+    ("bio_ee", '("seakatk" OR "linnugripp" OR puhang OR "kalade suremus" OR "surnud kalad") when:7d', ("et", "EE", "et")),
+    ("bio_pl", '("ASF" OR "ptasia grypa" OR "ognisko choroby" OR "śnięte ryby" OR "śnięcie ryb" OR "masowe śnięcie") when:7d', ("pl", "PL", "pl")),
+    ("bio_fi", '("lintuinfluenssa" OR "afrikkalainen sikarutto" OR "kalakuolema" OR "kuolleita kaloja" OR epidemia) when:7d', ("fi", "FI", "fi")),
+    ("bio_se_no", '("fågelinfluensa" OR "fiskdöd" OR "döda fiskar" OR "fugleinfluensa" OR "fiskedød" OR "døde fisk") when:7d', ("sv", "SE", "sv")),
+    ("bio_fish_en", '("fish kill" OR "fish die-off" OR "dead fish" OR "mass mortality" OR "algal bloom" OR "toxic algae") when:3d', ("en", "US", "en")),
+    ("bio_fish_ru", '("мор рыбы" OR "массовая гибель рыбы" OR "гибель рыбы" OR "выброс рыбы") when:7d', ("ru", "RU", "ru")),
+]
+BIO_FEEDS = [
+    ("ecdc_news", "https://www.ecdc.europa.eu/en/taxonomy/term/1244/feed"),
+    ("ecdc_threats", "https://www.ecdc.europa.eu/en/taxonomy/term/1307/feed"),
+    ("cidrap", "https://www.cidrap.umn.edu/news/rss.xml"),
+    ("ukhsa_monitor", "https://www.gov.uk/search/research-and-statistics.atom?keywords=outbreaks+under+monitoring&organisations%5B%5D=uk-health-security-agency"),
+    ("cdc_han", "https://tools.cdc.gov/api/v2/resources/media/413690.rss"),
+    ("efsa", "https://www.efsa.europa.eu/en/all/rss"),
+]
+
+
+def _who_don(j):
+    out = []
+    for it in (j.get("value") or [])[:30]:
+        url = it.get("ItemDefaultUrl") or it.get("UrlName") or ""
+        if url and not url.startswith("http"):
+            url = "https://www.who.int/emergencies/disease-outbreak-news/item" + ("" if url.startswith("/") else "/") + url
+        out.append((it.get("OverrideTitle") or it.get("Title") or "", url, it.get("PublicationDateAndTime")))
+    return out
+
+
+WHO_DON = ("who_don", "https://www.who.int/api/news/diseaseoutbreaknews?sf_culture=en&$orderby=PublicationDateAndTime%20desc&$top=30", _who_don)
+
+
+def fetch_bio():
+    fetch_news(BIO_QUERIES, BIO_FEEDS, DATA / "bio.jsonl", "bio", json_feeds=[WHO_DON])
 
 
 if __name__ == "__main__":
@@ -566,4 +626,7 @@ if __name__ == "__main__":
     if what in ("all", "advisories"):
         fetch_advisories()
         fetch_news()
+    # bio ziņas ik 2 stundas (lai Google neierobežo), vai pēc pieprasījuma
+    if what in ("all", "bio") or (what == "advisories" and datetime.now(timezone.utc).hour % 2 == 0):
+        fetch_bio()
     save_json(DATA / "last_run.json", run_log)
