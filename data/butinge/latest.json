@@ -1,26 +1,32 @@
 {
- "updated": "2026-10-09T21:39:25Z",
+ "updated": "2026-10-09T21:56:41Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 10798,
+ "messages_heard": 6138,
  "diag": {
-  "static_msgs": 1358,
-  "ships_heard": 4336,
-  "within_60km": 35,
+  "static_msgs": 861,
+  "ships_heard": 3382,
+  "within_60km": 32,
   "nearest": [
+   {
+    "mmsi": 352002256,
+    "name": "ALERCE",
+    "km": 38.9,
+    "sog": 0
+   },
+   {
+    "mmsi": 277533000,
+    "name": "A.BARAUSKAS",
+    "km": 39.2,
+    "sog": 0.1
+   },
    {
     "mmsi": 275490000,
     "name": "ROBIN",
     "km": 40.7,
-    "sog": 0
-   },
-   {
-    "mmsi": 341333002,
-    "name": "FEGDA",
-    "km": 40.8,
     "sog": 0
    },
    {
@@ -30,39 +36,32 @@
     "sog": 0.1
    },
    {
+    "mmsi": 341333002,
+    "name": "FEGDA",
+    "km": 40.8,
+    "sog": 0
+   },
+   {
     "mmsi": 277005000,
     "name": "NATO WARSHIP",
     "km": 41.1,
-    "sog": 0.1
+    "sog": 0
+   },
+   {
+    "mmsi": 230010000,
+    "name": "NATO WARSHIP",
+    "km": 41.2,
+    "sog": 0
    },
    {
     "mmsi": 277078000,
     "name": "LTU SAR SHIP SAKIAI",
     "km": 41.2,
-    "sog": 0
-   },
-   {
-    "mmsi": 277540000,
-    "name": "TAK-10",
-    "km": 41.4,
-    "sog": 0.2
-   },
-   {
-    "mmsi": 277541000,
-    "name": "TAK-11",
-    "km": 41.4,
-    "sog": 0.1
-   },
-   {
-    "mmsi": 277149000,
-    "name": "TAK 5",
-    "km": 41.5,
     "sog": 0.1
    }
   ],
   "dest_like_butinge": [
-   "BRUNSBUTTEL",
-   "LTBOT>USHOU"
+   "BRUNSBUTTEL"
   ]
  },
  "ships": [
@@ -80,21 +79,24 @@
    "eta": "29.10 18:00 UTC",
    "draught": 9,
    "static_time": "2026-10-09T21:39:25Z",
-   "lat": 54.44703,
-   "lon": 11.92942,
-   "sog": 10.7,
-   "cog": 269.2,
+   "lat": 54.44692,
+   "lon": 11.83667,
+   "sog": 10.9,
+   "cog": 270.1,
    "nav_status": 0,
-   "pos_time": "2026-10-09T21:38:21Z",
-   "last_seen": "2026-10-09T21:39:25Z",
-   "dist_buoy_km": 599.18,
+   "pos_time": "2026-10-09T21:56:22Z",
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_buoy_km": 604.78,
    "status": "ceļā",
    "dwt": 110000,
    "dwt_source": "novērtēts",
    "max_draught": 14.8,
    "load_pct": 29,
    "empty_pct": 71,
-   "cargo_t_est": 30000
+   "cargo_t_est": 30000,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 9 m"
   }
  ]
 }

@@ -1,12 +1,13 @@
 {
- "updated": "2026-10-09T21:39:25Z",
- "total": 9,
+ "updated": "2026-10-09T21:56:41Z",
+ "total": 14,
  "by_port": {
   "Būtiņģe": 1,
-  "Klaipēda": 2,
+  "Klaipēda": 5,
   "Rīga": 2,
+  "Skulte": 1,
   "Tallina": 3,
-  "Ventspils": 1
+  "Ventspils": 2
  },
  "ships": [
   {
@@ -28,20 +29,60 @@
     11.9294
    ],
    "from_area": "Gēdsera",
-   "lat": 54.447,
-   "lon": 11.9294,
-   "sog": 10.7,
-   "cog": 269.2,
-   "last_seen": "2026-10-09T21:39:25Z",
-   "dist_km": 599,
-   "route_km": 631,
-   "pred_arrival": "2026-10-11T08:14:49Z",
+   "lat": 54.4469,
+   "lon": 11.8367,
+   "sog": 10.9,
+   "cog": 270.1,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 605,
+   "route_km": 636,
+   "pred_arrival": "2026-10-11T08:11:59Z",
    "dwt": 110000,
    "dwt_source": "novērtēts",
    "max_draught": 14.8,
    "load_pct": 29,
    "empty_pct": 71,
-   "cargo_t_est": 30000
+   "cargo_t_est": 30000,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 9 m"
+  },
+  {
+   "mmsi": 231894000,
+   "first_seen": "2026-10-09T21:56:41Z",
+   "name": "FURE SPEAR",
+   "imo": 9409273,
+   "type": "tankkuģis",
+   "ais_type": 80,
+   "length": 144,
+   "draught": 7.5,
+   "destination": "LT KLJ",
+   "port_id": "klaipeda",
+   "port": "Klaipēda",
+   "eta": "11.10 13:00 UTC",
+   "country": "LT",
+   "first_pos": [
+    57.1983,
+    11.5827
+   ],
+   "from_area": "Skagena",
+   "lat": 57.1983,
+   "lon": 11.5827,
+   "sog": 10.2,
+   "cog": 164.9,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 609,
+   "route_km": 743,
+   "pred_arrival": "2026-10-11T16:42:23Z",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 79,
+   "empty_pct": 21,
+   "cargo_t_est": 9000,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (144 m), iegrime 7.5 m"
   },
   {
    "mmsi": 311001762,
@@ -89,7 +130,40 @@
    "max_draught": 8.5,
    "load_pct": 47,
    "empty_pct": 53,
-   "cargo_t_est": 5300
+   "cargo_t_est": 5300,
+   "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "mazs tankkuģis (105 m), iegrime 6 m"
+  },
+  {
+   "mmsi": 258407000,
+   "first_seen": "2026-10-09T21:56:41Z",
+   "name": "ARCTIC REEFER",
+   "imo": 7638519,
+   "type": "kravas kuģis",
+   "ais_type": 70,
+   "length": 63,
+   "draught": 4.6,
+   "destination": "KLAIPEDA",
+   "port_id": "klaipeda",
+   "port": "Klaipēda",
+   "eta": "08.10 15:00 UTC",
+   "country": "LT"
+  },
+  {
+   "mmsi": 255806339,
+   "first_seen": "2026-10-09T21:56:41Z",
+   "name": "MSC ORION",
+   "imo": 9857157,
+   "type": "kravas kuģis",
+   "ais_type": 74,
+   "length": 366,
+   "draught": 14.1,
+   "destination": "LTKLJ>BEANR",
+   "port_id": "klaipeda",
+   "port": "Klaipēda",
+   "eta": "12.10 22:00 UTC",
+   "country": "LT"
   },
   {
    "mmsi": 255806245,
@@ -114,7 +188,7 @@
    "lon": 14.8214,
    "sog": 0,
    "cog": 289,
-   "last_seen": "2026-10-09T21:39:25Z",
+   "last_seen": "2026-10-09T21:56:41Z",
    "dist_km": 572,
    "route_km": 761
   },
@@ -137,14 +211,29 @@
     12.7017
    ],
    "from_area": "Ēresunds",
-   "lat": 55.5835,
-   "lon": 12.7017,
-   "sog": 8.3,
-   "cog": 174.2,
-   "last_seen": "2026-10-09T21:39:25Z",
-   "dist_km": 716,
-   "route_km": 882,
-   "pred_arrival": "2026-10-12T12:01:29Z"
+   "lat": 55.5427,
+   "lon": 12.7036,
+   "sog": 8.8,
+   "cog": 196.5,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 718,
+   "route_km": 878,
+   "pred_arrival": "2026-10-12T08:29:47Z"
+  },
+  {
+   "mmsi": 231898000,
+   "first_seen": "2026-10-09T21:56:41Z",
+   "name": "SPIKEN",
+   "imo": 9988504,
+   "type": "kravas kuģis",
+   "ais_type": 70,
+   "length": 89,
+   "draught": 4.2,
+   "destination": "SEFAG > LVSKU",
+   "port_id": "skulte",
+   "port": "Skulte",
+   "eta": "11.10 21:00 UTC",
+   "country": "LV"
   },
   {
    "mmsi": 268268500,
@@ -165,14 +254,42 @@
     11.351
    ],
    "from_area": "Skagena",
-   "lat": 57.4716,
-   "lon": 11.351,
-   "sog": 10.6,
-   "cog": 143,
-   "last_seen": "2026-10-09T21:39:25Z",
+   "lat": 57.429,
+   "lon": 11.3937,
+   "sog": 10.8,
+   "cog": 152.5,
+   "last_seen": "2026-10-09T21:56:41Z",
    "dist_km": 809,
-   "route_km": 1194,
-   "pred_arrival": "2026-10-12T15:46:16Z"
+   "route_km": 1189,
+   "pred_arrival": "2026-10-12T14:32:32Z"
+  },
+  {
+   "mmsi": 256334000,
+   "first_seen": "2026-10-09T21:39:25Z",
+   "name": "APAGEON",
+   "imo": 9278870,
+   "type": "kravas kuģis",
+   "ais_type": 70,
+   "length": 190,
+   "draught": 6.2,
+   "destination": "EETLL",
+   "port_id": "tallinn",
+   "port": "Tallina",
+   "eta": "12.10 18:00 UTC",
+   "country": "EE",
+   "first_pos": [
+    57.5594,
+    9.528
+   ],
+   "from_area": "Skagena",
+   "lat": 57.5594,
+   "lon": 9.528,
+   "sog": 12.8,
+   "cog": 59,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 908,
+   "route_km": 1326,
+   "pred_arrival": "2026-10-12T10:45:07Z"
   },
   {
    "mmsi": 218098000,
@@ -190,19 +307,32 @@
    "country": "EE"
   },
   {
-   "mmsi": 256334000,
-   "first_seen": "2026-10-09T21:39:25Z",
-   "name": "APAGEON",
-   "imo": 9278870,
+   "mmsi": 255805881,
+   "first_seen": "2026-10-09T21:56:41Z",
+   "name": "NAVITA",
+   "imo": 8324737,
    "type": "kravas kuģis",
    "ais_type": 70,
-   "length": 190,
+   "length": 98,
    "draught": 6.2,
-   "destination": "EETLL",
-   "port_id": "tallinn",
-   "port": "Tallina",
-   "eta": "12.10 18:00 UTC",
-   "country": "EE"
+   "destination": "LVVNT",
+   "port_id": "ventspils",
+   "port": "Ventspils",
+   "eta": "11.10 11:00 UTC",
+   "country": "LV",
+   "first_pos": [
+    56.3343,
+    12.3227
+   ],
+   "from_area": "Ēresunds",
+   "lat": 56.3343,
+   "lon": 12.3227,
+   "sog": 11,
+   "cog": 167.2,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 573,
+   "route_km": 765,
+   "pred_arrival": "2026-10-11T14:46:43Z"
   },
   {
    "mmsi": 255916482,
@@ -221,12 +351,12 @@
     54.5539,
     10.5958
    ],
-   "lat": 54.5459,
-   "lon": 11.2594,
-   "sog": 12.6,
-   "cog": 117.3,
-   "last_seen": "2026-10-09T21:39:25Z",
-   "dist_km": 714,
+   "lat": 54.519,
+   "lon": 11.3607,
+   "sog": 12.9,
+   "cog": 114.5,
+   "last_seen": "2026-10-09T21:56:41Z",
+   "dist_km": 710,
    "dwt": 12000,
    "dwt_source": "novērtēts",
    "max_draught": 8.5,
@@ -234,8 +364,12 @@
    "empty_pct": 41,
    "cargo_t_est": 6800,
    "from_area": "Fehmarna / Kīle",
-   "route_km": 799,
-   "pred_arrival": "2026-10-11T10:53:47Z"
+   "route_km": 792,
+   "pred_arrival": "2026-10-11T09:59:37Z",
+   "country": "LV",
+   "cargo_guess": "ķīmikālijas vai naftas produkti",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "nosaukums norāda uz ķīmikāliju tankkuģi, iegrime 6.6 m"
   }
  ],
  "arrived": [
@@ -270,6 +404,15 @@
    "port": "Liepāja",
    "type": "kravas kuģis",
    "draught": 4.8
+  },
+  {
+   "time": "2026-10-09T21:56:41Z",
+   "name": "LINK AURORA",
+   "imo": 7922166,
+   "port": "Klaipēda",
+   "type": "kravas kuģis",
+   "draught": 5.8,
+   "how": "AIS"
   }
  ]
 }
