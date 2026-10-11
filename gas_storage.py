@@ -48,7 +48,7 @@ COORDS = [
 
 
 # Krātuves tips (vispārzināms) – atslēgvārds nosaukumā
-TYPES = [("INCUKALN", "porains ūdens nesējslānis (akvifērs)"), ("STENLILLE", "akvifērs"),
+TYPES = [("GSD", "sāls kavernas (Lille Torup) un akvifērs (Stenlille)"), ("INCUKALN", "porains ūdens nesējslānis (akvifērs)"), ("STENLILLE", "akvifērs"),
          ("LILLE TORUP", "sāls kavernas"), ("SKALLEN", "oderēta klinšu kaverna"), ("KAWERNA", "sāls kavernas"),
          ("KOSAKOWO", "sāls kavernas"), ("MOGILNO", "sāls kavernas"), ("WIERZCHOWICE", "izsmelta gāzes atradne"),
          ("SANOK", "izsmeltas gāzes atradnes"), ("ETZEL", "sāls kavernas"), ("KIEL", "sāls kavernas"),
