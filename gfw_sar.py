@@ -85,6 +85,18 @@ def main():
             continue
         out["regions"][rid] = {"name": name, "bbox": reg[1:], "rows": rows}
         time.sleep(3)
+        # tumšo kuģu klasifikācija pēc GFW neironu tīkla (zvejas / nav zvejas)
+        cls = {}
+        for label, filt in (("zvejas", "matched = 'false' AND neural_vessel_type >= 0.9"),
+                            ("nav zvejas (kravas, tankkuģi, flote u.c.)", "matched = 'false' AND neural_vessel_type <= 0.1")):
+            try:
+                rr = report(token, reg[1:], start.isoformat(), end.isoformat(), filt)
+                cls[label] = [(r.get("Time Range"), r.get("Lat"), r.get("Lon")) for r in rr]
+                print(f"  {name}: tumšie '{label}': {len(rr)}")
+            except Exception as e:
+                print(f"  {name}: klasifikācija '{label}' neizdevās: {e}")
+            time.sleep(3)
+        out["regions"][rid]["dark_class"] = cls
     # apkopojums: katrs atklājums, tumšie (bez AIS) un tie, kas stāv pie Būtiņģes bojas
     import math
     buoy = (56.062, 20.958)
@@ -107,15 +119,24 @@ def main():
                  "mmsi": r.get("MMSI") or None, "imo": r.get("IMO") or None,
                  "n": int(float(r.get("Detections") or 1))}
             d["buoy_km"] = round(km((lat, lon), buoy), 1)
+            if not d["matched"]:
+                key = (r.get("Time Range"), r.get("Lat"), r.get("Lon"))
+                d["class"] = next((lab for lab, lst in (reg.get("dark_class") or {}).items() if key in set(map(tuple, lst))),
+                                  "nenoteikts")
             dets.append(d)
         reg["total"] = sum(1 for d in dets if d["region"] == rid)
         reg["dark"] = sum(1 for d in dets if d["region"] == rid and not d["matched"])
         reg.pop("rows", None)
+        reg["dark_by_class"] = {}
+        for d in dets:
+            if d["region"] == rid and not d["matched"]:
+                reg["dark_by_class"][d["class"]] = reg["dark_by_class"].get(d["class"], 0) + 1
+        reg.pop("dark_class", None)
     out["detections"] = dets
     out["dark"] = [d for d in dets if not d["matched"]]
     out["at_butinge_buoy"] = sorted([d for d in dets if d["buoy_km"] <= 3.0], key=lambda d: d["date"] or "")
     for rid, reg in out["regions"].items():
-        print(f"{reg['name']}: {reg.get('total', 0)} atklājumi, bez AIS {reg.get('dark', 0)}")
+        print(f"{reg['name']}: {reg.get('total', 0)} atklājumi, bez AIS {reg.get('dark', 0)} {reg.get('dark_by_class')}")
     print(f"Pie Būtiņģes bojas (≤3 km): {[(d['date'], d['name'] or 'BEZ AIS') for d in out['at_butinge_buoy']]}")
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
