@@ -107,6 +107,18 @@ def coords_for(name):
     return None
 
 
+def lrow(d):
+    inv = d.get("inventory") or {}
+    dt = d.get("dtmi") or {}
+    return {"day": d.get("gasDayStart"),
+            "lng_m3": fnum(inv.get("lng")) if isinstance(inv, dict) else fnum(d.get("lngInventory")),
+            "inv_gwh": fnum(inv.get("gwh")) if isinstance(inv, dict) else None,
+            "sendout_gwh": fnum(d.get("sendOut")),
+            "dtmi_m3": fnum(dt.get("lng")) if isinstance(dt, dict) else fnum(dt),
+            "dtmi_gwh": fnum(dt.get("gwh")) if isinstance(dt, dict) else None,
+            "dtrs_gwh": fnum(d.get("dtrs")), "status": d.get("status")}
+
+
 def listing():
     url = BASE + "/about?show=listing"
     headers = {"User-Agent": UA, "Accept": "application/json"}
@@ -240,6 +252,37 @@ def main():
         print(f"ALSI {cc}: {r['day']} krājums {r['lng_m3']} (10³ m³?) / {r['inv_gwh']} GWh, max {r['dtmi_m3']} / {r['dtmi_gwh']} GWh, "
               f"izsūtīts {r['sendout_gwh']} GWh/d")
         time.sleep(1)
+    # --- ALSI: katrs LNG terminālis atsevišķi (Baltijas reģions)
+    out["lng_fac"] = []
+    try:
+        hdr = {"User-Agent": UA, "x-key": os.environ.get("ALSI_KEY") or os.environ.get("AGSI_KEY", "")}
+        with urllib.request.urlopen(urllib.request.Request("https://alsi.gie.eu/api/about?show=listing", headers=hdr),
+                                    timeout=60) as rr:
+            lst = json.loads(rr.read())
+        items = lst if isinstance(lst, list) else [x for v in lst.values() for x in (v if isinstance(v, list) else [])]
+        for comp in items:
+            if comp.get("country") not in ("LT", "PL", "FI", "DE"):
+                continue
+            for fac in comp.get("facilities") or []:
+                fname = fac.get("name") or ""
+                if comp.get("country") == "DE" and not any(k in fname.upper() for k in ("MUKRAN", "LUBMIN", "OSTSEE")):
+                    continue
+                try:
+                    r2 = call({"country": comp.get("country"), "company": comp.get("eic"), "facility": fac.get("eic"),
+                               "size": 120}, "https://alsi.gie.eu/api")
+                except Exception as e:
+                    print("ALSI", fname, e)
+                    continue
+                rows = [lrow(d) for d in (r2.get("data") or [])]
+                if not rows:
+                    continue
+                out["lng_fac"].append({"country": comp.get("country"), "name": fname, "company": comp.get("name"),
+                                       "latest": rows[0], "series": list(reversed(rows))})
+                r = rows[0]
+                print(f"ALSI terminālis {fname}: {r['day']} {r['lng_m3']} / {r['dtmi_m3']} tūkst. m³, izsūt. {r['sendout_gwh']} GWh/d")
+                time.sleep(0.5)
+    except Exception as e:
+        print("ALSI termināļi:", e)
     out["needs_key"] = not os.environ.get("AGSI_KEY")
     print("krātuves:", [(f["country"], f["name"], f["lat"] is not None) for f in out["facilities"]])
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
