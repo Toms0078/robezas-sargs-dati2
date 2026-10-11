@@ -289,7 +289,7 @@ function showRoute(s,m){
   const tr=(s.track||[]).map(p=>[p[0],p[1]]);
   const start=(o.lat!=null&&o.lon!=null)?[o.lat,o.lon]:(tr[0]||[s.lat,s.lon]);
   const startName=o.port?`${o.port} ${o.country||''}`:`pirmoreiz redzēts: ${s.from_area||'–'}`;
-  if(o.lat!=null&&tr.length){L.polyline([start,tr[0]],{color:col,weight:2,opacity:.6,dashArray:'1 6'}).bindTooltip('ceļš nav zināms (AIS nebija dzirdams)').addTo(lay);}
+  if(o.lat!=null){L.polyline([start,tr[0]||[s.lat,s.lon]],{color:col,weight:2,opacity:.6,dashArray:'1 6'}).bindTooltip('ceļš nav zināms (AIS nebija dzirdams)').addTo(lay);}
   if(tr.length>1)L.polyline(tr,{color:col,weight:4,opacity:.9}).bindTooltip('nobrauktais ceļš (AIS)').addTo(lay);
   if(s.route&&s.route.length>1)L.polyline(s.route,{color:col,weight:3,opacity:.9,dashArray:'8 6'}).bindTooltip('atlikušais ceļš (aprēķins)').addTo(lay);
   L.circleMarker(start,{radius:8,color:'#fff',weight:2,fillColor:'#15803d',fillOpacity:1}).bindTooltip('Sākums: '+esc(startName),{permanent:true,direction:'top'}).addTo(lay);
