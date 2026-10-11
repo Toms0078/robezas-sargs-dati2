@@ -61,6 +61,36 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .country summary span{font:500 .8rem var(--mono);color:var(--muted)}
 .cargolist{opacity:.9}
 .port .empty{color:var(--muted);font:.8rem var(--body)}
+.tgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media(max-width:860px){.tgrid{grid-template-columns:1fr}}
+.term{border:1px solid var(--line);border-radius:6px;padding:12px 14px;min-width:0;display:grid;gap:10px;align-content:start}
+.term h3{font:700 1.25rem var(--display);margin:0}
+.term h4{font:600 .78rem var(--body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:6px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media(max-width:480px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{font:600 1.35rem/1.1 var(--display);font-variant-numeric:tabular-nums}.kpi span{display:block;font:.68rem var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.live{border:1px solid var(--line);border-left:4px solid var(--buoy);border-radius:4px;padding:10px 12px;display:grid;gap:8px}
+.live.idle{border-left-color:var(--line)}
+.live .hd{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+.live .hd b{font:700 1.15rem var(--display)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--buoy);margin-right:6px;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+.tank{position:relative;height:26px;border-radius:4px;background:var(--track);overflow:hidden}
+.tank div{position:absolute;inset:0 auto 0 0;background:#7c4a1e;transition:width .9s linear}
+.tank.lng div{background:#0e7490}
+.tank em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:600 .8rem var(--mono);font-style:normal;color:#fff}
+.tank em span{background:rgba(0,0,0,.5);padding:1px 7px;border-radius:3px}
+.mbars{display:flex;align-items:flex-end;gap:3px;height:90px;border-bottom:1px solid var(--line)}
+.mbars div{flex:1;min-width:0;background:var(--accent);border-radius:2px 2px 0 0;position:relative}
+.mbars.lng div{background:#0e7490}
+.mlab{display:flex;gap:3px;font:.62rem var(--mono);color:var(--muted)}.mlab span{flex:1;text-align:center;min-width:0;overflow:hidden}
+.cbar{display:grid;grid-template-columns:minmax(0,11rem) minmax(0,1fr) auto;gap:8px;align-items:center;font:.8rem var(--mono)}
+.cbar>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbar i{display:block;height:10px;border-radius:2px;background:var(--accent)}.lngc .cbar i{background:#0e7490}
+.chart svg{width:100%;height:auto;display:block}
+.btn{font:600 .82rem var(--body);padding:5px 12px;border-radius:4px;border:1px solid var(--ink);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -73,6 +103,30 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div><div id="map"></div><div class="legend" id="legend"></div></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
+  <section class="panel" id="terminali"><h2>Termināļi: Būtiņģes nafta un Klaipēdas LNG</h2>
+    <div class="note" id="termsum">Ielādē…</div>
+    <div class="tgrid" style="margin-top:10px">
+      <div class="term">
+        <h3>Būtiņģes boja: jēlnafta</h3>
+        <div id="btlive" class="live idle"></div>
+        <div class="kpis" id="btkpi"></div>
+        <h4>Jēlnafta pa mēnešiem, tūkst. t</h4><div id="btmonth"></div>
+        <h4>No kurienes atved</h4><div id="btcc"></div>
+        <details><summary class="note">Visas piegādes</summary><div class="tw"><table id="btcalls"></table></div></details>
+      </div>
+      <div class="term lngc">
+        <h3>Klaipēdas LNG (FSRU Independence)</h3>
+        <div id="lnglive" class="live idle"></div>
+        <div class="chart" id="lngchart"></div>
+        <div class="kpis" id="lngkpi"></div>
+        <h4>LNG pa mēnešiem, tūkst. m³</h4><div id="lngmonth"></div>
+        <h4>No kurienes atved</h4><div id="lngcc"></div>
+        <details><summary class="note">Visas piegādes</summary><div class="tw"><table id="lngcalls"></table></div></details>
+        <div class="note" id="lngsmall"></div>
+      </div>
+    </div>
+    <p class="note">Piegādes: Global Fishing Watch ostu apmeklējumi pēdējo 12 mēnešu laikā (kuģis stāvēja pie bojas vai FSRU). Izcelsme ir kuģa iepriekšējā osta (bez kanāliem un šaurumiem). <b>Apjomi ir aplēses</b> pēc kuģa izmēra: jēlnafta ≈ 95 % no DWT (DWT ≈ 1,85 × GT); LNG ≈ 95 % no tipiskā kravas tilpuma pēc kuģa garuma. Izkraušanas simulācija: Būtiņģē ~3 h pievienošana, tad ~4 200 t/h (bojas jauda 4 932 m³/h); LNG ~4 h sagatavošana, tad ~5 000 m³/h. Krātuves aizpildījums ir <b>simulācija</b>, nevis mērījums: piegādes mīnus izsūtīšana tīklā (vidējā no gada piegādēm, pilnākā krātuvē izsūta vairāk, tukšākā mazāk; ~5 % paliek vienmēr). Ja kāda piegāde nav atpazīta, simulācija tajā brīdī rāda par zemu. Klaipēdā LNG kuģi tiek atpazīti pēc tā, ka pirms tam krāvušies LNG eksporta terminālī (Hammerfest, ASV termināļi u.c.).</p>
+  </section>
   <section class="panel" id="energija"><h2>Enerģijas kravas uz Baltiju</h2>
     <div class="note" id="ensum">Ielādē…</div>
     <div class="chips" id="enfilter" role="group" aria-label="Galamērķa valsts"></div>
@@ -488,7 +542,116 @@ async function loadInbound(){
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
 }
 
-load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar()},5*60*1000);
+// ---------- Termināļi: Būtiņģe un Klaipēdas LNG ----------
+const I3={EGY:'EG',GBR:'GB',USA:'US',NOR:'NO',ESP:'ES',MLT:'MT',SWE:'SE',NLD:'NL',DNK:'DK',DEU:'DE',FRA:'FR',BEL:'BE',POL:'PL',LTU:'LT',LVA:'LV',EST:'EE',FIN:'FI',RUS:'RU',TUR:'TR',GRC:'GR',ITA:'IT',PRT:'PT',DZA:'DZ',NGA:'NG',QAT:'QA',ARE:'AE',SAU:'SA',IRQ:'IQ',KAZ:'KZ',GEO:'GE',AGO:'AO',BRA:'BR',GUY:'GY',CAN:'CA',MEX:'MX',TTO:'TT',CMR:'CM',LBY:'LY',TUN:'TN',MAR:'MA',GIB:'GI',IRL:'IE',ISL:'IS',SGP:'SG',MHL:'MH',LBR:'LR',PAN:'PA',OMN:'OM',IND:'IN',CHN:'CN',KOR:'KR',JPN:'JP',CYP:'CY',HRV:'HR',ROU:'RO',BGR:'BG',UKR:'UA',AZE:'AZ',GNQ:'GQ',COG:'CG',GAB:'GA',PER:'PE',COL:'CO',ARG:'AR',AUS:'AU',MOZ:'MZ',ISR:'IL',SEN:'SN',CIV:'CI',GHA:'GH',BHS:'BS',ATG:'AG'};
+function ccTxt(c3,short){if(!c3||c3==='nav zināms')return '<span class="note">nav zināms</span>';const c2=I3[c3];
+  return c2?`<span class="flag" title="${esc(cname(c2))}">${emojiOf(c2)}${short?'':' '+esc(cname(c2))}</span>`:esc(c3);}
+const kt=v=>v==null?'–':(v/1000).toLocaleString('lv-LV',{maximumFractionDigits:v>=1e6?0:1});
+const fmtD=t=>t?new Date(t).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
+const LV_MON=['jan','feb','mar','apr','mai','jūn','jūl','aug','sep','okt','nov','dec'];
+function hav(a,b){const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,h=Math.sin(dl/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)**2;return 12742*Math.asin(Math.sqrt(h));}
+function monthBars(sum,cls,period){
+  const end=new Date(period[1]), ms=[];for(let i=11;i>=0;i--){const d=new Date(Date.UTC(end.getUTCFullYear(),end.getUTCMonth()-i,1));ms.push(d.toISOString().slice(0,7));}
+  const v=ms.map(m=>(sum.by_month[m]||{}).volume||0), c=ms.map(m=>(sum.by_month[m]||{}).calls||0), mx=Math.max(1,...v);
+  return `<div class="mbars ${cls}">${v.map((x,i)=>`<div style="height:${Math.max(x?3:0,x/mx*100)}%" title="${ms[i]}: ${c[i]} piegādes, ~${kt(x)} tūkst."></div>`).join('')}</div>
+    <div class="mlab">${ms.map((m,i)=>`<span>${LV_MON[+m.slice(5)-1]}${c[i]?'<br>'+c[i]+'×':''}</span>`).join('')}</div>`;}
+function countryBars(sum){const e=Object.entries(sum.by_country);if(!e.length)return '<p class="note">Nav datu.</p>';
+  const mx=Math.max(...e.map(x=>x[1].calls));
+  return e.slice(0,8).map(([cc,g])=>`<div class="cbar"><span>${ccTxt(cc)}</span><i style="width:${g.calls/mx*100}%"></i><span>${g.calls}× · ~${kt(g.volume)}k</span></div>`).join('');}
+function callsTable(calls,unit){if(!calls.length)return '<tr><td class="note">Nav piegāžu.</td></tr>';
+  return '<tr><th>Ierašanās</th><th>Kuģis</th><th>Stāvēja</th><th>~Krava</th><th>No</th></tr>'+calls.slice().reverse().map(c=>
+    `<tr><td>${esc((c.start||'').slice(0,10))}</td><td>${esc(c.name||'?')}</td><td>${c.hours} h</td><td>${nf(c.volume)} ${unit}</td><td>${c.from?esc(c.from.port)+' '+ccTxt(c.from.country,true):'–'}</td></tr>`).join('');}
+function kpis(sum,unit,big){const n=sum.calls,avg=n?sum.total_volume/n:0;
+  return `<div class="kpi"><span>Piegādes / gadā</span>${n}</div><div class="kpi"><span>Ik pēc</span>${sum.avg_gap_days??'–'} d</div>
+    <div class="kpi"><span>Kopā ~</span>${big(sum.total_volume)}</div><div class="kpi"><span>Vidēji vienā</span>~${kt(avg)}k ${unit}</div>`;}
+
+let TERM=null, BTSHIPS=[], GASNOW=[], ENIN=[], replay=null;
+const BT_PREP=3, BT_RATE=4200, LNG_PREP=4, LNG_RATE=5000;
+function btLive(force){
+  const el=document.getElementById('btlive'); if(!TERM)return;
+  const bt=TERM.butinge, calls=bt.calls, last=calls[calls.length-1], sum=bt.summary;
+  const moored=BTSHIPS.filter(s=>s.status==='pie_bojas'&&(s.ais_type==null||(s.ais_type>=80&&s.ais_type<=89)));
+  let s=null, t0, cargo, now=Date.now(), label;
+  if(replay&&replay.kind==='bt'){const h=(now-replay.start)/1000; if(h>BT_PREP+replay.cargo/BT_RATE+1){replay=null;}else{
+      s={name:replay.name}; t0=now-h*3.6e6; cargo=replay.cargo; label='Atskaņojums (1 s = 1 h)';}}
+  if(!s&&moored.length){s=moored[0]; t0=new Date(s.arrived||s.first_seen).getTime(); cargo=Math.round((s.dwt||110000)*0.95/100)*100; label='Tiešraides simulācija';}
+  if(s){
+    el.dataset.idle='';
+    const h=(now-t0)/3.6e6, pumped=Math.max(0,Math.min(cargo,(h-BT_PREP)*BT_RATE)), left=cargo-pumped, endT=t0+(BT_PREP+cargo/BT_RATE)*3.6e6;
+    const ph=h<BT_PREP?'pievieno šļūtenes':left<=0?'izkrauts, gatavojas atiet':'sūknē jēlnaftu uz Mažeiķiem';
+    el.className='live';
+    el.innerHTML=`<div class="hd"><b><span class="dot"></span>${esc(s.name||s.mmsi)} ${s.mmsi?fl(s.mmsi,true):''}</b><span class="note">${label} · ${ph}</span></div>
+      <div class="tank"><div style="width:${left/cargo*100}%"></div><em><span>kravā ~${nf(Math.round(left/100)*100)} t</span></em></div>
+      <div class="row"><div><span>Izsūknēts</span>~${nf(Math.round(pumped/100)*100)} t</div><div><span>Barelas</span>~${nf(Math.round(pumped*7.33/1000))}k</div>
+      <div><span>Pie bojas</span>${h.toFixed(1)} h</div><div><span>Beigas ~</span>${replay?((BT_PREP+cargo/BT_RATE)).toFixed(0)+' h':fmtD(endT)}</div></div>`;
+    return;
+  }
+  if(el.dataset.idle==='1'&&!force)return;
+  el.dataset.idle='1';
+  const lastEnd=last?new Date(last.end):null, nextT=lastEnd&&sum.avg_gap_days?new Date(new Date(last.start).getTime()+sum.avg_gap_days*864e5):null;
+  const coming=BTSHIPS.filter(x=>x.status!=='pie_bojas'&&x.dest_match);
+  el.className='live idle';
+  el.innerHTML=`<div class="hd"><b>Pie bojas tankkuģa nav</b>${last?`<button class="btn" id="btreplay">Atskaņot pēdējo piegādi</button>`:''}</div>
+    <div class="note">${last?`Pēdējā: ${esc(last.name)}, ${fmtD(last.start)} (${last.hours} h, ~${nf(last.volume)} t). `:''}${nextT?(nextT<new Date()?`Pēc vidējā ritma (ik ${sum.avg_gap_days} d) nākamā jau gaidāma.`:`Pēc vidējā ritma nākamā ap ${nextT.toLocaleDateString('lv-LV',{day:'numeric',month:'long'})}.`):''}
+    ${coming.length?'<br>Ceļā: '+coming.map(x=>`${esc(x.name)} ${fl(x.mmsi,true)} (${x.dist_buoy_km??'–'} km, ETA ${esc(x.eta||'–')}${x.load_pct!=null?', pilns ~'+x.load_pct+'%':''})`).join('; '):''}</div>`;
+  const b=document.getElementById('btreplay'); if(b)b.onclick=()=>{replay={kind:'bt',start:Date.now(),cargo:last.volume||110000,name:last.name};btLive();};
+}
+const KL_FSRU=()=>[TERM.klaipeda_lng.lat,TERM.klaipeda_lng.lon];
+function lngNow(){
+  const k=TERM.klaipeda_lng, ls=k.level_sim; if(!ls)return null;
+  const days=(Date.now()-new Date(ls.series[ls.series.length-1][0]+'T12:00:00Z'))/864e5;
+  return Math.max(Math.min(5,ls.now_pct),Math.min(100, ls.now_pct - ls.rate_m3_day*Math.max(0,days)/k.capacity_m3*100));
+}
+function lngLive(){
+  const el=document.getElementById('lnglive'); if(!TERM)return;
+  const k=TERM.klaipeda_lng, ls=k.level_sim, cap=k.capacity_m3;
+  let pct=lngNow();
+  const at=GASNOW.filter(g=>g.lat!=null&&hav([g.lat,g.lon],KL_FSRU())<=1.0&&!/INDEPENDENCE/i.test(g.name||'')&&(g.sog??0)<1);
+  const coming=ENIN.filter(s=>s.port_id==='klaipeda'&&s.gas);
+  let extra='';
+  if(at.length){const g=at[0], v=(g.length||0)>=260?170000:(g.length||0)>=200?140000:(g.length||0)>=120?30000:7500;
+    extra=`<div class="note"><span class="dot"></span><b>${esc(g.name)}</b> ${fl(g.mmsi,true)} stāv pie FSRU: notiek LNG pārkraušana (~${nf(Math.round(v*.95/1000))} tūkst. m³; ${esc(g.load||'')}).</div>`;}
+  el.className=at.length?'live':'live idle';
+  el.innerHTML=`<div class="hd"><b>Krātuve: ~${pct==null?'–':pct.toFixed(0)} %</b><span class="note">simulācija · krātuve ${cap/1000} tūkst. m³ LNG</span></div>
+    <div class="tank lng"><div style="width:${pct??0}%"></div><em><span>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG · ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes</span></em></div>
+    ${ls?`<div class="note">Izsūtīšana tīklā ~${nf(ls.rate_m3_day)} m³ LNG/d (≈ ${ls.rate_mcm_day} mlj. m³ gāzes dienā)${ls.rate_m3_day&&pct!=null?`; bez jaunas piegādes pietiktu ~${Math.round(pct/100*cap/ls.rate_m3_day)} dienām`:''}.</div>`:''}
+    ${extra}${coming.length?'<div class="note">Ceļā uz Klaipēdu: '+coming.map(s=>`${esc(s.name)} ${fl(s.mmsi,true)} (${s.route_km!=null?nf(s.route_km)+' km':'–'}${s.pred_arrival?', ~'+fmtD(s.pred_arrival):''})`).join('; ')+'</div>':''}`;
+}
+function lngChart(){
+  const k=TERM.klaipeda_lng, ls=k.level_sim, el=document.getElementById('lngchart');
+  if(!ls){el.innerHTML='<p class="note">Nav pietiekami daudz piegāžu simulācijai.</p>';return;}
+  const S=ls.series, W=600, H=170, P=36, n=S.length-1||1;
+  const x=i=>P+i/n*(W-P-6), y=v=>8+(100-v)/100*(H-8-18);
+  const path=S.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
+  const idx=d=>{const t=S.findIndex(p=>p[0]>=d);return t<0?n:t;};
+  const marks=k.calls.map(c=>{const i=idx((c.start||'').slice(0,10));return `<line x1="${x(i)}" x2="${x(i)}" y1="${y(100)}" y2="${y(0)}" stroke="#0e7490" stroke-opacity=".25"><title>${esc(c.name)} ${(c.start||'').slice(0,10)} ~${nf(c.volume)} m³</title></line>`;}).join('');
+  const ticks=[0,50,100].map(v=>`<line x1="${P}" x2="${W-6}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${P-4}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${v}%</text>`).join('');
+  const mt=S.map((p,i)=>[p[0],i]).filter(p=>p[0].endsWith('-01')).map(([d,i])=>`<text x="${x(i)}" y="${H-4}" font-size="10" fill="var(--muted)">${LV_MON[+d.slice(5,7)-1]}</text>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Simulētais LNG krātuves aizpildījums pa dienām">${ticks}${marks}<path d="${path} L${x(n)} ${y(0)} L${x(0)} ${y(0)} Z" fill="#0e7490" fill-opacity=".15"/><path d="${path}" fill="none" stroke="#0e7490" stroke-width="2"/>${mt}</svg>`;
+}
+async function loadTerminals(){
+  try{const r=await fetch('../data/terminals/latest.json?t='+Date.now());if(!r.ok)throw 0;TERM=await r.json();}
+  catch(e){document.getElementById('termsum').textContent='Dati vēl nav savākti (darbplūsma “Termināļi”).';return;}
+  try{const r=await fetch('../data/butinge/latest.json?t='+Date.now());if(r.ok)BTSHIPS=(await r.json()).ships||[];}catch(e){}
+  try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(r.ok)GASNOW=(await r.json()).gas_ships||[];}catch(e){}
+  try{const r=await fetch('../data/ports/energy_inbound.json?t='+Date.now());if(r.ok)ENIN=(await r.json()).ships||[];}catch(e){}
+  const bt=TERM.butinge, kl=TERM.klaipeda_lng;
+  document.getElementById('termsum').textContent=`Periods ${TERM.period[0]} – ${TERM.period[1]} · atjaunots ${new Date(TERM.updated).toLocaleString('lv-LV')}. GFW dati nāk ar dažu dienu nobīdi, tāpēc pēdējās dienas var trūkt.`;
+  document.getElementById('btkpi').innerHTML=kpis(bt.summary,'t',v=>(v/1e6).toLocaleString('lv-LV',{maximumFractionDigits:1})+' mlj. t');
+  document.getElementById('btmonth').innerHTML=monthBars(bt.summary,'',TERM.period);
+  document.getElementById('btcc').innerHTML=countryBars(bt.summary);
+  document.getElementById('btcalls').innerHTML=callsTable(bt.calls,'t');
+  document.getElementById('lngkpi').innerHTML=kpis(kl.summary,'m³',v=>(v/1e6).toLocaleString('lv-LV',{maximumFractionDigits:2})+' mlj. m³');
+  document.getElementById('lngmonth').innerHTML=monthBars(kl.summary,'lng',TERM.period);
+  document.getElementById('lngcc').innerHTML=countryBars(kl.summary);
+  document.getElementById('lngcalls').innerHTML=callsTable(kl.calls,'m³');
+  const sm=kl.small_scale||[];
+  document.getElementById('lngsmall').innerHTML=sm.length?`Mazie LNG kuģi (Klaipēdas pārkraušanas stacija, parasti LNG <b>izved</b> uz citām ostām): ${sm.length} reisi gadā, pēdējie: ${sm.slice(-4).reverse().map(c=>esc(c.name)+' '+esc((c.start||'').slice(0,10))).join(', ')}. Simulācijā nav ieskaitīti.`:'';
+  lngChart(); btLive(true); lngLive();
+}
+setInterval(()=>{btLive();},1000); setInterval(()=>{lngLive();},60000);
+
+load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals()},5*60*1000);
 </script>
 </body>
 </html>

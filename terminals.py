@@ -363,32 +363,42 @@ def summarize_calls(calls, kind):
 
 
 def lng_level_sim(deliveries, days=365):
-    """Krātuves aizpildījuma simulācija: piegādes (m³) mīnus vienmērīga izsūtīšana.
-    Izsūtīšanas ātrums = kopējās piegādes / periods; sākuma līmenis izvēlēts tā, lai minimums būtu 10 %."""
+    """Krātuves aizpildījuma simulācija pa dienām.
+    Piegāde pievieno kuģa kravu (krātuve nevar pārsniegt 100 %, pārpalikums paliek kuģī un tiek pārsūknēts
+    nākamajās dienās). Izsūtīšana tīklā: vidējais ātrums (gada piegādes / dienas), ko pielāgo līmenim –
+    pilnākā krātuvē izsūta vairāk, tukšākā mazāk (kā operators to dara praksē). Sākuma līmenis: ~1 mēneša iesildīšana."""
     if not deliveries:
         return None
-    end = datetime.now(timezone.utc)
-    start = min(datetime.fromisoformat(d["start"][:19]).replace(tzinfo=timezone.utc) for d in deliveries)
-    span_days = max((end - start).total_seconds() / 86400, 30)
-    total = sum(d["volume"] or 0 for d in deliveries)
-    rate = total / span_days  # m³ dienā
-    pts, level, t = [], 0.0, start
+    cap = FSRU_CAPACITY_M3
+    end = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    start = end - timedelta(days=days)
     ev = sorted((datetime.fromisoformat(d["start"][:19]).replace(tzinfo=timezone.utc), d["volume"] or 0)
                 for d in deliveries)
-    i = 0
-    while t <= end:
-        while i < len(ev) and ev[i][0] <= t:
-            level += ev[i][1]
-            i += 1
-        pts.append([t.strftime("%Y-%m-%d"), level])
-        level -= rate
-        t += timedelta(days=1)
-    lo = min(p[1] for p in pts)
-    shift = 0.10 * FSRU_CAPACITY_M3 - lo
-    series = [[d, max(0.0, min(100.0, (v + shift) / FSRU_CAPACITY_M3 * 100))] for d, v in pts]
+    span_days = max((end - max(start, ev[0][0])).total_seconds() / 86400, 30)
+    total = sum(v for t, v in ev if t >= start)
+    rate = total / span_days
+
+    def run(level):
+        pts, pending, t, i = [], 0.0, start, 0
+        while t <= end:
+            while i < len(ev) and ev[i][0] < t + timedelta(days=1):
+                pending += ev[i][1] if ev[i][0] >= start else 0
+                i += 1
+            move = min(pending, cap - level, 120000.0)   # pārsūknēšana ≤ ~5 000 m³/h
+            level += move
+            pending -= move
+            out = rate * max(0.1, min(1.6, level / (0.55 * cap)))
+            out = min(out, max(0.0, level - 0.05 * cap))     # ~5 % paliek kā "papēdis" (heel)
+            level -= out
+            pts.append([t.strftime("%Y-%m-%d"), level / cap * 100])
+            t += timedelta(days=1)
+        return pts, level
+
+    pts, last = run(0.5 * cap)
+    pts, _ = run(sum(p[1] for p in pts[-60:]) / 60 / 100 * cap)   # sākums = tipiskais līmenis
     return {"rate_m3_day": round(rate), "rate_mcm_day": round(rate * 585 / 1e6, 2),
-            "series": [[d, round(v, 1)] for d, v in series], "now_pct": round(series[-1][1], 1),
-            "assumptions": "sākuma līmenis tā, lai minimums = 10 %; izsūtīšana vienmērīga (vidējā no piegādēm)"}
+            "series": [[d, round(v, 1)] for d, v in pts], "now_pct": round(pts[-1][1], 1),
+            "assumptions": "izsūtīšana = vidējā no gada piegādēm, pielāgota līmenim (0,1–1,6×), ≥5 % paliek krātuvē; pārsūknēšana ≤ 120 tūkst. m³/d"}
 
 
 def main():
