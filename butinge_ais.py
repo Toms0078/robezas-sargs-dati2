@@ -970,6 +970,79 @@ def process_inbound(messages, state, vessels, now):
             "ships": out, "arrived": arrived[-60:]}
 
 
+# ---------------------------------------------------------------------------
+# Otrs avots: Somijas Digitraffic (Fintraffic) atvērtie AIS dati, CC BY 4.0, bez atslēgas.
+DT_BASE = "https://meri.digitraffic.fi/api/ais/v1"
+DT_HEADERS = {"Digitraffic-User": "robezas-sargs/1.0", "Accept-Encoding": "gzip",
+              "User-Agent": "robezas-sargs (github.com/Toms0078/robezas-sargs-dati2)"}
+
+
+def _dt_get(path):
+    import gzip
+    import urllib.request
+    req = urllib.request.Request(DT_BASE + path, headers=DT_HEADERS)
+    with urllib.request.urlopen(req, timeout=60) as r:
+        raw = r.read()
+        if r.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
+            raw = gzip.decompress(raw)
+    return json.loads(raw)
+
+
+def dt_eta(v):
+    """Digitraffic ETA bitu lauks -> aisstream formāts."""
+    if not isinstance(v, int) or v <= 0:
+        return None
+    return {"Month": (v >> 16) & 0xF, "Day": (v >> 11) & 0x1F, "Hour": (v >> 6) & 0x1F, "Minute": v & 0x3F}
+
+
+def digitraffic_to_messages(locations, vessels, max_age_min=30, now=None):
+    """Pārvērš Digitraffic atbildes tādās pašās ziņās kā aisstream, lai pārējā apstrāde nemainās."""
+    now = now or now_utc()
+    cutoff_ms = (now - timedelta(minutes=max_age_min)).timestamp() * 1000
+    msgs = []
+    for v in vessels or []:
+        mmsi = v.get("mmsi")
+        if not mmsi:
+            continue
+        dr = v.get("draught")
+        msgs.append({"MetaData": {"MMSI": mmsi, "ShipName": (v.get("name") or "").strip(), "source": "digitraffic"},
+                     "Message": {"ShipStaticData": {
+                         "Name": v.get("name") or "", "ImoNumber": v.get("imo") or 0, "Type": v.get("shipType"),
+                         "Destination": v.get("destination") or "", "CallSign": v.get("callSign") or "",
+                         "MaximumStaticDraught": (dr / 10.0) if isinstance(dr, (int, float)) and dr > 0 else None,
+                         "Eta": dt_eta(v.get("eta")),
+                         "Dimension": {"A": v.get("referencePointA") or 0, "B": v.get("referencePointB") or 0,
+                                       "C": v.get("referencePointC") or 0, "D": v.get("referencePointD") or 0}}}})
+    for f in (locations or {}).get("features", []):
+        pr = f.get("properties") or {}
+        mmsi = f.get("mmsi") or pr.get("mmsi")
+        coords = (f.get("geometry") or {}).get("coordinates") or []
+        ts = pr.get("timestampExternal") or 0
+        if not mmsi or len(coords) < 2 or ts < cutoff_ms:
+            continue
+        t = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        cog = pr.get("cog")
+        msgs.append({"MetaData": {"MMSI": mmsi, "time_utc": t, "source": "digitraffic"},
+                     "Message": {"PositionReport": {
+                         "Latitude": coords[1], "Longitude": coords[0], "Sog": pr.get("sog"),
+                         "Cog": cog if cog is not None and cog < 360 else None,
+                         "NavigationalStatus": pr.get("navStat")}}})
+    return msgs
+
+
+def fetch_digitraffic():
+    try:
+        since = int((now_utc() - timedelta(minutes=30)).timestamp() * 1000)
+        loc = _dt_get(f"/locations?from={since}")
+        ves = _dt_get("/vessels")
+        msgs = digitraffic_to_messages(loc, ves)
+        print(f"Digitraffic: {len(loc.get('features', []))} pozīcijas, {len(ves)} kuģu dati")
+        return msgs
+    except Exception as e:
+        print(f"Digitraffic neizdevās: {e}")
+        return []
+
+
 async def listen(key, seconds):
     import websockets  # importē tikai šeit, lai process() var testēt bez tā
     sub = {"APIKey": key, "BoundingBoxes": BOXES,
@@ -999,7 +1072,8 @@ def main():
     DATA.mkdir(parents=True, exist_ok=True)
     state = json.loads(LATEST.read_text()) if LATEST.exists() else {}
     vessels = json.loads(VESSELS.read_text()) if VESSELS.exists() else {}
-    msgs = asyncio.run(listen(key, seconds))
+    # Digitraffic pirmais, lai svaigākās aisstream ziņas (pēc tam) virsrakstītu tās pašas MMSI pozīcijas
+    msgs = fetch_digitraffic() + asyncio.run(listen(key, seconds))
     new_state, events = process(msgs, state, vessels, now_utc())
     LATEST.write_text(json.dumps(new_state, ensure_ascii=False, indent=1))
     if events:
