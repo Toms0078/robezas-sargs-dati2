@@ -14,6 +14,7 @@ Palaišana:  GFW_TOKEN=... python terminals.py [--test]
 """
 import json
 import math
+import re
 import os
 import sys
 import time
@@ -161,8 +162,13 @@ LNG_EXPORT = {"Hammerfest (Melkøya)": (70.684, 23.600, 6), "Sabine Pass": (29.7
               "Plaquemines": (29.460, -89.624, 5), "Corpus Christi": (27.885, -97.260, 2.5),
               "Freeport": (28.935, -95.310, 2.5), "Cove Point": (38.400, -76.383, 4), "Elba Island": (32.087, -81.000, 3),
               "Ras Laffan": (25.900, 51.580, 6), "Idku": (31.330, 30.300, 4), "Point Fortin": (10.180, -61.690, 4),
-              "Soyo": (-6.100, 12.350, 6), "Bioko": (3.770, 8.700, 5), "Greater Tortue": (14.600, -17.500, 15),
-              "Cameroon FLNG": (2.750, 9.800, 15), "Congo FLNG": (-4.750, 11.800, 20)}
+              "Soyo": (-6.100, 12.350, 6), "Bioko": (3.770, 8.700, 5)}
+# LNG importa/pārkraušanas termināļi (daļēja krava var nākt no turienes)
+LNG_TERM = {"Zeebrugge LNG": (51.343, 3.207, 2), "Gate (Roterdama)": (51.970, 4.030, 2.5), "Dunkerque LNG": (51.040, 2.208, 2),
+            "Montoir": (47.300, -2.130, 2.5), "Isle of Grain": (51.440, 0.720, 2.5), "Svinoujscie LNG": (53.925, 14.270, 2),
+            "Inkoo FSRU": (60.030, 24.000, 3), "Wilhelmshaven FSRU": (53.590, 8.160, 3), "Brunsbuttel FSRU": (53.890, 9.200, 2),
+            "Mukran FSRU": (54.480, 13.610, 3), "Skagen (gaida)": (57.687, 10.719, 8)}
+GAS_NAME = re.compile(r"LNG|(^|[^A-Z])GAS|GAS($|[^A-Z])|HOEGH|GASLOG|CLIPPER")
 
 
 def is_lng_candidate(name, info, flag, n_visits, length):
@@ -170,7 +176,7 @@ def is_lng_candidate(name, info, flag, n_visits, length):
     gt = info.get("gt") or 0
     if not name or "INDEPENDENCE" in name:
         return False
-    if any(k in name for k in ("LNG", "GAS", "HOEGH", "CLIPPER")):
+    if GAS_NAME.search(name):
         return True
     if any(t in gtypes for t in ("FISH", "TRAWL", "PASSENGER", "SEISMIC", "CARGO", "CONTAINER", "REEFER",
                                  "CARRIER", "TUG", "DREDGE", "PILOT", "BUNKER")):
@@ -248,7 +254,7 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
 
     big, small = [], []
     for name, c in cands.items():
-        key = f"pv365:{c['id']}:{end.isoformat()}"
+        key = f"pv365b:{c['id']}:{end.isoformat()}"
         if key not in cache:
             try:
                 res = call(token, "/events", {"limit": 200, "offset": 0, "sort": "-start"},
@@ -265,11 +271,12 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                             "port": (a.get("topDestination") or a.get("name") or "").strip(), "cc": a.get("flag"),
                             "aid": a.get("id") or "", "kl_km": round(anchor_min_km(e, KL_PORT), 1),
                             "lng_exp": next((n for n, pp in LNG_EXPORT.items() if anchor_min_km(e, pp[:2]) <= pp[2]), None),
+                            "lng_term": next((n for n, pp in LNG_TERM.items() if anchor_min_km(e, pp[:2]) <= pp[2]), None),
                             "fsru_km": round(anchor_min_km(e, here), 2)})
             cache[key] = sorted(evs, key=lambda x: x["start"] or "")
             time.sleep(0.6)
         evs = cache[key]
-        gasname = any(k in name for k in ("LNG", "GAS", "HOEGH", "CLIPPER"))
+        gasname = bool(GAS_NAME.search(name))
         exp = [x["lng_exp"] for x in evs if x.get("lng_exp") and x["h"] >= 12]
         gt = c["gt"]
         # LNG pazīmes: nosaukums; vai GT 85–140 tūkst. (LNG kuģiem GT ir liels attiecībā pret izmēru;
@@ -279,7 +286,8 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
         elif gt:
             ok = False
         else:
-            ok = bool(exp) or c.get("fsru", False)
+            ok = bool(exp)
+        strong = gasname or 85000 <= gt <= 140000
         if c.get("ais_type") and 70 <= c["ais_type"] <= 79:
             ok = False  # AIS: kravas kuģis
         if not ok:
@@ -305,8 +313,13 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                         prev = {"port": pe.get("lng_exp") or pe["port"].title(), "country": pe["cc"], "end": pe["end"],
                                 "lng_export": bool(pe.get("lng_exp"))}
                         break
+                    t0 = datetime.fromisoformat(ev["start"][:19])
+                    before = [x for x in evs if (x["end"] or "") <= ev["start"] and
+                              (t0 - datetime.fromisoformat(x["end"][:19])).days <= 45 and x["kl_km"] > 30]
+                    src = next((x.get("lng_exp") or x.get("lng_term") for x in reversed(before[-4:])
+                                if x.get("lng_exp") or x.get("lng_term")), None)
                     cur = {"start": ev["start"], "end": ev["end"], "hours": ev["h"], "fsru": ev["fsru_km"] <= 0.5,
-                           "from": prev}
+                           "from": prev, "src": src}
                     groups.append(cur)
             else:
                 cur = None
@@ -314,10 +327,12 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
         for g in groups:
             if g["hours"] < 8 or g["hours"] > 240:
                 continue
+            if not strong and not g["src"]:
+                continue  # pirms Klaipēdas nav bijis LNG terminālī: visticamāk nav LNG krava
             row = {"start": g["start"], "end": g["end"], "hours": round(g["hours"], 1), "name": name,
                    "mmsi": c["mmsi"], "flag": c["flag"], "imo": c["imo"], "gt": c["gt"],
                    "length": c["length"] or None, "volume": round(cap * 0.95, -2), "at_fsru_seen": g["fsru"],
-                   "from": g["from"]}
+                   "from": g["from"], "lng_source": g["src"]}
             (small if cap <= 30000 else big).append(row)
         if test or groups:
             print(f"  {name}: Klaipēdā {len(groups)} reisi, garums {c['length']}, ~{cap} m³, eksports: {sorted(set(exp))}")
@@ -509,7 +524,7 @@ def main():
     }
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
     today = end.isoformat()
-    cache = {k: v for k, v in cache.items() if not (k.startswith("pv365:") and not k.endswith(today))}
+    cache = {k: v for k, v in cache.items() if not (k.startswith("pv365") and not (k.startswith("pv365b:") and k.endswith(today)))}
     CACHE.write_text(json.dumps(cache, ensure_ascii=False))
     for nm, calls in (("Būtiņģe", bt_calls), ("Klaipēdas LNG", kl_calls)):
         print(f"{nm}: {len(calls)} piegādes")
