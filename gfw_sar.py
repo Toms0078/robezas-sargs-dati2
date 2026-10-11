@@ -87,8 +87,9 @@ def main():
         time.sleep(3)
         # tumšo kuģu klasifikācija pēc GFW neironu tīkla (zvejas / nav zvejas)
         cls = {}
-        for label, filt in (("zvejas", "matched = 'false' AND neural_vessel_type >= 0.9"),
-                            ("nav zvejas (kravas, tankkuģi, flote u.c.)", "matched = 'false' AND neural_vessel_type <= 0.1")):
+        for label, filt in (("zvejas kuģis", "matched = 'false' AND neural_vessel_type = 'Likely fishing'"),
+                            ("nav zvejas kuģis (kravas, tankkuģis, flote u.c.)",
+                             "matched = 'false' AND neural_vessel_type = 'Likely non-fishing'")):
             try:
                 rr = report(token, reg[1:], start.isoformat(), end.isoformat(), filt)
                 cls[label] = [(r.get("Time Range"), r.get("Lat"), r.get("Lon")) for r in rr]
