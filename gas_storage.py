@@ -166,8 +166,26 @@ def main():
             print("ALSI", cc, e)
             continue
         data = res.get("data") or []
-        if test or cc == "LT":
-            print("ALSI", cc, json.dumps(data[:1])[:1500])
+        if not data:
+            print("ALSI", cc, "tukšs:", json.dumps(res)[:600])
+            try:
+                hdr = {"User-Agent": UA, "x-key": os.environ.get("AGSI_KEY", "")}
+                with urllib.request.urlopen(urllib.request.Request("https://alsi.gie.eu/api/about?show=listing", headers=hdr), timeout=60) as rr:
+                    lst = json.loads(rr.read())
+                items = lst if isinstance(lst, list) else [x for v in lst.values() for x in (v if isinstance(v, list) else [])]
+                for comp in items:
+                    if comp.get("country") == cc:
+                        for fac in comp.get("facilities") or []:
+                            print("   ALSI listing:", comp.get("name"), comp.get("eic"), "|", fac.get("name"), fac.get("eic"))
+                            r2 = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"), "size": 120},
+                                      "https://alsi.gie.eu/api")
+                            data += r2.get("data") or []
+                if not items:
+                    print("   ALSI listing raw:", json.dumps(lst)[:800])
+            except Exception as e:
+                print("   ALSI listing:", e)
+        if data:
+            print("ALSI", cc, json.dumps(data[:1])[:1200])
         if not data:
             continue
         def lrow(d):
