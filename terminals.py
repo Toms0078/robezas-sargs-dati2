@@ -31,7 +31,9 @@ UA = "robezas-sargs (github.com/Toms0078/robezas-sargs-dati2)"
 BUTINGE = {"id": "butinge", "name": "Būtiņģes SPM boja", "lat": 56.062, "lon": 20.958, "r_km": 4.0}
 # Klaipēdas FSRU vieta tiek precizēta pēc paša FSRU "INDEPENDENCE" ostas apmeklējumiem
 KLAIPEDA_LNG = {"id": "klaipeda_lng", "name": "Klaipēdas LNG (FSRU Independence)", "lat": 55.6645, "lon": 21.1375,
-                "r_km": 1.0, "search_box": (55.645, 55.685, 21.105, 21.170)}
+                "r_km": 1.0, "search_box": (55.645, 55.685, 21.105, 21.170),
+                # plašāks apgabals ar ārējo reidu: ostas apmeklējuma "position" bieži ir pirmā enkurvieta
+                "visit_box": (55.55, 55.85, 20.70, 21.20)}
 FSRU_CAPACITY_M3 = 170000
 TRANSIT = ("PORT SAID", "SUEZ CANAL", "GIBRALTAR", "SKAGEN", "KIEL", "BRUNSBUTTEL", "CANAKKALE", "ISTANBUL")
 
@@ -138,6 +140,20 @@ def previous_port(token, vessel_id, before, here_pos, cache):
     return best
 
 
+def anchor_min_km(e, pos):
+    """Mazākais attālums no ostas apmeklējuma enkurvietām (sākuma/starpposma/beigu) līdz vietai."""
+    pv = e.get("port_visit") or {}
+    best = 9999.0
+    for k in ("startAnchorage", "intermediateAnchorage", "endAnchorage"):
+        a = pv.get(k) or {}
+        if a.get("lat") is not None:
+            best = min(best, km((a["lat"], a["lon"]), pos))
+    p = e.get("position") or {}
+    if p.get("lat") is not None:
+        best = min(best, km((p["lat"], p["lon"]), pos))
+    return best
+
+
 def summarize_calls(calls, kind):
     by_month, by_country = {}, {}
     for c in calls:
@@ -222,6 +238,20 @@ def main():
     else:
         print("FSRU INDEPENDENCE apmeklējumi nav atrasti, izmanto aptuveno vietu")
 
+    la0, la1, lo0, lo1 = KLAIPEDA_LNG["visit_box"]
+    wide = port_visits_in(token, box(la0, la1, lo0, lo1), start.isoformat(), end.isoformat())
+    here = (KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"])
+    seen_ids = set()
+    kl_near = []
+    for e in wide + kl_all:
+        if e.get("id") in seen_ids:
+            continue
+        seen_ids.add(e.get("id"))
+        if anchor_min_km(e, here) <= 0.5:
+            kl_near.append(e)
+    print(f"Klaipēdas plašā apgabala apmeklējumi: {len(wide)}, no tiem pie FSRU piestātnes: {len(kl_near)}")
+    kl_all = kl_near
+
     # --- Būtiņģe
     b = BUTINGE
     d = 0.06
@@ -245,7 +275,7 @@ def main():
         for e in events:
             v = e.get("vessel") or {}
             pos = e.get("position") or {}
-            if not pos or km((pos.get("lat"), pos.get("lon")), (site["lat"], site["lon"])) > site["r_km"]:
+            if not pos or anchor_min_km(e, (site["lat"], site["lon"])) > site["r_km"]:
                 continue
             info = cache.get(v.get("id")) or {}
             name = (v.get("name") or info.get("name") or "").upper()
@@ -261,10 +291,10 @@ def main():
                 # pie pašas FSRU piestātnes (≤0,5 km), stāvēja ≥ 8 h, nav vietējais/servisa/kravas kuģis
                 gtypes = " ".join((info.get("geartypes") or []) + (info.get("shiptypes") or [])).upper()
                 gasname = any(k in name for k in ("LNG", "LPG", "GAS", "HOEGH", "FLEX", "CLIPPER"))
-                dkm = km((pos.get("lat"), pos.get("lon")), (site["lat"], site["lon"]))
+                dkm = anchor_min_km(e, (site["lat"], site["lon"]))
                 ais = ais_len.get(str(v.get("ssvid"))) or {}
                 length = ais.get("length") or info.get("length") or 0
-                if "INDEPENDENCE" in name or dur < 8 or dkm > 0.5:
+                if "INDEPENDENCE" in name or not name or dur < 8 or dur > 24 * 20 or dkm > 0.5:
                     continue
                 if not gasname:
                     if any(t in gtypes for t in ("FISH", "TRAWL", "PASSENGER", "SEISMIC", "CARGO", "CONTAINER",
@@ -321,9 +351,9 @@ def main():
     CACHE.write_text(json.dumps(cache, ensure_ascii=False))
     for nm, calls in (("Būtiņģe", bt_calls), ("Klaipēdas LNG", kl_calls)):
         print(f"{nm}: {len(calls)} piegādes")
-        for c in calls[-12:]:
-            print(f"  {c['start'][:10]} {c['hours']:>5}h {c['name']:<22} {c['flag']} GT {c['gt']} "
-                  f"~{c['volume']:.0f}  no {(c['from'] or {}).get('port')} {(c['from'] or {}).get('country')}")
+        for c in calls[-25:]:
+            print(f"  {c['start'][:10]} {c['hours']:>5}h {c['name'] or '?':<22} {c['flag']} GT {c['gt']} "
+                  f"~{c['volume'] or 0:.0f}  no {(c['from'] or {}).get('port')} {(c['from'] or {}).get('country')}")
     if out["klaipeda_lng"]["level_sim"]:
         ls = out["klaipeda_lng"]["level_sim"]
         print(f"LNG simulācija: {ls['now_pct']} %, izsūtīšana ~{ls['rate_m3_day']} m³/d (~{ls['rate_mcm_day']} mlj. m³ gāzes/d)")

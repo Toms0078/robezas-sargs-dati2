@@ -247,6 +247,8 @@ def process(messages, state, vessels, now):
     cutoff = now - timedelta(days=FORGET_DAYS)
     for mmsi, sh in ships.items():
         prev = old.get(mmsi, {}).get("status")
+        if sh.get("destination") is not None:   # pārrēķina arī vecajiem ierakstiem (piem. "LTBOT>USHOU")
+            sh["dest_match"] = dest_matches(sh.get("destination"))
         st = status_of(sh, buoy)
         sh["status"] = st
         seen = datetime.strptime(sh.get("last_seen") or sh["first_seen"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
