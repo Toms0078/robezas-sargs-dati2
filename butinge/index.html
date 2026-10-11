@@ -264,7 +264,9 @@ async function load(){
   }}catch(e){}
 }
 document.getElementById('legend').innerHTML=['gas','tank'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('')+
-  '<button class="btn" id="mapreplay" style="margin-left:auto">Atskaņot izkraušanu kartē</button>';
+  '<button class="btn" id="mapreplay" style="margin-left:auto">Atskaņot naftas izkraušanu</button><button class="btn" id="lngreplay">Atskaņot LNG pārkraušanu</button>';
+document.getElementById('lngreplay').onclick=()=>{if(!TERM)return;const c=TERM.klaipeda_lng.calls,l=c[c.length-1];if(!l)return;
+  lngReplay={start:Date.now(),vol:l.volume||142500,name:l.name,base:lngNow()??20};lngSimKey=null;document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});lngTick();};
 document.getElementById('mapreplay').onclick=()=>{if(!TERM)return;const c=TERM.butinge.calls,l=c[c.length-1];if(!l)return;
   replay={kind:'bt',start:Date.now(),cargo:l.volume||110000,name:l.name};document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});btLive();};
 
@@ -680,6 +682,30 @@ function btNextMap(){
   if(!btNextMarker)btNextMarker=L.marker(BUOY,{icon,interactive:false,zIndexOffset:400}).addTo(map);else{btNextMarker.setLatLng(BUOY);btNextMarker.setIcon(icon);}
 }
 let lngMarker=null;
+let LIVE={at:{},arrivals:[]}, lngReplay=null, lngSimKey=null, lngSimTip=null;
+const lngSimLayer=L.layerGroup().addTo(map);
+function lngActive(){const now=Date.now();
+  if(lngReplay){const h=(now-lngReplay.start)/1000;if(h>LNG_PREP+lngReplay.vol/LNG_RATE+2)lngReplay=null;
+    else return {name:lngReplay.name,h,vol:lngReplay.vol,replay:true,pos:null,base:lngReplay.base};}
+  const a=Object.values(LIVE.at||{}).find(x=>now-new Date(x.last)<90*60e3); if(!a)return null;
+  const Ln=a.length||0, cap=Ln>=260?170000:Ln>=200?140000:Ln>=120?30000:7500;
+  return {name:a.name,mmsi:a.mmsi,h:(now-new Date(a.first))/3.6e6,vol:Math.round(cap*.95),pos:a.lat?[a.lat,a.lon]:null};}
+function lngMoved(act){return Math.min(act.vol,Math.max(0,(act.h-LNG_PREP)*LNG_RATE));}
+function lngTick(){
+  if(!TERM)return; const act=lngActive();
+  if(!act){if(lngSimKey){lngSimLayer.clearLayers();lngSimKey=null;lngLive();}return;}
+  const fs=KL_FSRU(), pos=act.pos||[fs[0]+0.004,fs[1]-0.009], key=act.name+(act.replay?'r':'');
+  const moved=lngMoved(act), ph=act.h<LNG_PREP?'pievieno šļūtenes':moved>=act.vol?'pārkrauts, gatavojas atiet':'pārsūknē LNG krātuvē';
+  if(lngSimKey!==key){lngSimLayer.clearLayers();lngSimKey=key;
+    L.polyline([pos,fs],{color:'#0e7490',weight:5,className:'flow'}).addTo(lngSimLayer);
+    const m=act.replay?L.marker(pos,{icon:shipIcon('gas','#0e7490',300),opacity:.75}).addTo(lngSimLayer)
+                      :L.circleMarker(pos,{radius:1,opacity:0,fillOpacity:0}).addTo(lngSimLayer);
+    lngSimTip=m.bindTooltip('',{permanent:true,direction:'left',offset:[-12,0],className:'simtip'});
+    if(act.replay)map.setView(fs,12);}
+  lngSimTip.setTooltipContent(`${esc(act.name)}${act.replay?' (atskaņojums)':''}<br>${ph}<br>pārsūknēts ~${nf(Math.round(moved/1000))} tūkst. m³ · ${Math.round(moved/act.vol*100)}%`);
+  lngLive();
+}
+setInterval(lngTick,1000);
 function lngMap(pct,cap,at){
   const pos=KL_FSRU(), p=pct==null?0:Math.round(pct);
   const html=`<div style="display:flex;align-items:center;gap:5px;width:max-content;transform:translate(18px,-34px)">
@@ -695,14 +721,16 @@ function lngMap(pct,cap,at){
 function lngLive(){
   const el=document.getElementById('lnglive'); if(!TERM)return;
   const k=TERM.klaipeda_lng, ls=k.level_sim, cap=k.capacity_m3;
-  let pct=lngNow();
+  let pct=lngNow(); const act=lngActive();
+  if(act&&pct!=null)pct=Math.min(100,(act.replay?act.base:pct)+lngMoved(act)/cap*100);
   const at=GASNOW.filter(g=>g.lat!=null&&hav([g.lat,g.lon],KL_FSRU())<=1.0&&!/INDEPENDENCE/i.test(g.name||'')&&(g.sog??0)<1);
   const coming=ENIN.filter(s=>s.port_id==='klaipeda'&&s.gas);
   let extra='';
-  if(at.length){const g=at[0], v=(g.length||0)>=260?170000:(g.length||0)>=200?140000:(g.length||0)>=120?30000:7500;
+  if(act){extra=`<div class="note"><span class="dot"></span><b>${esc(act.name)}</b>${act.replay?' (atskaņojums)':''} pie FSRU: ${act.h<LNG_PREP?'pievieno šļūtenes':'pārsūknēts ~'+nf(Math.round(lngMoved(act)/1000))+' no ~'+nf(Math.round(act.vol/1000))+' tūkst. m³'}.</div>`;}
+  else if(at.length){const g=at[0], v=(g.length||0)>=260?170000:(g.length||0)>=200?140000:(g.length||0)>=120?30000:7500;
     extra=`<div class="note"><span class="dot"></span><b>${esc(g.name)}</b> ${fl(g.mmsi,true)} stāv pie FSRU: notiek LNG pārkraušana (~${nf(Math.round(v*.95/1000))} tūkst. m³; ${esc(g.load||'')}).</div>`;}
-  lngMap(pct,cap,at[0]);
-  el.className=at.length?'live':'live idle';
+  lngMap(pct,cap,act||at[0]);
+  el.className=(act||at.length)?'live':'live idle';
   el.innerHTML=`<div class="hd"><b>Krātuve: ~${pct==null?'–':pct.toFixed(0)} %</b><span class="note">simulācija · krātuve ${cap/1000} tūkst. m³ LNG</span></div>
     <div class="tank lng"><div style="width:${pct??0}%"></div><em><span>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG · ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes</span></em></div>
     ${ls?`<div class="note">Izsūtīšana tīklā ~${nf(ls.rate_m3_day)} m³ LNG/d (≈ ${ls.rate_mcm_day} mlj. m³ gāzes dienā)${ls.rate_m3_day&&pct!=null?`; bez jaunas piegādes pie vidējā patēriņa pietiktu ~${Math.max(0,Math.round((pct-5)/100*cap/ls.rate_m3_day))} dienām`:''}.</div>`:''}
@@ -727,6 +755,7 @@ async function loadTerminals(){
   try{const r=await fetch('../data/butinge/latest.json?t='+Date.now());if(r.ok)BTSHIPS=(await r.json()).ships||[];}catch(e){}
   try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(r.ok)GASNOW=(await r.json()).gas_ships||[];}catch(e){}
   try{const r=await fetch('../data/ports/energy_inbound.json?t='+Date.now());if(r.ok)ENIN=(await r.json()).ships||[];}catch(e){}
+  try{const r=await fetch('../data/terminals/live_lng.json?t='+Date.now());if(r.ok)LIVE=await r.json();}catch(e){}
   const bt=TERM.butinge, kl=TERM.klaipeda_lng;
   document.getElementById('termsum').textContent=`Periods ${TERM.period[0]} – ${TERM.period[1]} · atjaunots ${new Date(TERM.updated).toLocaleString('lv-LV')}. GFW dati nāk ar dažu dienu nobīdi, tāpēc pēdējās dienas var trūkt.`;
   document.getElementById('btkpi').innerHTML=kpis(bt.summary,'t',v=>(v/1e6).toLocaleString('lv-LV',{maximumFractionDigits:1})+' mlj. t');

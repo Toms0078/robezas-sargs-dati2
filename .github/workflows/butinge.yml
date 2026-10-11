@@ -49,7 +49,7 @@ jobs:
             git pull -q --rebase -X theirs origin main || git rebase --abort || true
             mkdir -p data/butinge
             python butinge_ais.py "$SECONDS_PER_RUN" 2>&1 | tail -n 60 | tee data/butinge/last_run.log || true
-            git add data/butinge data/ports
+            git add data/butinge data/ports data/terminals/live_lng.json 2>/dev/null || git add data/butinge data/ports
             if ! git diff --cached --quiet; then
               git commit -q -m "Būtiņģe: AIS $(date -u +%Y-%m-%dT%H:%MZ)"
               for i in 1 2 3; do

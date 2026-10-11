@@ -342,6 +342,55 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
     return big, small
 
 
+def live_lng_arrivals():
+    pth = Path(__file__).parent / "data" / "terminals" / "live_lng.json"
+    if not pth.exists():
+        return []
+    out = []
+    for a in json.loads(pth.read_text()).get("arrivals", []):
+        cap = lng_cap(a.get("length") or 0, 0)
+        if cap <= 30000:
+            continue
+        out.append({"start": a["first"], "end": a["last"], "hours": a.get("hours"), "name": a.get("name"),
+                    "mmsi": a.get("mmsi"), "imo": a.get("imo"), "length": a.get("length"), "gt": 0,
+                    "flag": None, "volume": round(cap * 0.95, -2), "from": None, "source": "AIS"})
+    return out
+
+
+def butinge_ais_calls():
+    pth = Path(__file__).parent / "data" / "butinge" / "calls.jsonl"
+    if not pth.exists():
+        return []
+    out = []
+    for line in pth.read_text().splitlines():
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        if e.get("event") != "atstāja" or not e.get("arrived"):
+            continue
+        h = (datetime.fromisoformat(e["time"][:19]) - datetime.fromisoformat(e["arrived"][:19])).total_seconds() / 3600
+        if h < 8:
+            continue
+        out.append({"start": e["arrived"], "end": e["time"], "hours": round(h, 1), "name": e.get("name"),
+                    "mmsi": e.get("mmsi"), "imo": e.get("imo"), "gt": 0, "flag": None, "volume": 110000,
+                    "from": None, "source": "AIS"})
+    return out
+
+
+def merge_ais(calls, ais, kind):
+    """Pievieno AIS redzētās ierašanās, kuru GFW datos vēl nav (tas pats kuģis ±3 dienas = jau ir)."""
+    res = list(calls)
+    for a in ais:
+        ta = datetime.fromisoformat(a["start"][:19])
+        dup = any((c.get("name") or "").upper() == (a.get("name") or "").upper() and
+                  abs((datetime.fromisoformat(c["start"][:19]) - ta).total_seconds()) < 3 * 86400 for c in res)
+        if not dup:
+            res.append(a)
+    res.sort(key=lambda c: c["start"] or "")
+    return res
+
+
 def summarize_calls(calls, kind):
     by_month, by_country = {}, {}
     for c in calls:
@@ -521,6 +570,8 @@ def main():
 
     bt_calls = build(bt_all, BUTINGE, "crude")
     kl_calls, kl_small = lng_deliveries(token, cache, kl_all + roads, visits_per_vessel, ais_len, start, end, test)
+    kl_calls = merge_ais(kl_calls, live_lng_arrivals(), "lng")
+    bt_calls = merge_ais(bt_calls, butinge_ais_calls(), "crude")
     out = {
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "period": [start.isoformat(), end.isoformat()],

@@ -379,7 +379,7 @@ PORTS = [
 ]
 # LNG termināļi Baltijas jūrā (aptuvenas koordinātas; peldošās krātuves var pārvietoties)
 LNG_TERMINALS = [
-    {"name": "Klaipēdas LNG (peldošā krātuve Independence)", "country": "LT", "lat": 55.64, "lon": 21.13, "kind": "FSRU"},
+    {"name": "Klaipēdas LNG (peldošā krātuve Independence)", "country": "LT", "lat": 55.6645, "lon": 21.1375, "kind": "FSRU"},
     {"name": "Inkoo LNG (peldošā krātuve)", "country": "FI", "lat": 60.03, "lon": 24.00, "kind": "FSRU"},
     {"name": "Svinoujsces LNG terminālis", "country": "PL", "lat": 53.93, "lon": 14.27, "kind": "krasta"},
     {"name": "Mukrānas LNG (Deutsche Ostsee)", "country": "DE", "lat": 54.50, "lon": 13.62, "kind": "FSRU"},
@@ -1495,6 +1495,55 @@ async def listen(key, seconds, tracked=()):
     return msgs
 
 
+# ---------------------------------------------------------------------------
+# Klaipēdas FSRU: LNG kuģu ierašanās pēc AIS (lai simulācija nav jāgaida uz GFW datiem)
+FSRU_POS = (55.6645, 21.1375)
+LIVE_LNG = Path(__file__).parent / "data" / "terminals" / "live_lng.json"
+
+
+def fsru_watch(messages, cache, now):
+    st = json.loads(LIVE_LNG.read_text()) if LIVE_LNG.exists() else {"at": {}, "arrivals": []}
+    seen = {}
+    for m in messages:
+        meta = m.get("MetaData", {})
+        body = m.get("Message", {})
+        mmsi = meta.get("MMSI")
+        for k in ("PositionReport", "StandardClassBPositionReport"):
+            if mmsi and k in body:
+                p = body[k]
+                la, lo = p.get("Latitude"), p.get("Longitude")
+                if la is None or abs(la) > 90:
+                    continue
+                if km((la, lo), FSRU_POS) <= 0.8 and (p.get("Sog") or 0) < 1:
+                    seen[str(mmsi)] = (la, lo)
+    t = iso(now)
+    for key in seen:
+        c = cache.get(key) or {}
+        name = (c.get("name") or "").upper()
+        L = c.get("length") or 0
+        typ = c.get("type")
+        if "INDEPENDENCE" in name or L < 120:
+            continue
+        if not (is_gas_ship(name, typ) or (typ is not None and 80 <= typ <= 89) or (typ is None and L >= 200)):
+            continue
+        a = st["at"].setdefault(key, {"mmsi": int(key), "name": c.get("name"), "imo": c.get("imo"),
+                                      "length": L, "first": t})
+        a["last"] = t
+        a["lat"], a["lon"] = round(seen[key][0], 5), round(seen[key][1], 5)
+    for key, a in list(st["at"].items()):
+        last = datetime.strptime(a["last"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        if now - last > timedelta(hours=8):
+            first = datetime.strptime(a["first"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+            if (last - first).total_seconds() >= 6 * 3600:
+                st["arrivals"].append({**a, "hours": round((last - first).total_seconds() / 3600, 1)})
+            del st["at"][key]
+    st["arrivals"] = st["arrivals"][-60:]
+    st["updated"] = t
+    LIVE_LNG.parent.mkdir(parents=True, exist_ok=True)
+    LIVE_LNG.write_text(json.dumps(st, ensure_ascii=False, indent=1))
+    return st
+
+
 def main():
     key = os.environ.get("AISSTREAM_API_KEY")
     if not key:
@@ -1528,6 +1577,11 @@ def main():
           f"{sum(1 for x in summary['ru_tankers'] if x['shadow_listed'])}")
     PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
+    try:
+        fw = fsru_watch(msgs, cache, now_utc())
+        print(f"Pie Klaipēdas FSRU (AIS): {[a['name'] for a in fw['at'].values()]}, ierašanās žurnālā: {len(fw['arrivals'])}")
+    except Exception as ex:
+        print("fsru_watch:", ex)
     old_lv = INBOUND_FILE.parent / "inbound_lv.json"
     src = INBOUND_FILE if INBOUND_FILE.exists() else old_lv
     inbound_state = json.loads(src.read_text()) if src.exists() else {}
