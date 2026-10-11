@@ -78,6 +78,7 @@ def last_port_visit(token, ids, days=120):
         if not name:
             continue
         v = {"port": name.title(), "country": anch.get("flag"), "start": e.get("start"), "end": e.get("end"),
+             "lat": anch.get("lat"), "lon": anch.get("lon"),
              "at_dock": anch.get("atDock"), "hours": round(pv.get("durationHrs") or 0, 1),
              "transit": any(t in name.upper() for t in TRANSIT) and (pv.get("durationHrs") or 0) < 20}
         if visits and visits[-1]["port"] == v["port"]:

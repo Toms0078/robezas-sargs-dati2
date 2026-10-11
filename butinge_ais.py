@@ -1185,16 +1185,20 @@ def _approach_node(center):
     return min(_BALTIC_NODES, key=lambda n: km(center, NODES[n][:2]))
 
 
-def _dist_from_node(start, center):
-    key = ("node", start, center)
+def _dist_from_node(start, center, canal=True):
+    """Dijkstra no ostas pieejas mezgla. canal=False: bez Ķīles kanāla (lieliem kuģiem: >235 m vai iegrime >9,5 m)."""
+    key = ("node", start, center, canal)
     if key in _DIST_CACHE:
         return _DIST_CACHE[key]
     adj = {n: [] for n in NODES}
     for u, v in EDGES:
+        if not canal and "kielCanal" in (u, v):
+            continue
         w = km(NODES[u][:2], NODES[v][:2])
         adj[u].append((v, w))
         adj[v].append((u, w))
     dist = {n: float("inf") for n in NODES}
+    prev = {}
     dist[start] = km(NODES[start][:2], center)
     todo = set(NODES)
     while todo:
@@ -1203,17 +1207,43 @@ def _dist_from_node(start, center):
         for v, w in adj[u]:
             if dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
+                prev[v] = u
     _DIST_CACHE[key] = dist
+    _DIST_CACHE[("prev", start, center, canal)] = prev
     return dist
 
 
-def route_km_to(pos, center):
+def route_path(pos, center, canal=True):
+    """Atlikušā maršruta punkti [[lat, lon], ...] no kuģa līdz ostai pa jūras ceļu tīklu."""
+    pts = [[round(pos[0], 3), round(pos[1], 3)]]
+    if km(pos, center) < 60:
+        return pts + [list(center)]
+    if pos[0] > 55.9 and pos[1] < 12.8 and pos[1] > 9.5:
+        pts += [[55.95, 12.65], [55.40, 12.85]]
+        pos = (55.40, 12.85)
+    start = _approach_node(center)
+    dist = _dist_from_node(start, center, canal)
+    prev = _DIST_CACHE[("prev", start, center, canal)]
+    near = sorted(NODES, key=lambda n: km(pos, NODES[n][:2]))[:2]
+    n = min(near, key=lambda n: km(pos, NODES[n][:2]) + dist[n])
+    guard = 0
+    while n is not None and guard < 60:
+        pts.append([NODES[n][0], NODES[n][1]])
+        if n == start:
+            break
+        n = prev.get(n)
+        guard += 1
+    pts.append(list(center))
+    return pts
+
+
+def route_km_to(pos, center, canal=True):
     direct = km(pos, center)
     if direct < 60:
         return direct
-    dist = _dist_from_node(_approach_node(center), center)
+    dist = _dist_from_node(_approach_node(center), center, canal)
     if pos[0] > 55.9 and pos[1] < 12.8 and pos[1] > 9.5:
-        return km(pos, (55.95, 12.65)) + km((55.95, 12.65), (55.40, 12.85)) + route_km_to((55.40, 12.85), center)
+        return km(pos, (55.95, 12.65)) + km((55.95, 12.65), (55.40, 12.85)) + route_km_to((55.40, 12.85), center, canal)
     near = sorted(NODES, key=lambda n: km(pos, NODES[n][:2]))[:2]
     return min(km(pos, NODES[n][:2]) + dist[n] for n in near)
 
@@ -1306,6 +1336,10 @@ def process_energy(messages, state, vessels, sanctions, now):
                        "last_seen": min(ptime, iso(now))})
             if p.get("_src"):
                 sh["via"] = p["_src"]
+            tr = sh.setdefault("track", [])
+            if not tr or km((tr[-1][0], tr[-1][1]), (la, lo)) >= 3:
+                tr.append([round(la, 3), round(lo, 3), sh["last_seen"][:16]])
+                del tr[:-80]
         if sh.get("lat") is None:
             continue
         center = tuple(sh["dest_pos"])
@@ -1316,7 +1350,8 @@ def process_energy(messages, state, vessels, sanctions, now):
                             "how": "AIS"})
             ships.pop(key)
             continue
-        rem = route_km_to((sh["lat"], sh["lon"]), center)
+        canal = (sh.get("length") or 0) <= 235 and (sh.get("draught") or 0) <= 9.5
+        rem = route_km_to((sh["lat"], sh["lon"]), center, canal)
         sh["route_km"] = round(rem)
         seen = datetime.strptime(sh.get("last_seen") or sh["first_seen"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
         sog = sh.get("sog") or 0
@@ -1344,6 +1379,8 @@ def process_energy(messages, state, vessels, sanctions, now):
         if sh.get("lat") is None:
             continue
         sh = dict(sh)
+        sh["route"] = route_path((sh["lat"], sh["lon"]), tuple(sh["dest_pos"]),
+                                 (sh.get("length") or 0) <= 235 and (sh.get("draught") or 0) <= 9.5)
         if sh.get("gas"):
             L, t = sh.get("length") or 0, sh.get("draught")
             name = (sh.get("name") or "").upper()
