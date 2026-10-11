@@ -261,7 +261,9 @@ def main():
             lst = json.loads(rr.read())
         items = lst if isinstance(lst, list) else [x for v in lst.values() for x in (v if isinstance(v, list) else [])]
         for comp in items:
-            if comp.get("country") not in ("LT", "PL", "FI", "DE"):
+            if comp.get("country") in ("SE", "NO", "DK", "EE", "FI"):
+                print("ALSI saraksts:", comp.get("country"), comp.get("name"), [f.get("name") for f in comp.get("facilities") or []])
+            if comp.get("country") not in ("LT", "PL", "FI", "DE", "SE", "NO", "DK", "EE"):
                 continue
             for fac in comp.get("facilities") or []:
                 fname = fac.get("name") or ""
