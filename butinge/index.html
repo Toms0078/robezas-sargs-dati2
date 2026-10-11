@@ -920,7 +920,8 @@ function drawOtherLng(){
     const html=`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(14px,-22px)">
       <div style="flex:none;width:${has?14:10}px;height:${has?40:26}px;border:2px solid ${col};border-radius:3px;background:var(--panel);position:relative;overflow:hidden"><div style="position:absolute;left:0;right:0;bottom:0;height:${p||0}%;background:${col}"></div></div>
       <div style="font:700 ${has?.74:.66}rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:4px;padding:1px 5px">${t.name} ${has?p+'%':t.lpg?'':'–'}</div></div>`;
-    otherLngMarkers.push(L_marker(FSRU_POS[t.name]||t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f?lngFacInfo(f):'ALSI dati vēl nav ielādēti')));});
+    otherLngMarkers.push(L_marker(FSRU_POS[t.name]||t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f&&has?lngFacInfo(f):(()=>{const v=FLOWS&&t.key==='HAMINA'?flowVal('HAMINA','entry'):null;
+      return 'Krājumu datus terminālis ALSI nepublicē.'+(v!=null?`<br>Izsūtīts tīklā (ENTSOG): <b>${nf(v)} GWh/d</b> ≈ ${(v/10.55).toFixed(2)} mlj. m³ gāzes dienā`:'');})())));});
 }
 function L_marker(pos,html,pop){return L.marker(pos,{icon:L.divIcon({className:'',iconSize:[0,0],html}),zIndexOffset:450}).bindPopup(pop,{maxWidth:320}).addTo(termLayer);}
 async function loadTerminals(){
