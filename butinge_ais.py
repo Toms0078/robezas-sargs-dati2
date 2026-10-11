@@ -387,12 +387,14 @@ LNG_TERMINALS = [
     {"name": "Kaļiņingradas FSRU (Marshal Vasilevskiy)", "country": "RU", "lat": 54.70, "lon": 19.95, "kind": "FSRU"},
 ]
 # Gāzes kuģi AIS nav atsevišķs tips; tos atpazīst pēc nosaukuma
-GAS_RE = re.compile(r"LNG|LPG|GAS(?!US)|HOEGH|EXEMPLAR|ENERGOS|TRANSGAS|VASILEVSK|GASLOG|ECOGAS")
+GAS_RE = re.compile(r"LNG|LPG|(^|[^A-Z])GAS|GAS($|[^A-Z])|HOEGH|EXEMPLAR|ENERGOS|TRANSGAS|VASILEVSK|GASLOG|ECOGAS")
 GAS_FSRU_NAMES = re.compile(r"^(INDEPENDENCE|EXEMPLAR|HOEGH .*|NEPTUNE|ENERGOS .*|TRANSGAS .*|MARSHAL VASILEVSKIY)$")
 
 
 def is_gas_ship(name, t):
     n = (name or "").upper().strip()
+    if t is not None and (60 <= t <= 69 or t in (31, 32, 52)):
+        return False   # pasažieru kuģi/prāmji (piem. MEGASTAR) un velkoņi nav gāzes kuģi
     if GAS_RE.search(n):
         return True
     return bool(GAS_FSRU_NAMES.match(n)) and (t is None or 80 <= t <= 89 or t == 90)
