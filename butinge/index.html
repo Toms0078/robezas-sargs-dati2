@@ -235,6 +235,7 @@ async function loadGas(d){
 }
 
 
+const sarLayer=L.layerGroup().addTo(map);
 // Naftas jūras objekti Baltijā
 const offLayer=L.layerGroup().addTo(map);
 const OFFSHORE=[
@@ -346,7 +347,6 @@ async function loadGates(){
   }catch(e){}
 }
 
-const sarLayer=L.layerGroup().addTo(map);
 async function loadSar(){
   let d;
   try{const r=await fetch('../data/sar/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}

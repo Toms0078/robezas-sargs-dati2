@@ -59,7 +59,10 @@ def km(a, b):
 
 
 def dest_matches(dest):
-    return bool(dest) and bool(DEST_RE.search(dest.upper()))
+    d = (dest or "").upper().strip()
+    if ">" in d:                      # "NO>UZ": galamērķis ir pēdējā daļa
+        d = d.split(">")[-1].strip()
+    return bool(d) and bool(DEST_RE.search(d))
 
 
 def est_dwt(length):
@@ -267,7 +270,7 @@ def process(messages, state, vessels, now):
             sh.pop("arrived", None)
             sh.pop("arrival_draught", None)
         if keep:
-            out.append(cargo_guess(load_estimate(sh, vessels), "butinge"))
+            out.append(cargo_guess(load_estimate(sh, vessels), "butinge" if sh.get("dest_match") else None))
 
     moored = [s for s in out if s["status"] == "pie_bojas" and s.get("lat")]
     learned = state.get("learned_buoy")
