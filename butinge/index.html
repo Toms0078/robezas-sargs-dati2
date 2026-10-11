@@ -138,6 +138,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
   </section>
   <section class="panel" id="kratuves"><h2>Pazemes gāzes krātuves</h2>
     <div class="note" id="ugssum">Ielādē…</div>
+    <div id="incdays" class="live idle" style="margin-top:10px"></div>
     <div class="tw" style="margin-top:8px"><table id="ugstab"></table></div>
     <p class="note">Kartē slānis <b>“Gāzesvadi un plūsmas”</b>: oranžā līnija kustas gāzes plūsmas virzienā, biezums un ātrums atbilst daudzumam (GWh dienā, iepriekšējā pilnā diena, ENTSOG). Sarkans = Krievijas gāzes tranzīts caur Lietuvu uz Kaļiņingradu. Pelēks punktēts = slēgti savienojumi ar Krieviju. Trases ir shematiskas; Latvija→Igaunija plūsma aprēķināta no bilances (Igaunijas patēriņš + Balticconnector).</p>
   </section>
@@ -613,7 +614,7 @@ function pipeFlows(){
 }
 async function loadFlows(){
   try{const r=await fetch('../data/gas_flows/latest.json?t='+Date.now());if(!r.ok)throw 0;FLOWS=await r.json();}catch(e){return;}
-  FLOWS._day=flowDay(); const F=pipeFlows(); pipeLayer.clearLayers(); if(GS)drawOtherLng();
+  FLOWS._day=flowDay(); const F=pipeFlows(); pipeLayer.clearLayers(); if(GS)drawOtherLng(); renderIncDays();
   PIPES.forEach(p=>{
     let val=p.closed?0:F[p.id]; if(p.id==='ltmain')val=Math.max(0,(F.ltlv||0)-(F.klp||0)); // ja Klaipēda nesedz visu, pārējais nāk pa maģistrāli
     const a=Math.abs(val||0), pts=(val||0)<0?[...p.pts].reverse():p.pts;
@@ -655,9 +656,26 @@ function ugsPopup(g){const bcm=x=>(x/10.55).toFixed(2), d30=g.series&&g.series.l
     (g.wdcap?`Ar maksimālo izņemšanu iztukšotos ~${Math.round(g.gas*1000/g.wdcap)} dienās<br>`:'')+(g.cons!=null?`Krājums ≈ ${g.cons.toFixed(0)}% no valsts gada patēriņa<br>`:'')+(g.series?spark(g.series):'')
    :'Dati nav pieejami')+(g.parts.length>1?`<br><span style="color:#64748b">${g.parts.map(f=>esc(f.name)+': '+(f.full_pct!=null?f.full_pct.toFixed(0)+'%':'–')).join('<br>')}</span>`:'')+`<br><span style="color:#64748b">GIE AGSI+ · vieta aptuvena</span>`;}
 const KALININGRAD_UGS={lat:54.83,lon:20.33};
+let UGSD=null;
+function renderIncDays(){
+  const el=document.getElementById('incdays'); if(!el||!UGSD)return;
+  const inc=(UGSD.facilities||[]).find(f=>/INCUKALN/i.test(f.name||'')); if(!inc||inc.gas_twh==null){el.innerHTML='';return;}
+  const gwh=inc.gas_twh*1000, W=(FLOWS&&FLOWS.winter)||{}, lvW=W['Latvia domestic consumption'], eeW=W['Estonia Final Consumers Point'];
+  const lvNow=FLOWS?flowVal('LATVIA DOMESTIC','exit'):null, eeNow=FLOWS?flowVal('ESTONIA FINAL','exit'):null;
+  const d=x=>x?Math.round(gwh/x):null, row=(t,x,c)=>x?`<tr><td>${t}</td><td>${nf(Math.round(x))} GWh/d</td><td><b>~${nf(d(x))} dienas</b>${c?' <span class="note">'+c+'</span>':''}</td></tr>`:'';
+  el.innerHTML=`<div class="hd"><b>Cik ilgi pietiktu Inčukalna gāzes?</b><span class="note">krājums ${nf(Math.round(gwh))} GWh ≈ ${(inc.gas_twh/10.55).toFixed(2)} mljrd. m³ (${esc(inc.day)})</span></div>
+    <div class="tw"><table><tr><th>Ja patērētu tikai no Inčukalna…</th><th>Patēriņš</th><th>Pietiktu</th></tr>
+    ${row('Latvija – tagad (oktobris)',lvNow)}${row('Latvija – pagājušās ziemas vidēji',lvW&&lvW.avg_gwh)}${row('Latvija – aukstākā diena pērn',lvW&&lvW.max_gwh)}
+    ${row('Latvija + Igaunija – ziemā vidēji',lvW&&eeW&&lvW.avg_gwh+eeW.avg_gwh)}${row('Latvija + Igaunija – aukstākā diena',lvW&&eeW&&lvW.max_gwh+eeW.max_gwh)}</table></div>
+    <div class="note">Pagājušajā ziemā (dec–feb) Latvija kopā patērēja ${lvW?nf(lvW.total_gwh)+' GWh':'–'} – Inčukalnā tagad ir ${lvW?(gwh/lvW.total_gwh).toFixed(1)+'×':'–'} tik daudz.
+    Bet: maksimālā izņemšana no Inčukalna ir ~${nf(Math.round(inc.wd_cap_gwh||0))} GWh/d${lvW&&inc.wd_cap_gwh&&lvW.max_gwh>inc.wd_cap_gwh?` – mazāk nekā Latvijas patēriņš aukstākajā dienā (${nf(lvW.max_gwh)}), tāpēc ziemā vienlaikus vajag arī Klaipēdas LNG`:''}.
+    Inčukalna gāze pieder tirgotājiem no Latvijas, Lietuvas, Igaunijas un Somijas, ne tikai Latvijai. Lietuvas un Somijas patēriņš te nav ieskaitīts. Avots: ENTSOG, GIE AGSI+.</div>`;
+  el.className='live';
+}
 async function loadUgs(){
   let d; try{const r=await fetch('../data/gas_storage/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
   catch(e){document.getElementById('ugssum').textContent='Dati vēl nav savākti.';return;}
+  UGSD=d; renderIncDays();
   ugsLayer.clearLayers();
   const fac=(d.facilities||[]).filter(f=>UGS_MAP.includes(f.country)&&f.lat!=null&&f.full_pct!=null);
   const groups=ugsGroups(fac);
