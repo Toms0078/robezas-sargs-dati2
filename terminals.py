@@ -159,7 +159,7 @@ KL_PORT = (55.715, 21.06)   # Klaipēdas osta + reids (apmeklējumi ≤ 30 km)
 # LNG eksporta termināļi (kuģis, kas tur stāvējis ≥ 8 h, ir LNG tankkuģis)
 LNG_EXPORT = {"Hammerfest (Melkøya)": (70.684, 23.600, 6), "Sabine Pass": (29.745, -93.870, 4),
               "Cameron LNG": (30.035, -93.330, 4), "Calcasieu Pass": (29.770, -93.340, 4),
-              "Plaquemines": (29.460, -89.624, 5), "Corpus Christi": (27.885, -97.260, 2.5),
+              "Plaquemines": (29.460, -89.624, 2), "Corpus Christi": (27.885, -97.260, 2.5),
               "Freeport": (28.935, -95.310, 2.5), "Cove Point": (38.400, -76.383, 4), "Elba Island": (32.087, -81.000, 3),
               "Ras Laffan": (25.900, 51.580, 6), "Idku": (31.330, 30.300, 4), "Point Fortin": (10.180, -61.690, 4),
               "Soyo": (-6.100, 12.350, 6), "Bioko": (3.770, 8.700, 5)}
@@ -254,7 +254,7 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
 
     big, small = [], []
     for name, c in cands.items():
-        key = f"pv365b:{c['id']}:{end.isoformat()}"
+        key = f"pv365c:{c['id']}:{end.isoformat()}"
         if key not in cache:
             try:
                 res = call(token, "/events", {"limit": 200, "offset": 0, "sort": "-start"},
@@ -302,22 +302,23 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                     cur["hours"] += ev["h"]
                     cur["fsru"] = cur["fsru"] or ev["fsru_km"] <= 0.5
                 else:
-                    prev = None
+                    prev, src = None, None
+                    t0 = datetime.fromisoformat(ev["start"][:19])
                     for pe in reversed([x for x in evs if (x["end"] or "") <= ev["start"]]):
                         if pe["kl_km"] <= 30 or pe["aid"].startswith("ltu-klaipeda"):
                             continue
-                        if any(t in pe["port"].upper() for t in TRANSIT) and pe["h"] < 20:
+                        pn = pe["port"].upper()
+                        if "SKAGEN" in pn or pe.get("lng_term") == "Skagen (gaida)":
+                            continue  # gaidīšana pie Skāgenas
+                        if any(t in pn for t in TRANSIT) and pe["h"] < 20:
                             continue
                         if pe["h"] < 3:
                             continue
-                        prev = {"port": pe.get("lng_exp") or pe["port"].title(), "country": pe["cc"], "end": pe["end"],
-                                "lng_export": bool(pe.get("lng_exp"))}
+                        prev = {"port": pe.get("lng_exp") or pe.get("lng_term") or pe["port"].title(),
+                                "country": pe["cc"], "end": pe["end"], "lng_export": bool(pe.get("lng_exp"))}
+                        if (t0 - datetime.fromisoformat(pe["end"][:19])).days <= 60:
+                            src = pe.get("lng_exp") or pe.get("lng_term")
                         break
-                    t0 = datetime.fromisoformat(ev["start"][:19])
-                    before = [x for x in evs if (x["end"] or "") <= ev["start"] and
-                              (t0 - datetime.fromisoformat(x["end"][:19])).days <= 45 and x["kl_km"] > 30]
-                    src = next((x.get("lng_exp") or x.get("lng_term") for x in reversed(before[-4:])
-                                if x.get("lng_exp") or x.get("lng_term")), None)
                     cur = {"start": ev["start"], "end": ev["end"], "hours": ev["h"], "fsru": ev["fsru_km"] <= 0.5,
                            "from": prev, "src": src}
                     groups.append(cur)
@@ -524,7 +525,7 @@ def main():
     }
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
     today = end.isoformat()
-    cache = {k: v for k, v in cache.items() if not (k.startswith("pv365") and not (k.startswith("pv365b:") and k.endswith(today)))}
+    cache = {k: v for k, v in cache.items() if not (k.startswith("pv365") and not (k.startswith("pv365c:") and k.endswith(today)))}
     CACHE.write_text(json.dumps(cache, ensure_ascii=False))
     for nm, calls in (("Būtiņģe", bt_calls), ("Klaipēdas LNG", kl_calls)):
         print(f"{nm}: {len(calls)} piegādes")
