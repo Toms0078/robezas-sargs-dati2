@@ -402,6 +402,29 @@ def is_tanker(t):
     return t is not None and 80 <= t <= 89
 
 
+LNG_DEST = [
+    (r"KLAIP|LT\s*KLJ", "Klaipēdas LNG (peldošā krātuve Independence)"),
+    (r"INKOO|FI\s*INK", "Inkoo LNG (peldošā krātuve)"),
+    (r"SWINO|[SŚ]WINOUJ|PL\s*SWI", "Svinoujsces LNG terminālis"),
+    (r"MUKRAN|DE\s*MUK|SASSNITZ", "Mukrānas LNG (Deutsche Ostsee)"),
+    (r"HAMINA|FI\s*HMN", "Haminas LNG terminālis"),
+    (r"(^|[^A-Z])PORI|FI\s*POR", "Pori LNG terminālis"),
+    (r"TORNIO|FI\s*TOR", "Tornio Manga LNG"),
+    (r"NYNAS|SE\s*NYN", "Nīneshamnas LNG"),
+    (r"VYSOTSK|RU\s*VYS", "Visockas LNG"),
+    (r"PORTOVA", "Portovaja LNG"),
+    (r"KALININGRAD|RU\s*KGD", "Kaļiņingradas FSRU (Marshal Vasilevskiy)"),
+]
+
+
+def lng_dest(dest):
+    d = (dest or "").upper()
+    for rx, name in LNG_DEST:
+        if re.search(rx, d):
+            return name
+    return None
+
+
 def gas_ships(pos, cache):
     """Visi dzirdamie gāzes kuģi, ar tuvāko LNG termināli."""
     out = []
@@ -422,11 +445,29 @@ def gas_ships(pos, cache):
             "draught": c.get("draught") or None, "destination": c.get("destination"), "eta": c.get("eta"),
             "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"), "cog": p.get("Cog"),
             "gas_kind": kind,
+            "to_terminal": lng_dest(c.get("destination")),
             "status": "kustībā" if sog >= 1 else ("pie LNG termināļa" if dt <= 3 else "stāv"),
             "near_terminal": term["name"] if dt <= 15 else None,
             "terminal_km": round(dt, 1),
         })
-    out.sort(key=lambda x: (x["status"] == "kustībā", x["terminal_km"]))
+    for x in out:
+        if x["to_terminal"]:
+            t = next(t for t in LNG_TERMINALS if t["name"] == x["to_terminal"])
+            x["to_terminal_km"] = round(km((x["lat"], x["lon"]), (t["lat"], t["lon"])))
+            if x["status"] == "kustībā":
+                x["status"] = "ceļā uz LNG termināli"
+        # pilns vai tukšs pēc iegrimes (LNG kuģim iegrime pilnam ~11–12 m, tukšam ~9 m)
+        L = x.get("length") or 0
+        t = x.get("draught")
+        if t and L >= 200:
+            x["load"] = "pilns (ved gāzi)" if t >= 10.8 else ("tukšs / balastā" if t <= 9.6 else "daļēji")
+        elif t and L:
+            tmax = 0.06 * L          # mazs gāzes kuģis: aptuvenā pilna iegrime
+            x["load"] = "pilns (ved gāzi)" if t >= 0.85 * tmax else ("tukšs / balastā" if t <= 0.65 * tmax else "daļēji")
+        else:
+            x["load"] = None
+    order = {"ceļā uz LNG termināli": 0, "pie LNG termināļa": 1, "stāv": 2, "kustībā": 3}
+    out.sort(key=lambda x: (order[x["status"]], x["terminal_km"]))
     return out
 
 
