@@ -841,8 +841,8 @@ function lngMap(pct,cap,at){
     <div style="font:700 .82rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #0e7490;border-radius:4px;padding:2px 6px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3)">
       LNG ~${pct==null?'–':p}%${at?' <span class="dot" style="margin:0 0 0 4px"></span>':''}${(()=>{const n=nextLng(pct);return n?'<br><span style="font-weight:500">nākamā '+(n.d?'~'+n.d.toLocaleDateString('lv-LV',{day:'2-digit',month:'2-digit'}):'nav zināma')+'</span>':''})()}</div></div>`;
   const icon=L.divIcon({className:'',iconSize:[0,0],html});
-  const pop=`<b>Klaipēdas LNG krātuve (FSRU Independence)</b><br>Aizpildījums ~${pct==null?'–':p}% (${(lngModel()||{}).real?'ALSI fakts + aplēse':'simulācija'})<br>${nextTxt(nextLng(pct))}<br>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG ≈ ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes${at?'<br><b>'+esc(at.name)+'</b> stāv pie FSRU: notiek pārkraušana':''}<br><a href="#terminali">Vairāk: piegādes un grafiks ↓</a>`;
-  if(!lngMarker)lngMarker=L.marker(pos,{icon,zIndexOffset:500}).bindPopup(pop).addTo(termLayer);
+  const pop=`<b>Klaipēdas LNG krātuve (FSRU Independence)</b><br>Aizpildījums ~${pct==null?'–':p}% (${(lngModel()||{}).real?'ALSI fakts + aplēse':'simulācija'})<br>${nextTxt(nextLng(pct))}<br>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG ≈ ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes${at?'<br><b>'+esc(at.name)+'</b> stāv pie FSRU: notiek pārkraušana':''}${(()=>{const f=lngFac('KLAIP');return f?'<hr style="border:0;border-top:1px solid #ddd">'+lngFacInfo(f):''})()}<br><a href="#terminali">Vairāk: piegādes un grafiks ↓</a>`;
+  if(!lngMarker)lngMarker=L.marker(pos,{icon,zIndexOffset:500}).bindPopup(pop,{maxWidth:320}).addTo(termLayer);
   else{lngMarker.setLatLng(pos);lngMarker.setIcon(icon);lngMarker.setPopupContent(pop);}
 }
 function lngLive(){
@@ -877,19 +877,42 @@ function lngChart(){
   el.dataset.cap=ls.real?'Faktiskais krātuves aizpildījums (ALSI), pēdējie ~4 mēneši; līnijas = atpazītās piegādes':'Simulēts aizpildījums';
   el.innerHTML=`<div class="note" style="margin-bottom:2px">${el.dataset.cap}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="LNG krātuves aizpildījums pa dienām">${ticks}${marks}<path d="${path} L${x(n)} ${y(0)} L${x(0)} ${y(0)} Z" fill="#0e7490" fill-opacity=".15"/><path d="${path}" fill="none" stroke="#0e7490" stroke-width="2"/>${mt}</svg>`;
 }
-// Citi LNG termināļi Baltijā (ALSI, valsts kopsumma)
-const OTHER_LNG={PL:{name:'Svinoujsces LNG',pos:[53.925,14.27]},FI:{name:'Inkoo + Haminas LNG',pos:[60.03,24.0]}};
+// Visi LNG termināļi kartē: ALSI dati katram terminālim (ja publicē)
+const LNG_TERMS=[
+  {key:'WINOUJ',name:'Svinoujsces LNG',pos:[53.93,14.27]},{key:'INKOO',name:'Inkoo LNG',pos:[60.03,24.0]},
+  {key:'HAMINA',name:'Haminas LNG',pos:[60.55,27.17]},{key:'MUKRAN',name:'Mukrānas LNG',pos:[54.50,13.62]},
+  {name:'Pori LNG',pos:[61.60,21.45],nodata:'Mazs krasta LNG terminālis (rūpniecība, kuģu degviela). Publiskus krājumu datus nepublicē.'},
+  {name:'Tornio Manga LNG',pos:[65.80,24.15],nodata:'Mazs krasta LNG terminālis (Outokumpu tērauda rūpnīca u.c.). Publiskus krājumu datus nepublicē.'},
+  {name:'Nīneshamnas LNG',pos:[58.90,17.95],nodata:'Mazs LNG terminālis Zviedrijā (rūpniecība, kuģu degviela). ALSI datu nav.'},
+  {name:'Visockas LNG',pos:[60.62,28.57],nodata:'Krievijas LNG eksporta rūpnīca (Novatek). ES datu nav.'},
+  {name:'Portovaja LNG',pos:[60.43,28.07],nodata:'Krievijas LNG eksporta rūpnīca (Gazprom). ES datu nav.'},
+  {name:'Kaļiņingradas FSRU',pos:[54.70,19.95],nodata:'Krievijas peldošā LNG krātuve “Marshal Vasilevskiy”, rezerve Kaļiņingradai. Publisku datu nav.'},
+];
+function lngFac(key){const f=GS&&GS.lng_fac?GS.lng_fac.find(f=>(f.name||'').toUpperCase().includes(key)&&!/LUBMIN/i.test(f.name||'')):null;
+  if(f&&f.latest&&f.latest.inv_gwh==null){const r=[...(f.series||[])].reverse().find(x=>x.inv_gwh!=null&&x.dtmi_gwh);if(r)f.latest=r;}return f;}
+function lngFacInfo(f){
+  const S=(f.series||[]).filter(r=>r.inv_gwh!=null), r=f.latest; if(!r||r.inv_gwh==null)return 'Dati nav pieejami';
+  const m3pg=r.lng_m3&&r.inv_gwh?r.lng_m3/r.inv_gwh:null, pct=r.dtmi_gwh?r.inv_gwh/r.dtmi_gwh*100:null;
+  const last30=S.slice(-30), avg=last30.reduce((a,x)=>a+(x.sendout_gwh||0),0)/Math.max(1,last30.length);
+  const dels=[]; for(let i=1;i<S.length;i++){const d=S[i].inv_gwh-S[i-1].inv_gwh+(S[i].sendout_gwh||0);if(r.dtmi_gwh&&d>0.08*r.dtmi_gwh)dels.push({day:S[i].day,gwh:d});}
+  const spark=(()=>{const v=S.map(x=>x.dtmi_gwh?x.inv_gwh/x.dtmi_gwh*100:null).filter(x=>x!=null);if(v.length<2)return'';
+    return `<svg width="180" height="36" viewBox="0 0 180 36"><polyline fill="none" stroke="#0e7490" stroke-width="2" points="${v.map((x,i)=>(i/(v.length-1)*176+2).toFixed(1)+','+(33-x/100*30).toFixed(1)).join(' ')}"/></svg><br><span style="color:#64748b">pēdējās ${v.length} dienas (0–100 %)</span>`;})();
+  return `Krājums: <b>${nf(Math.round(r.lng_m3*1000))} m³ LNG</b>${pct!=null?` (<b>${pct.toFixed(0)}%</b> no ${nf(Math.round(r.dtmi_m3*1000))} m³)`:''}<br>
+    ≈ ${(r.inv_gwh/10.55).toFixed(0)} mlj. m³ gāzes · ${nf(Math.round(r.inv_gwh))} GWh<br>
+    Izsūtīts tīklā: ${nf(r.sendout_gwh)} GWh/d (≈ ${(r.sendout_gwh/10.55).toFixed(1)} mlj. m³)${r.dtrs_gwh?` · maks. ${nf(r.dtrs_gwh)} GWh/d`:''}<br>
+    Vidēji 30 d: ${nf(Math.round(avg))} GWh/d${avg>0?` → krājuma pietiktu ~${Math.round(r.inv_gwh/avg)} dienām`:''}<br>
+    Piegādes (krājuma lēcieni) ${S.length} dienās: <b>${dels.length}</b>${dels.length?' · pēdējās: '+dels.slice(-3).reverse().map(x=>`${x.day.slice(5)} ~${m3pg?nf(Math.round(x.gwh*m3pg))+' tūkst. m³':nf(Math.round(x.gwh))+' GWh'}`).join(', '):''}<br>
+    ${spark}<br><span style="color:#64748b">Diena ${esc(r.day)} · GIE ALSI · ${esc(f.company||'')}</span>`;}
 let otherLngMarkers=[];
 function drawOtherLng(){
   otherLngMarkers.forEach(m=>m.remove()); otherLngMarkers=[];
-  if(!GS||!GS.lng)return;
-  Object.entries(OTHER_LNG).forEach(([cc,t])=>{const L=GS.lng[cc]; if(!L||!L.latest||!L.latest.dtmi_gwh)return; const r=L.latest, p=Math.round(r.inv_gwh/r.dtmi_gwh*100);
+  LNG_TERMS.forEach(t=>{const f=t.key?lngFac(t.key):null, r=f&&f.latest, has=r&&r.dtmi_gwh&&r.inv_gwh!=null, p=has?Math.round(r.inv_gwh/r.dtmi_gwh*100):null, col=has?'#0e7490':'#9ca3af';
     const html=`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(14px,-22px)">
-      <div style="flex:none;width:14px;height:40px;border:2px solid #0e7490;border-radius:3px;background:var(--panel);position:relative;overflow:hidden"><div style="position:absolute;left:0;right:0;bottom:0;height:${p}%;background:#0e7490"></div></div>
-      <div style="font:700 .74rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #0e7490;border-radius:4px;padding:1px 5px">${t.name} ${p}%</div></div>`;
-    otherLngMarkers.push(L_marker(t.pos,html,`<b>${t.name}</b><br>LNG krājums ${nf(Math.round(r.lng_m3))} tūkst. m³ no ${nf(Math.round(r.dtmi_m3))} (${p}%)<br>Izsūtīts tīklā ${nf(r.sendout_gwh)} GWh/d (≈ ${(r.sendout_gwh/10.55).toFixed(1)} mlj. m³ gāzes)<br>Diena ${esc(r.day)} · avots GIE ALSI`));});
+      <div style="flex:none;width:${has?14:10}px;height:${has?40:26}px;border:2px solid ${col};border-radius:3px;background:var(--panel);position:relative;overflow:hidden"><div style="position:absolute;left:0;right:0;bottom:0;height:${p||0}%;background:${col}"></div></div>
+      <div style="font:700 ${has?.74:.66}rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:4px;padding:1px 5px">${t.name} ${has?p+'%':'–'}</div></div>`;
+    otherLngMarkers.push(L_marker(t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f?lngFacInfo(f):'ALSI dati vēl nav ielādēti')));});
 }
-function L_marker(pos,html,pop){return L.marker(pos,{icon:L.divIcon({className:'',iconSize:[0,0],html}),zIndexOffset:450}).bindPopup(pop).addTo(termLayer);}
+function L_marker(pos,html,pop){return L.marker(pos,{icon:L.divIcon({className:'',iconSize:[0,0],html}),zIndexOffset:450}).bindPopup(pop,{maxWidth:320}).addTo(termLayer);}
 async function loadTerminals(){
   try{const r=await fetch('../data/terminals/latest.json?t='+Date.now());if(!r.ok)throw 0;TERM=await r.json();}
   catch(e){document.getElementById('termsum').textContent='Dati vēl nav savākti (darbplūsma “Termināļi”).';return;}
