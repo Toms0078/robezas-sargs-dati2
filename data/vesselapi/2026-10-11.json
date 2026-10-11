@@ -1,0 +1,332 @@
+{
+ "updated": "2026-10-11T08:22:45Z",
+ "source": "VesselAPI (vesselapi.com)",
+ "checks": {
+  "riga_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-10T19:57:00Z",
+      "vessel": {
+       "name": "lappland",
+       "imo": 9505132,
+       "mmsi": 255806291
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-10T17:57:00Z",
+      "vessel": {
+       "name": "swe-trader",
+       "imo": 9194074,
+       "mmsi": 212179000
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-10T14:00:00Z",
+      "vessel": {
+       "name": "nordic luebeck",
+       "imo": 9607459,
+       "mmsi": 255805360
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-10T13:52:00Z",
+      "vessel": {
+       "name": "nordic luebeck",
+       "imo": 9607459,
+       "mmsi": 255805360
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     }
+    ]
+   }
+  },
+  "ventspils_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-11T08:05:00Z",
+      "vessel": {
+       "name": "solero",
+       "imo": 9428085,
+       "mmsi": 266420000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-11T07:49:00Z",
+      "vessel": {
+       "name": "ventspils",
+       "imo": 9219599,
+       "mmsi": 275057000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-11T06:45:00Z",
+      "vessel": {
+       "name": "hegemann i",
+       "imo": 9113070,
+       "mmsi": 211223190
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-11T06:37:00Z",
+      "vessel": {
+       "name": "cl agatha christie",
+       "imo": 9943346,
+       "mmsi": 636022162
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-11T04:01:00Z",
+      "vessel": {
+       "name": "stena baltica",
+       "imo": 9329851,
+       "mmsi": 219029947
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-10T20:01:00Z",
+      "vessel": {
+       "name": "stena scandica",
+       "imo": 9329849,
+       "mmsi": 219029263
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-10T11:41:00Z",
+      "vessel": {
+       "name": "livland",
+       "imo": 9237034,
+       "mmsi": 255806246
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-10T10:29:00Z",
+      "vessel": {
+       "name": "lv warship p-07",
+       "mmsi": 275421000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     }
+    ]
+   }
+  },
+  "butinge_inbound": {
+   "ok": false,
+   "status": 404,
+   "remaining": null,
+   "error": "{\"error\":{\"type\":\"not_found_error\",\"message\":\"no port found for the given unlocode\",\"code\":\"resource_missing\"}}"
+  },
+  "butinge_area": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "vessels": [
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.24908,
+      "longitude": 20.74151,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.74151,
+        56.24908
+       ]
+      },
+      "timestamp": "2026-10-11T05:04:01Z",
+      "processed_timestamp": "2026-10-11T05:05:04.586368Z",
+      "suspected_glitch": false,
+      "cog": 17,
+      "sog": 9.2,
+      "heading": 11,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.23338,
+      "longitude": 20.73701,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.73701,
+        56.23338
+       ]
+      },
+      "timestamp": "2026-10-11T04:57:53Z",
+      "processed_timestamp": "2026-10-11T05:00:05.436932Z",
+      "suspected_glitch": false,
+      "cog": 6.9,
+      "sog": 9.2,
+      "heading": 11,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.23215,
+      "longitude": 20.73668,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.73668,
+        56.23215
+       ]
+      },
+      "timestamp": "2026-10-11T04:57:21.351121Z",
+      "processed_timestamp": "2026-10-11T04:57:26.160797Z",
+      "suspected_glitch": false,
+      "cog": 10.7,
+      "sog": 9.3,
+      "heading": 11,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.20579,
+      "longitude": 20.73012,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.73012,
+        56.20579
+       ]
+      },
+      "timestamp": "2026-10-11T04:46:59Z",
+      "processed_timestamp": "2026-10-11T04:50:04.612734Z",
+      "suspected_glitch": false,
+      "cog": 1.7,
+      "sog": 9.4,
+      "heading": 11,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.1819,
+      "longitude": 20.72527,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.72527,
+        56.1819
+       ]
+      },
+      "timestamp": "2026-10-11T04:37:27Z",
+      "processed_timestamp": "2026-10-11T04:40:04.578973Z",
+      "suspected_glitch": false,
+      "cog": 5.1,
+      "sog": 8.8,
+      "heading": 9,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 210046000,
+      "imo": 9192624,
+      "vessel_name": "RIX LAGOON",
+      "latitude": 56.15122,
+      "longitude": 20.72094,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.72094,
+        56.15122
+       ]
+      },
+      "timestamp": "2026-10-11T04:24:36.817603Z",
+      "processed_timestamp": "2026-10-11T04:24:42.165462Z",
+      "suspected_glitch": false,
+      "cog": 7.9,
+      "sog": 8.1,
+      "heading": 9,
+      "nav_status": 0
+     }
+    ]
+   }
+  }
+ }
+}
