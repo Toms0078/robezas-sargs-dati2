@@ -423,7 +423,7 @@ LNG_DEST = [
 
 
 def lng_dest(dest):
-    d = (dest or "").upper()
+    d = final_dest(dest)
     for rx, name in LNG_DEST:
         if re.search(rx, d):
             return name
@@ -514,7 +514,7 @@ def flag_of(mmsi):
 
 
 def ru_port_of(dest):
-    d = (dest or "").upper()
+    d = final_dest(dest)
     for rx, name in RU_PORTS_RE:
         if re.search(rx, d):
             return name
@@ -814,8 +814,16 @@ def type_name(t):
     return "cits"
 
 
+def final_dest(dest):
+    """AIS galamērķis bieži ir formā "NO>UZ" (piem. "LTBOT>USHOU"); mērķis ir pēdējā daļa."""
+    d = (dest or "").upper().strip()
+    if ">" in d:
+        d = d.split(">")[-1].strip()
+    return d
+
+
 def dest_port_of(dest):
-    d = (dest or "").upper()
+    d = final_dest(dest)
     for pid, name, cc, rx, center, _ in DEST_PORTS:
         if re.search(rx, d):
             return pid, name, center
@@ -851,7 +859,8 @@ NODES = {
     "ventspilsW": (57.20, 20.80, "Kurzemes piekraste"), "irbe": (57.78, 21.75, "Irbes šaurums"),
     "gorMid": (57.70, 22.80, "Rīgas līcis"), "rigaApp": (57.20, 23.90, "Rīgas līcis"),
     "gorNorth": (57.95, 23.80, "Rīgas līcis"), "parnuApp": (58.15, 23.95, "Rīgas līcis"),
-    "gdanskBay": (54.70, 18.90, "Gdaņskas līcis"),
+    "gdanskBay": (54.70, 18.90, "Gdaņskas līcis"), "landsort": (58.70, 18.10, "Stokholmas pieeja"),
+    "pomBay": (54.20, 14.20, "Pomožes līcis"), "bothnianBay": (64.30, 22.80, "Botnijas līcis"),
 }
 EDGES = [
     ("northScotland", "norwayW"), ("northScotland", "lindesnes"), ("dover", "germanBight"),
@@ -869,6 +878,8 @@ EDGES = [
     ("aland", "gofW"), ("gofW", "paldiskiApp"), ("paldiskiApp", "tallinnApp"), ("tallinnApp", "gofEast"),
     ("ventspilsW", "irbe"), ("irbe", "gorMid"), ("gorMid", "rigaApp"), ("gorMid", "gorNorth"),
     ("gorNorth", "parnuApp"), ("gorNorth", "rigaApp"),
+    ("hoburg", "landsort"), ("landsort", "faro"), ("landsort", "aland"), ("bornholm", "pomBay"),
+    ("gedser", "pomBay"), ("bothnia", "bothnianBay"),
 ]
 KN_KMH = 1.852
 _DIST_CACHE = {}
@@ -1114,6 +1125,209 @@ def fetch_digitraffic():
 _DEST_RX = re.compile(r'"Destination"\s*:\s*"([^"]*)"')
 
 
+# ---------------------------------------------------------------------------
+# Enerģijas kravas uz Baltiju: gāzes kuģi uz LNG termināļiem un tankkuģi uz jebkuru Baltijas ostu
+ENERGY_FILE = Path(__file__).parent / "data" / "ports" / "energy_inbound.json"
+W = r"(^|[^A-Z])"
+E = r"($|[^A-Z])"
+BALTIC_DEST = [
+    # ostas id (PORTS sarakstā), galamērķa paraugs
+    ("riga", r"RIGA|LV\s*RIX"), ("ventspils", r"VENTSP|LV\s*VNT"), ("liepaja", r"LIEPA|LV\s*LPX"),
+    ("skulte", r"SKULTE|LV\s*SKU"), ("klaipeda", r"KLAIP|LT\s*KLJ"), ("butinge", r"BUT[I1]NG|LT\s*BOT"),
+    ("tallinn", r"TALLIN|MUUGA|EE\s*(TLL|MUG)"), ("paldiski", r"PALDISK|EE\s*PLA"),
+    ("sillamae", r"SILLAM|EE\s*SLM"), ("parnu", r"P[AÄ]RNU|EE\s*PRN"),
+    ("helsinki", r"HELSIN|VUOSAA|FI\s*(HEL|VUO)"), ("porvoo", r"PORVOO|SK[OÖ]LDVIK|KILPILAHT|FI\s*(PRV|SKV)"),
+    ("hamina_kotka", r"HAMINA|KOTKA|MUSSALO|FI\s*(HMN|KTK)"), ("hanko", W + r"HANKO|FI\s*HKO"),
+    ("turku_naantali", r"TURKU|NAANTAL|FI\s*(TKU|NLI)"), ("rauma", r"RAUMA|FI\s*RAU"),
+    ("pori", W + r"PORI" + E + r"|MÄNTYLUOTO|MANTYLUOTO|TAHKOLUOTO|FI\s*POR"), ("kokkola", r"KOKKOLA|FI\s*KOK"),
+    ("oulu", W + r"OULU|FI\s*OUL"), ("st_petersburg", r"PETERSB|RU\s*LED|SPB"),
+    ("ust_luga", r"UST.?LUGA|RU\s*ULU"), ("primorsk", r"PRIMORSK|RU\s*PRI"), ("vysotsk", r"VYSOTSK|RU\s*VYS"),
+    ("kaliningrad", r"KALININGR|BALTIYSK|RU\s*(KGD|BLT)"), ("gdansk", r"GDANSK|PL\s*GDN"),
+    ("gdynia", r"GDYNIA|PL\s*GDY"), ("swinoujscie", r"SWINO|[SŚ]WINOUJ|SZCZECIN|PL\s*(SWI|SZZ)"),
+    ("rostock", r"ROSTOCK|DE\s*RSK"), ("kiel", W + r"KIEL" + r"(?!\s*(CANAL|KANAL))|DE\s*KEL"),
+    ("travemunde", r"L[UÜ]BECK|TRAVEM|DE\s*(LBC|TRV)"), ("wismar", r"WISMAR|DE\s*WIS"),
+    ("sassnitz", r"SASSNITZ|MUKRAN|DE\s*(SAS|MUK)"), ("copenhagen", r"COPENH|K[OØ]BENH|DK\s*CPH"),
+    ("ronne", r"R[OØ]NNE|DK\s*RNN"), ("stockholm", r"STOCKHOLM|SE\s*STO"), ("nynashamn", r"NYN[AÄ]S|SE\s*NYN"),
+    ("oxelosund", r"OXEL[OÖ]|SE\s*OXE"), ("norrkoping", r"NORRK[OÖ]P|SE\s*NRK"), ("visby", r"VISBY|SE\s*VBY"),
+    ("karlshamn", r"KARLSHAMN|SE\s*KAN"), ("malmo", r"MALM[OÖ]|SE\s*MMA"), ("trelleborg", r"TRELLEB|SE\s*TRG"),
+    ("gavle", r"G[AÄ]VLE|SE\s*GVX"), ("sundsvall", r"SUNDSVALL|SE\s*SDL"), ("lulea", r"LULE[AÅ]|SE\s*LLA"),
+    ("inkoo", r"INKOO|FI\s*INK"), ("tornio", r"TORNIO|R[OÖ]YT[TÄ]|FI\s*TOR"),
+]
+_EXTRA_PORTS = {"inkoo": ("Inkoo", "FI", 60.03, 24.00), "tornio": ("Tornio", "FI", 65.80, 24.15)}
+
+
+def baltic_port_of(dest):
+    d = final_dest(dest)
+    if not d:
+        return None
+    for pid, rx in BALTIC_DEST:
+        if re.search(rx, d):
+            p = next((x for x in PORTS if x[0] == pid), None)
+            if p:
+                return {"id": pid, "name": p[1], "country": p[2], "pos": (p[3], p[4])}
+            n, cc, la, lo = _EXTRA_PORTS[pid]
+            return {"id": pid, "name": n, "country": cc, "pos": (la, lo)}
+    return None
+
+
+_BALTIC_NODES = None
+
+
+def _approach_node(center):
+    global _BALTIC_NODES
+    if _BALTIC_NODES is None:
+        _BALTIC_NODES = [n for n, v in NODES.items() if 53 <= v[0] <= 67 and 9 <= v[1] <= 31]
+    return min(_BALTIC_NODES, key=lambda n: km(center, NODES[n][:2]))
+
+
+def _dist_from_node(start, center):
+    key = ("node", start, center)
+    if key in _DIST_CACHE:
+        return _DIST_CACHE[key]
+    adj = {n: [] for n in NODES}
+    for u, v in EDGES:
+        w = km(NODES[u][:2], NODES[v][:2])
+        adj[u].append((v, w))
+        adj[v].append((u, w))
+    dist = {n: float("inf") for n in NODES}
+    dist[start] = km(NODES[start][:2], center)
+    todo = set(NODES)
+    while todo:
+        u = min(todo, key=lambda n: dist[n])
+        todo.discard(u)
+        for v, w in adj[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+    _DIST_CACHE[key] = dist
+    return dist
+
+
+def route_km_to(pos, center):
+    direct = km(pos, center)
+    if direct < 60:
+        return direct
+    dist = _dist_from_node(_approach_node(center), center)
+    if pos[0] > 55.9 and pos[1] < 12.8 and pos[1] > 9.5:
+        return km(pos, (55.95, 12.65)) + km((55.95, 12.65), (55.40, 12.85)) + route_km_to((55.40, 12.85), center)
+    near = sorted(NODES, key=lambda n: km(pos, NODES[n][:2]))[:2]
+    return min(km(pos, NODES[n][:2]) + dist[n] for n in near)
+
+
+def is_energy_ship(name, t):
+    return is_gas_ship(name, t) or (t is not None and 80 <= t <= 89)
+
+
+def process_energy(messages, state, vessels, sanctions, now):
+    static, pos = {}, {}
+    for m in messages:
+        meta = m.get("MetaData", {})
+        mmsi = meta.get("MMSI")
+        body = m.get("Message", {})
+        if not mmsi:
+            continue
+        if "ShipStaticData" in body:
+            static[mmsi] = body["ShipStaticData"]
+        for k in ("PositionReport", "StandardClassBPositionReport"):
+            if k in body:
+                pos[mmsi] = body[k]
+    ships = {str(s["mmsi"]): dict(s) for s in state.get("ships", [])}
+    arrived = list(state.get("arrived", []))
+
+    for mmsi, s in static.items():
+        key = str(mmsi)
+        name, t = (s.get("Name") or "").strip(), s.get("Type")
+        if not is_energy_ship(name, t):
+            continue
+        port = baltic_port_of(s.get("Destination"))
+        if not port or eta_is_stale(s.get("Eta"), now):
+            ships.pop(key, None)
+            continue
+        gas = is_gas_ship(name, t)
+        dim = s.get("Dimension") or {}
+        sh = ships.setdefault(key, {"mmsi": mmsi, "first_seen": iso(now)})
+        sh.update({
+            "name": name, "imo": s.get("ImoNumber"), "ais_type": t, "flag": flag_of(mmsi),
+            "length": (dim.get("A") or 0) + (dim.get("B") or 0) or None,
+            "draught": s.get("MaximumStaticDraught") or None,
+            "destination": (s.get("Destination") or "").strip(), "eta": eta_str(s.get("Eta")),
+            "port_id": port["id"], "port": port["name"], "country": port["country"],
+            "dest_pos": list(port["pos"]), "gas": gas,
+            "terminal": lng_dest(s.get("Destination")) if gas else None,
+        })
+
+    for key, sh in list(ships.items()):
+        p = pos.get(sh["mmsi"])
+        if p and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
+            la, lo = round(p["Latitude"], 4), round(p["Longitude"], 4)
+            sh.setdefault("from_area", area_name((la, lo)))
+            sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"), "last_seen": iso(now)})
+        if sh.get("lat") is None:
+            continue
+        center = tuple(sh["dest_pos"])
+        d = km((sh["lat"], sh["lon"]), center)
+        if d <= ARRIVED_KM:
+            arrived.append({"time": iso(now), "name": sh.get("name"), "imo": sh.get("imo"), "port": sh["port"],
+                            "gas": sh.get("gas"), "terminal": sh.get("terminal"), "draught": sh.get("draught"),
+                            "how": "AIS"})
+            ships.pop(key)
+            continue
+        rem = route_km_to((sh["lat"], sh["lon"]), center)
+        sh["route_km"] = round(rem)
+        seen = datetime.strptime(sh.get("last_seen") or sh["first_seen"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        sog = sh.get("sog") or 0
+        if sog >= 3:
+            speed = sog * KN_KMH * 0.92
+            sh["pred_arrival"] = iso(seen + timedelta(hours=rem / speed))
+            silent = (now - seen).total_seconds() / 3600
+            if silent > 0.5:
+                sh["silent_h"] = round(silent, 1)
+                sh["pred_route_km"] = max(0, round(rem - speed * silent))
+                if sh["pred_arrival"] <= iso(now):
+                    arrived.append({"time": sh["pred_arrival"], "name": sh.get("name"), "imo": sh.get("imo"),
+                                    "port": sh["port"], "gas": sh.get("gas"), "terminal": sh.get("terminal"),
+                                    "draught": sh.get("draught"), "how": "prognoze"})
+                    ships.pop(key)
+                    continue
+            else:
+                sh.pop("silent_h", None)
+                sh.pop("pred_route_km", None)
+        if seen < now - timedelta(days=INBOUND_DAYS):
+            ships.pop(key)
+
+    out = []
+    for sh in ships.values():
+        if sh.get("lat") is None:
+            continue
+        sh = dict(sh)
+        if sh.get("gas"):
+            L, t = sh.get("length") or 0, sh.get("draught")
+            name = (sh.get("name") or "").upper()
+            sh["cargo_guess"] = "LPG" if "LPG" in name else ("LNG" if L >= 200 or "LNG" in name else "gāze (LPG/LNG)")
+            if t and L >= 200:
+                sh["laden"] = t >= 10.8
+                sh["cargo_state"] = "pilns (ved gāzi)" if t >= 10.8 else ("tukšs / balastā" if t <= 9.6 else "daļēji")
+            elif t and L:
+                sh["laden"] = t >= 0.85 * 0.06 * L
+                sh["cargo_state"] = "pilns (ved gāzi)" if sh["laden"] else ("tukšs / balastā" if t <= 0.65 * 0.06 * L else "daļēji")
+            else:
+                sh["laden"], sh["cargo_state"] = None, None
+        else:
+            cargo_guess(load_estimate(sh, vessels), sh["port_id"])
+            lp = sh.get("load_pct")
+            sh["laden"] = None if lp is None else lp >= 55
+        sanc = sanctions.get(str(sh.get("imo") or "")) if sh.get("imo") else None
+        tags = set((sanc or {}).get("r", "").split(";")) - {""}
+        sh["sanctioned"], sh["shadow_listed"] = "sanction" in tags, "mare.shadow" in tags
+        sh["ru_linked"] = str(sh["mmsi"])[:3] == "273" or sh["port_id"] in RU_PORT_IDS
+        out.append(sh)
+    out.sort(key=lambda x: (not x.get("gas"), x.get("laden") is not True, x.get("route_km") or 1e9))
+    return {"updated": iso(now), "total": len(out), "gas": sum(1 for x in out if x.get("gas")),
+            "tankers": sum(1 for x in out if not x.get("gas")),
+            "laden": sum(1 for x in out if x.get("laden")),
+            "ships": out, "arrived": arrived[-80:],
+            "_state_ships": list(ships.values())}
+
+
 async def _stream(key, boxes, types, seconds, on_msg, mmsi_filter=None, label=""):
     """Viens aisstream savienojums ar atkārtotu pieslēgšanos, līdz beidzas laiks."""
     import websockets
@@ -1155,9 +1369,17 @@ async def listen(key, seconds, tracked=()):
 
     def on_world_static(raw):
         g = _DEST_RX.search(raw)
-        if not g or not dest_port_of(g.group(1)):
+        if not g:
+            return
+        dest = g.group(1)
+        lv = dest_port_of(dest)
+        if not lv and not baltic_port_of(dest):
             return
         m = json.loads(raw)
+        if not lv:
+            st = m.get("Message", {}).get("ShipStaticData", {})
+            if not is_energy_ship(st.get("Name"), st.get("Type")):
+                return
         meta = m.get("MetaData", {})
         if in_region(meta.get("latitude"), meta.get("longitude")):
             return  # reģiona savienojums to jau dzird
@@ -1178,13 +1400,14 @@ async def listen(key, seconds, tracked=()):
     tasks = [_stream(key, BOXES, ["PositionReport", "ShipStaticData", "StandardClassBPositionReport"],
                      seconds, on_region, label="Baltija"),
              _stream(key, WORLD, ["ShipStaticData"], seconds, on_world_static, label="pasaule")]
-    if tracked:
+    tracked = list(dict.fromkeys(tracked))
+    for i in range(0, min(len(tracked), 100), 50):
         tasks.append(_stream(key, WORLD, ["PositionReport"], seconds, on_tracked,
-                             mmsi_filter=list(tracked), label="sekotie"))
+                             mmsi_filter=tracked[i:i + 50], label=f"sekotie{i // 50 + 1}"))
     counts = await asyncio.gather(*tasks)
     print(f"aisstream: Baltija {counts[0]} ziņas, pasaules statiskie {counts[1]} "
           f"(no tiem uz Baltijas valstīm {len(world_keep)} kuģi)"
-          + (f", sekoto pozīcijas {counts[2]}" if tracked else ""))
+          + (f", sekoto pozīcijas {sum(counts[2:])}" if tracked else ""))
     return msgs
 
 
@@ -1198,8 +1421,11 @@ def main():
     vessels = json.loads(VESSELS.read_text()) if VESSELS.exists() else {}
     # Digitraffic pirmais, lai svaigākās aisstream ziņas (pēc tam) virsrakstītu tās pašas MMSI pozīcijas
     _inb_path = INBOUND_FILE if INBOUND_FILE.exists() else None
-    _tracked = [x["mmsi"] for x in json.loads(_inb_path.read_text()).get("ships", [])
-                if x.get("lat") is not None and not in_region(x["lat"], x["lon"])] if _inb_path else []
+    _tracked = []
+    for _f, _k in ((ENERGY_FILE, "_state_ships"), (INBOUND_FILE, "ships")):
+        if _f.exists():
+            _tracked += [x["mmsi"] for x in json.loads(_f.read_text()).get(_k, [])
+                         if x.get("lat") is not None and not in_region(x["lat"], x["lon"])]
     msgs = fetch_digitraffic() + asyncio.run(listen(key, seconds, _tracked))
     new_state, events = process(msgs, state, vessels, now_utc())
     LATEST.write_text(json.dumps(new_state, ensure_ascii=False, indent=1))
@@ -1221,6 +1447,11 @@ def main():
     old_lv = INBOUND_FILE.parent / "inbound_lv.json"
     src = INBOUND_FILE if INBOUND_FILE.exists() else old_lv
     inbound_state = json.loads(src.read_text()) if src.exists() else {}
+    energy_state = json.loads(ENERGY_FILE.read_text()) if ENERGY_FILE.exists() else {}
+    energy = process_energy(msgs, {"ships": energy_state.get("_state_ships", []),
+                                   "arrived": energy_state.get("arrived", [])}, vessels, _SANCTIONS, now_utc())
+    ENERGY_FILE.write_text(json.dumps(energy, ensure_ascii=False, indent=1))
+    print(f"Enerģija uz Baltiju: {energy['gas']} gāzes kuģi, {energy['tankers']} tankkuģi, ar kravu {energy['laden']}")
     inbound = process_inbound(msgs, inbound_state, vessels, now_utc())
     INBOUND_FILE.write_text(json.dumps(inbound, ensure_ascii=False, indent=1))
     print(f"Ceļā uz Baltijas ostām: {inbound['total']} {inbound['by_port']}")
