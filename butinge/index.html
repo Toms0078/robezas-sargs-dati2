@@ -255,6 +255,7 @@ async function load(){
     if(m)el.onclick=()=>{map.setView([s.lat,s.lon],12);m.openPopup()};
     list.append(el);
   });
+  pts.push([55.6645,21.1375]);
   if(first&&pts.length>1){map.fitBounds(pts,{padding:[30,30],maxZoom:11});first=false}
   try{const r=await fetch('../data/butinge/calls.jsonl?t='+Date.now());if(r.ok){
     const rows=(await r.text()).trim().split('\n').filter(Boolean).map(l=>JSON.parse(l)).reverse().slice(0,15);
@@ -631,6 +632,19 @@ function lngNow(){
   const days=(Date.now()-new Date(ls.series[ls.series.length-1][0]+'T12:00:00Z'))/864e5;
   return Math.max(Math.min(5,ls.now_pct),Math.min(100, ls.now_pct - ls.rate_m3_day*Math.max(0,days)/k.capacity_m3*100));
 }
+let lngMarker=null;
+function lngMap(pct,cap,at){
+  const pos=KL_FSRU(), p=pct==null?0:Math.round(pct);
+  const html=`<div style="display:flex;align-items:center;gap:5px;width:max-content;transform:translate(18px,-34px)">
+    <div style="flex:none;width:18px;height:52px;border:2px solid #0e7490;border-radius:4px;background:var(--panel);position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.4)">
+      <div style="position:absolute;left:0;right:0;bottom:0;height:${p}%;background:#0e7490"></div></div>
+    <div style="font:700 .82rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #0e7490;border-radius:4px;padding:2px 6px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3)">
+      LNG ~${pct==null?'–':p}%${at?' <span class="dot" style="margin:0 0 0 4px"></span>':''}</div></div>`;
+  const icon=L.divIcon({className:'',iconSize:[0,0],html});
+  const pop=`<b>Klaipēdas LNG krātuve (FSRU Independence)</b><br>Aizpildījums ~${pct==null?'–':p}% (simulācija)<br>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG ≈ ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes${at?'<br><b>'+esc(at.name)+'</b> stāv pie FSRU: notiek pārkraušana':''}<br><a href="#terminali">Vairāk: piegādes un grafiks ↓</a>`;
+  if(!lngMarker)lngMarker=L.marker(pos,{icon,zIndexOffset:500}).bindPopup(pop).addTo(map);
+  else{lngMarker.setIcon(icon);lngMarker.setPopupContent(pop);}
+}
 function lngLive(){
   const el=document.getElementById('lnglive'); if(!TERM)return;
   const k=TERM.klaipeda_lng, ls=k.level_sim, cap=k.capacity_m3;
@@ -640,6 +654,7 @@ function lngLive(){
   let extra='';
   if(at.length){const g=at[0], v=(g.length||0)>=260?170000:(g.length||0)>=200?140000:(g.length||0)>=120?30000:7500;
     extra=`<div class="note"><span class="dot"></span><b>${esc(g.name)}</b> ${fl(g.mmsi,true)} stāv pie FSRU: notiek LNG pārkraušana (~${nf(Math.round(v*.95/1000))} tūkst. m³; ${esc(g.load||'')}).</div>`;}
+  lngMap(pct,cap,at[0]);
   el.className=at.length?'live':'live idle';
   el.innerHTML=`<div class="hd"><b>Krātuve: ~${pct==null?'–':pct.toFixed(0)} %</b><span class="note">simulācija · krātuve ${cap/1000} tūkst. m³ LNG</span></div>
     <div class="tank lng"><div style="width:${pct??0}%"></div><em><span>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG · ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes</span></em></div>
