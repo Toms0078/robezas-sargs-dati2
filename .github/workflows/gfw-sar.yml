@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "13 8 * * *"     # reizi dienā; dati ar ~5 dienu nobīdi
   workflow_dispatch:
+    inputs:
+      test_imo:
+        description: "Tikai tests: kuģa IMO, kura izcelsmes ostu pārbaudīt (tukšs = parasta palaišana)"
+        default: ""
 
 permissions:
   contents: write
@@ -23,7 +27,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Izcelsmes ostas tests
+        if: inputs.test_imo != ''
+        env:
+          GFW_TOKEN: ${{ secrets.GFW_TOKEN }}
+        run: |
+          mkdir -p data/sar
+          python gfw_origin.py --test "${{ inputs.test_imo }}" 2>&1 | tee data/sar/origin_test.log
+
       - name: SAR atklājumi
+        if: inputs.test_imo == ''
         env:
           GFW_TOKEN: ${{ secrets.GFW_TOKEN }}
         run: |
@@ -31,12 +44,18 @@ jobs:
           mkdir -p data/sar
           python gfw_sar.py 2>&1 | tail -n 60 | tee data/sar/last_run.log
 
+      - name: No kuras ostas nāk enerģijas kuģi
+        if: inputs.test_imo == ''
+        env:
+          GFW_TOKEN: ${{ secrets.GFW_TOKEN }}
+        run: python gfw_origin.py 2>&1 | tail -n 80 | tee data/sar/origin_run.log
+
       - name: Saglabā izmaiņas repozitorijā
         if: always()
         run: |
           git config user.name "robezas-sargs-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/sar
+          git add data/sar data/ports/origins.json 2>/dev/null || git add data/sar
           if git diff --cached --quiet; then
             echo "Nav izmaiņu"
             exit 0
