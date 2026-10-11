@@ -614,7 +614,7 @@ function lngLive(){
   el.className=at.length?'live':'live idle';
   el.innerHTML=`<div class="hd"><b>Krātuve: ~${pct==null?'–':pct.toFixed(0)} %</b><span class="note">simulācija · krātuve ${cap/1000} tūkst. m³ LNG</span></div>
     <div class="tank lng"><div style="width:${pct??0}%"></div><em><span>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG · ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes</span></em></div>
-    ${ls?`<div class="note">Izsūtīšana tīklā ~${nf(ls.rate_m3_day)} m³ LNG/d (≈ ${ls.rate_mcm_day} mlj. m³ gāzes dienā)${ls.rate_m3_day&&pct!=null?`; bez jaunas piegādes pietiktu ~${Math.round(pct/100*cap/ls.rate_m3_day)} dienām`:''}.</div>`:''}
+    ${ls?`<div class="note">Izsūtīšana tīklā ~${nf(ls.rate_m3_day)} m³ LNG/d (≈ ${ls.rate_mcm_day} mlj. m³ gāzes dienā)${ls.rate_m3_day&&pct!=null?`; bez jaunas piegādes pie vidējā patēriņa pietiktu ~${Math.max(0,Math.round((pct-5)/100*cap/ls.rate_m3_day))} dienām`:''}.</div>`:''}
     ${extra}${coming.length?'<div class="note">Ceļā uz Klaipēdu: '+coming.map(s=>`${esc(s.name)} ${fl(s.mmsi,true)} (${s.route_km!=null?nf(s.route_km)+' km':'–'}${s.pred_arrival?', ~'+fmtD(s.pred_arrival):''})`).join('; ')+'</div>':''}`;
 }
 function lngChart(){
