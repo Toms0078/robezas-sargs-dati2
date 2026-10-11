@@ -77,6 +77,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 @keyframes pulse{50%{opacity:.25}}
 .flow{stroke-dasharray:6 8;animation:flow 1s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-14}}
+.gflow{stroke-dasharray:10 12;animation:gflow 2s linear infinite}
+@keyframes gflow{to{stroke-dashoffset:-22}}
+@media(prefers-reduced-motion:reduce){.gflow{animation:none}}
+.gtip{font:600 .72rem var(--mono);padding:1px 5px}
 @media(prefers-reduced-motion:reduce){.flow{animation:none}}
 .simtip{font:600 .78rem var(--mono)}
 @media(prefers-reduced-motion:reduce){.dot{animation:none}}
@@ -134,6 +138,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
   <section class="panel" id="kratuves"><h2>Pazemes gāzes krātuves</h2>
     <div class="note" id="ugssum">Ielādē…</div>
     <div class="tw" style="margin-top:8px"><table id="ugstab"></table></div>
+    <p class="note">Kartē slānis <b>“Gāzesvadi un plūsmas”</b>: oranžā līnija kustas gāzes plūsmas virzienā, biezums un ātrums atbilst daudzumam (GWh dienā, iepriekšējā pilnā diena, ENTSOG). Sarkans = Krievijas gāzes tranzīts caur Lietuvu uz Kaļiņingradu. Pelēks punktēts = slēgti savienojumi ar Krieviju. Trases ir shematiskas; Latvija→Igaunija plūsma aprēķināta no bilances (Igaunijas patēriņš + Balticconnector).</p>
   </section>
   <section class="panel" id="energija"><h2>Enerģijas kravas uz Baltiju</h2>
     <div class="note" id="ensum">Ielādē…</div>
@@ -411,8 +416,8 @@ async function loadEnergy(){
 }
 document.getElementById('en-empty').addEventListener('change',renderEnergy);
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-const termLayer=L.layerGroup().addTo(map), ugsLayer=L.layerGroup().addTo(map);
-L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Pazemes gāzes krātuves':ugsLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
+const termLayer=L.layerGroup().addTo(map), ugsLayer=L.layerGroup().addTo(map), pipeLayer=L.layerGroup().addTo(map);
+L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Gāzesvadi un plūsmas':pipeLayer,'Pazemes gāzes krātuves':ugsLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
@@ -555,6 +560,57 @@ async function loadInbound(){
   const arr=(d.arrived||[]).slice().reverse().slice(0,12).map(a=>`<tr><td>${esc(a.port)}</td><td>${esc(a.name)}</td><td>${a.type||''}</td><td colspan="3">${a.how==='AIS'?'ienāca (AIS)':'ienāca pēc prognozes'}</td><td>${new Date(a.time).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${a.draught??'–'} m</td></tr>`).join('');
   document.getElementById('inbarr').innerHTML=arr?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th colspan="3">Kā noteikts</th><th>Laiks</th><th>Iegrime</th></tr>'+arr:'<tr><td class="note">Vēl neviena.</td></tr>';
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
+}
+
+// ---------- Gāzesvadi un plūsmas (ENTSOG) ----------
+// Trases ir shematiskas (aptuvenas), virziens = no pirmā punkta uz pēdējo, ja plūsma pozitīva
+const PIPES=[
+  {id:'klp',name:'Klaipēdas LNG → Lietuvas tīkls (Klaipēda–Kuršēnai)',pts:[[55.66,21.14],[55.78,21.75],[55.95,22.45],[56.0,22.93]]},
+  {id:'ltlv',name:'Lietuva → Latvija (Kiemēnai)',pts:[[56.0,22.93],[56.05,23.5],[56.30,24.05],[56.40,24.22],[56.62,24.25],[56.95,24.15]]},
+  {id:'ugs',name:'Rīga ↔ Inčukalna krātuve',pts:[[56.95,24.15],[57.03,24.42],[57.105,24.70]]},
+  {id:'lvee',name:'Latvija → Igaunija (Karksi)',pts:[[57.105,24.70],[57.40,25.10],[57.55,25.42],[57.93,25.55],[58.10,25.56],[58.40,25.20],[58.90,24.80],[59.30,24.40]]},
+  {id:'bc',name:'Balticconnector (Igaunija → Somija)',pts:[[59.30,24.40],[59.35,24.05],[59.70,24.0],[60.04,24.0],[60.25,24.9]]},
+  {id:'gipl',name:'GIPL (Polija → Lietuva, Santaka)',pts:[[52.40,22.10],[53.20,22.70],[54.02,23.48],[54.55,24.10],[55.10,24.90]]},
+  {id:'ltmain',name:'Lietuvas maģistrāle (Jauniūnai – Kuršēnai)',pts:[[55.10,24.90],[55.40,24.20],[55.75,23.70],[56.0,22.93]]},
+  {id:'kot',name:'Baltkrievija → Lietuva (Kotlovka), tranzīts uz Kaļiņingradu',pts:[[54.60,26.40],[54.70,25.30],[54.90,24.0],[54.95,23.05],[54.85,21.9],[54.71,20.51]]},
+  {id:'ruLV',name:'Krievija – Latvija (Korneti/Izborska) – slēgts',pts:[[57.75,27.70],[57.45,26.60],[57.30,25.60],[57.105,24.70]],closed:true},
+  {id:'ruEE',name:'Krievija – Igaunija (Narva, Värska) – slēgts',pts:[[59.38,28.20],[59.35,27.30],[59.30,26.00],[59.30,24.40]],closed:true},
+];
+let FLOWS=null;
+function flowVal(label,dir,op){if(!FLOWS)return null;
+  const f=FLOWS.flows.find(x=>(x.label||'').toUpperCase().includes(label)&&x.direction===dir&&(!op||(x.operator||'').includes(op)));
+  if(!f)return null; const d=FLOWS._day; const v=f.days[d]; return v==null?null:+v/1e6;}
+function flowDay(){ // pēdējā pilnā diena (šodienas daļēja netiek ņemta)
+  const today=new Date().toISOString().slice(0,10), ds=new Set();
+  FLOWS.flows.forEach(f=>Object.keys(f.days).forEach(d=>{if(d<today)ds.add(d);}));
+  const a=[...ds].sort(); return a[a.length-1];}
+function pipeFlows(){
+  const v=(a,b)=>(a??0)-(b??0);
+  const klp=flowVal('KLAIPEDA','entry');
+  const ltlv=v(flowVal('KIEMENAI','exit','Amber'),flowVal('KIEMENAI','exit','Conexus'));
+  const ugs=v(flowVal('INCUKALNS','exit'),flowVal('INCUKALNS','entry'));
+  const bc=v(flowVal('BALTICCONNECTOR','exit','Elering'),flowVal('BALTICCONNECTOR','exit','Gasgrid'));
+  const eeCons=flowVal('ESTONIA FINAL','exit')??0, eeProd=flowVal('ESTONIA PRODUCTION','entry')??0, pald=flowVal('PALDISKI','entry')??0;
+  const lvee=bc+eeCons-eeProd-pald;   // aprēķināts no bilances (Karksi datu ENTSOG nav)
+  const gipl=v(flowVal('SANTAKA','exit','GAZ-SYSTEM'),flowVal('SANTAKA','exit','Amber'));
+  const kot=flowVal('KOTLOVKA','entry')??0;
+  return {klp,ltlv,ugs,lvee,bc,gipl,ltmain:ltlv-(klp??0)+0,kot,_calc:{lvee:true,ltmain:true}};
+}
+async function loadFlows(){
+  try{const r=await fetch('../data/gas_flows/latest.json?t='+Date.now());if(!r.ok)throw 0;FLOWS=await r.json();}catch(e){return;}
+  FLOWS._day=flowDay(); const F=pipeFlows(); pipeLayer.clearLayers();
+  PIPES.forEach(p=>{
+    let val=p.closed?0:F[p.id]; if(p.id==='ltmain')val=Math.max(0,(F.ltlv||0)-(F.klp||0)); // ja Klaipēda nesedz visu, pārējais nāk pa maģistrāli
+    const a=Math.abs(val||0), pts=(val||0)<0?[...p.pts].reverse():p.pts;
+    L.polyline(p.pts,{color:p.closed?'#9ca3af':'#475569',weight:p.closed?3:5,opacity:p.closed?.5:.25,dashArray:p.closed?'2 6':null,interactive:false}).addTo(pipeLayer);
+    const txt=p.closed?`${p.name}<br>plūsmas nav`:`<b>${p.name}</b><br>${a<0.05?'plūsmas nav':`${nf(Math.round(a*10)/10)} GWh/d ≈ ${(a/10.55).toFixed(1)} mlj. m³ gāzes dienā`}${(val||0)<0?'<br>(pretējā virzienā)':''}${F._calc[p.id]?'<br><i>aprēķināts no bilances</i>':''}<br><span style="color:#64748b">${FLOWS._day} · ENTSOG · trase shematiska</span>`;
+    if(p.closed||a<0.05){L.polyline(p.pts,{color:'#9ca3af',weight:3,opacity:.01}).bindTooltip(txt,{sticky:true}).addTo(pipeLayer);return;}
+    const col=p.id==='kot'?'#b91c1c':'#d97706';
+    const line=L.polyline(pts,{color:col,weight:Math.min(9,2.5+a/12),opacity:.95,className:'gflow'}).bindTooltip(txt,{sticky:true}).addTo(pipeLayer);
+    const el=line.getElement(); if(el)el.style.animationDuration=Math.max(0.5,Math.min(4,4-a/25))+'s';
+    const mid=pts[Math.floor(pts.length/2)];
+    L.marker(mid,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="gtip" style="width:max-content;transform:translate(-50%,-50%);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:3px">${Math.round(a)} GWh/d</div>`}),interactive:false}).addTo(pipeLayer);
+  });
 }
 
 // ---------- Pazemes gāzes krātuves (AGSI) ----------
@@ -831,7 +887,7 @@ async function loadTerminals(){
 }
 setInterval(()=>{btLive();},1000); setInterval(()=>{lngLive();},60000);
 
-load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); loadUgs(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals();loadUgs()},5*60*1000);
+load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); loadUgs(); loadFlows(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals();loadUgs();loadFlows()},5*60*1000);
 </script>
 </body>
 </html>
