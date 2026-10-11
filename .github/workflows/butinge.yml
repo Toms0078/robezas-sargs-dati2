@@ -1,13 +1,19 @@
 name: Būtiņģes boja (AIS)
 
+# GitHub bezmaksas plānotās palaišanas nāk ar stundām ilgu nokavēšanos, tāpēc viena palaišana
+# strādā ~5 h 45 min un pati atjauno datus ik ~15 min. Nākamā plānotā palaišana sagaida rindā
+# (concurrency) un turpina, tiklīdz iepriekšējā beidzas.
 on:
   schedule:
-    - cron: "*/15 * * * *"   # ik 15 minūtes (GitHub var aizkavēt dažas minūtes)
+    - cron: "5 */2 * * *"
   workflow_dispatch:
     inputs:
       seconds:
-        description: "Cik sekundes klausīties AIS"
+        description: "Cik sekundes klausīties AIS vienā ciklā"
         default: "240"
+      loop:
+        description: "Strādāt ~6 h ciklā (yes) vai vienu reizi (no)"
+        default: "no"
 
 permissions:
   contents: write
@@ -19,7 +25,7 @@ concurrency:
 jobs:
   ais:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
 
@@ -29,28 +35,30 @@ jobs:
 
       - run: pip install "websockets>=12,<16"
 
-      - name: Klausās AIS un atjauno datus
+      - name: Klausās AIS un atjauno datus (ciklā)
         env:
           AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
-        run: |
-          set -o pipefail
-          mkdir -p data/butinge
-          python butinge_ais.py "${{ inputs.seconds || '240' }}" 2>&1 | tail -n 60 | tee data/butinge/last_run.log
-
-      - name: Saglabā izmaiņas repozitorijā
-        if: always()
+          SECONDS_PER_RUN: ${{ inputs.seconds || '240' }}
+          LOOP: ${{ github.event_name == 'schedule' && 'yes' || inputs.loop }}
         run: |
           git config user.name "robezas-sargs-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/butinge data/ports
-          if git diff --cached --quiet; then
-            echo "Nav izmaiņu"
-            exit 0
-          fi
-          git commit -m "Būtiņģe: AIS $(date -u +%Y-%m-%dT%H:%MZ)"
-          # otra darbplūsma (Vākt datus) var būt iestūmusi pa vidu
-          for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
-            sleep 5
+          end=$((SECONDS + 20400))        # ~5 h 40 min
+          while true; do
+            start=$SECONDS
+            git pull -q --rebase -X theirs origin main || git rebase --abort || true
+            mkdir -p data/butinge
+            python butinge_ais.py "$SECONDS_PER_RUN" 2>&1 | tail -n 60 | tee data/butinge/last_run.log || true
+            git add data/butinge data/ports
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Būtiņģe: AIS $(date -u +%Y-%m-%dT%H:%MZ)"
+              for i in 1 2 3; do
+                git pull -q --rebase -X theirs origin main && git push -q && break
+                sleep 5
+              done
+            fi
+            [ "$LOOP" = "yes" ] || break
+            [ $SECONDS -lt $end ] || break
+            wait=$((900 - (SECONDS - start)))
+            [ $wait -gt 0 ] && sleep $wait
           done
-          exit 1
