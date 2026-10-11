@@ -75,6 +75,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .live .hd b{font:700 1.15rem var(--display)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--buoy);margin-right:6px;animation:pulse 1.4s infinite}
 @keyframes pulse{50%{opacity:.25}}
+.flow{stroke-dasharray:6 8;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+@media(prefers-reduced-motion:reduce){.flow{animation:none}}
+.simtip{font:600 .78rem var(--mono)}
 @media(prefers-reduced-motion:reduce){.dot{animation:none}}
 .tank{position:relative;height:26px;border-radius:4px;background:var(--track);overflow:hidden}
 .tank div{position:absolute;inset:0 auto 0 0;background:#7c4a1e;transition:width .9s linear}
@@ -230,7 +234,7 @@ async function load(){
   catch(e){document.getElementById('upd').textContent='Dati vēl nav savākti. Pirmā palaišana notiek GitHub Actions.';
     document.getElementById('list').innerHTML='<p class="note">Kad darbplūsma “Būtiņģes boja (AIS)” būs palaista, šeit parādīsies kuģi.</p>';return;}
   document.getElementById('upd').innerHTML='Atjaunots '+new Date(d.updated).toLocaleString('lv-LV')+' ('+ago(d.updated)+' atpakaļ)<br>'+nf(d.messages_heard)+' AIS ziņas pēdējā reizē';
-  const b=d.learned_buoy||d.buoy;
+  const b=d.learned_buoy||d.buoy; BUOY=b;
   if(buoyMarker)buoyMarker.remove();
   buoyMarker=L.circleMarker(b,{radius:7,color:'#fff',weight:2,fillColor:'#d61f69',fillOpacity:1}).bindTooltip(d.learned_buoy?'SPM boja (pēc AIS)':'SPM boja (aptuveni)').addTo(map);
   layer.clearLayers(); const list=document.getElementById('list'); list.innerHTML='';
@@ -258,7 +262,10 @@ async function load(){
       rows.map(e=>`<tr><td>${e.time.replace('T',' ').slice(0,16)}</td><td>${e.event}</td><td>${esc(e.name||e.mmsi)}</td><td>${e.arrival_draught?e.arrival_draught+' → ':''}${e.draught??'–'} m</td></tr>`).join('');
   }}catch(e){}
 }
-document.getElementById('legend').innerHTML=['gas','tank'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
+document.getElementById('legend').innerHTML=['gas','tank'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('')+
+  '<button class="btn" id="mapreplay" style="margin-left:auto">Atskaņot izkraušanu kartē</button>';
+document.getElementById('mapreplay').onclick=()=>{if(!TERM)return;const c=TERM.butinge.calls,l=c[c.length-1];if(!l)return;
+  replay={kind:'bt',start:Date.now(),cargo:l.volume||110000,name:l.name};document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});btLive();};
 
 
 
@@ -565,7 +572,27 @@ function kpis(sum,unit,big){const n=sum.calls,avg=n?sum.total_volume/n:0;
   return `<div class="kpi"><span>Piegādes / gadā</span>${n}</div><div class="kpi"><span>Ik pēc</span>${sum.avg_gap_days??'–'} d</div>
     <div class="kpi"><span>Kopā ~</span>${big(sum.total_volume)}</div><div class="kpi"><span>Vidēji vienā</span>~${kt(avg)}k ${unit}</div>`;}
 
-let TERM=null, BTSHIPS=[], GASNOW=[], ENIN=[], replay=null;
+let TERM=null, BTSHIPS=[], GASNOW=[], ENIN=[], replay=null, BUOY=null;
+// Būtiņģes krasta terminālis (aptuveni) un zemūdens cauruļvads no bojas
+const BT_SHORE=[56.052,21.062];
+const simLayer=L.layerGroup().addTo(map); let simKey=null, simTip=null;
+function mapSim(s,left,cargo,pumped,ph,isReplay){
+  if(!BUOY){return;}
+  const key=(s&&(s.mmsi||s.name))||null;
+  if(!s){if(simKey!==null){simLayer.clearLayers();simKey=null;simTip=null;}return;}
+  const pos=(s.lat!=null&&!isReplay)?[s.lat,s.lon]:[BUOY[0]+0.0012,BUOY[1]-0.0016];
+  if(simKey!==key){
+    simLayer.clearLayers(); simKey=key;
+    L.polyline([BUOY,BT_SHORE],{color:'#7c4a1e',weight:4,opacity:.35}).addTo(simLayer);
+    L.polyline([pos,BUOY,BT_SHORE],{color:'#7c4a1e',weight:4,className:'flow'}).addTo(simLayer);
+    L.circleMarker(BT_SHORE,{radius:6,color:'#fff',weight:2,fillColor:'#7c4a1e',fillOpacity:1}).bindTooltip('Būtiņģes terminālis (aptuveni) → Mažeiķu rūpnīca').addTo(simLayer);
+    const m=isReplay?L.marker(pos,{icon:shipIcon('tank','#d61f69',s.cog),opacity:.7}).addTo(simLayer)
+                    :L.circleMarker(pos,{radius:1,opacity:0,fillOpacity:0}).addTo(simLayer);
+    simTip=m.bindTooltip('',{permanent:true,direction:'top',offset:[0,-14],className:'simtip'});
+    if(isReplay)map.setView([(BUOY[0]+BT_SHORE[0])/2,(BUOY[1]+BT_SHORE[1])/2],12);
+  }
+  if(simTip)simTip.setTooltipContent(`${esc(s.name||s.mmsi)}${isReplay?' (atskaņojums)':''}<br>${ph}<br>izsūknēts ~${nf(Math.round(pumped/1000))} tūkst. t · ${Math.round(pumped/cargo*100)}%<br>kravā ~${nf(Math.round(left/1000))} tūkst. t`);
+}
 const BT_PREP=3, BT_RATE=4200, LNG_PREP=4, LNG_RATE=5000;
 function btLive(force){
   const el=document.getElementById('btlive'); if(!TERM)return;
@@ -579,6 +606,7 @@ function btLive(force){
     el.dataset.idle='';
     const h=(now-t0)/3.6e6, pumped=Math.max(0,Math.min(cargo,(h-BT_PREP)*BT_RATE)), left=cargo-pumped, endT=t0+(BT_PREP+cargo/BT_RATE)*3.6e6;
     const ph=h<BT_PREP?'pievieno šļūtenes':left<=0?'izkrauts, gatavojas atiet':'sūknē jēlnaftu uz Mažeiķiem';
+    mapSim(s,left,cargo,pumped,ph,label.startsWith('Atskaņ'));
     el.className='live';
     el.innerHTML=`<div class="hd"><b><span class="dot"></span>${esc(s.name||s.mmsi)} ${s.mmsi?fl(s.mmsi,true):''}</b><span class="note">${label} · ${ph}</span></div>
       <div class="tank"><div style="width:${left/cargo*100}%"></div><em><span>kravā ~${nf(Math.round(left/100)*100)} t</span></em></div>
@@ -586,6 +614,7 @@ function btLive(force){
       <div><span>Pie bojas</span>${h.toFixed(1)} h</div><div><span>Beigas ~</span>${replay?((BT_PREP+cargo/BT_RATE)).toFixed(0)+' h':fmtD(endT)}</div></div>`;
     return;
   }
+  mapSim(null);
   if(el.dataset.idle==='1'&&!force)return;
   el.dataset.idle='1';
   const lastEnd=last?new Date(last.end):null, nextT=lastEnd&&sum.avg_gap_days?new Date(new Date(last.start).getTime()+sum.avg_gap_days*864e5):null;
@@ -594,7 +623,7 @@ function btLive(force){
   el.innerHTML=`<div class="hd"><b>Pie bojas tankkuģa nav</b>${last?`<button class="btn" id="btreplay">Atskaņot pēdējo piegādi</button>`:''}</div>
     <div class="note">${last?`Pēdējā: ${esc(last.name)}, ${fmtD(last.start)} (${last.hours} h, ~${nf(last.volume)} t). `:''}${nextT?(nextT<new Date()?`Pēc vidējā ritma (ik ${sum.avg_gap_days} d) nākamā jau gaidāma.`:`Pēc vidējā ritma nākamā ap ${nextT.toLocaleDateString('lv-LV',{day:'numeric',month:'long'})}.`):''}
     ${coming.length?'<br>Ceļā: '+coming.map(x=>`${esc(x.name)} ${fl(x.mmsi,true)} (${x.dist_buoy_km??'–'} km, ETA ${esc(x.eta||'–')}${x.load_pct!=null?', pilns ~'+x.load_pct+'%':''})`).join('; '):''}</div>`;
-  const b=document.getElementById('btreplay'); if(b)b.onclick=()=>{replay={kind:'bt',start:Date.now(),cargo:last.volume||110000,name:last.name};btLive();};
+  const b=document.getElementById('btreplay'); if(b)b.onclick=()=>{replay={kind:'bt',start:Date.now(),cargo:last.volume||110000,name:last.name};document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});btLive();};
 }
 const KL_FSRU=()=>[TERM.klaipeda_lng.lat,TERM.klaipeda_lng.lon];
 function lngNow(){
