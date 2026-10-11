@@ -67,6 +67,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div><div id="map"></div><div class="legend" id="legend"></div></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
+  <section class="panel"><h2>Pasaules karte: ceļā uz Baltijas valstīm</h2>
+    <div class="note" id="worldsum">Ielādē…</div>
+    <div id="world" style="height:460px;border-radius:6px;border:1px solid var(--line);margin-top:8px"></div>
+  </section>
   <section class="panel"><h2>Ceļā uz Latvijas, Lietuvas un Igaunijas ostām</h2>
     <div class="note" id="inbsum">Ielādē…</div>
     <div class="tw"><table id="inb"></table></div>
@@ -257,6 +261,23 @@ async function loadPorts(){
     det.append(grid);box.append(det);
   });
 }
+
+const world=L.map('world',{worldCopyJump:true}).setView([45,10],2);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,attribution:'© OpenStreetMap'}).addTo(world);
+const worldLayer=L.layerGroup().addTo(world);
+const CCOL={LV:'#9e1b32',LT:'#ca8a04',EE:'#0369a1'};
+function loadWorld(d){
+  worldLayer.clearLayers();
+  const sh=(d.ships||[]).filter(s=>s.lat!=null);
+  const far=sh.filter(s=>!(s.lat>=53&&s.lat<=66&&s.lon>=3&&s.lon<=31)).length;
+  document.getElementById('worldsum').innerHTML=`${sh.length} kravas un tankkuģi visā pasaulē ar galamērķi Latvijā, Lietuvā vai Igaunijā, no tiem ${far} vēl ārpus Baltijas un Ziemeļjūras. Krāsa pēc mērķa valsts: <b style="color:${CCOL.LV}">Latvija</b>, <b style="color:${CCOL.LT}">Lietuva</b>, <b style="color:${CCOL.EE}">Igaunija</b>. Raustītā līnija tikai rāda virzienu uz ostu, nevis maršrutu. Atvērtā okeānā AIS nav dzirdams, tāpēc kuģi tur parādās tikai tuvāk krastiem.`;
+  sh.forEach(s=>{
+    const col=CCOL[s.country]||'#475569', k=kindOf(s.ais_type,s.type);
+    if(s.dest_pos)L.polyline([[s.lat,s.lon],s.dest_pos],{color:col,weight:1,opacity:.5,dashArray:'3 5'}).addTo(worldLayer);
+    L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1})
+      .bindPopup(`<b>${esc(s.name)}</b> → ${esc(s.port)} (${s.country||''})<br>${s.type}${s.cargo_guess?' · '+esc(s.cargo_guess):''}<br>Atlikuši ~${nf(s.silent_h?s.pred_route_km:s.route_km)} km${s.pred_arrival?' · prognoze '+new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}<br>AIS ETA ${esc(s.eta||'–')} · pirmoreiz redzēts: ${esc(s.from_area||'–')}`).addTo(worldLayer);
+  });
+}
 const inbLayer=L.layerGroup();
 async function loadInbound(){
   let d;
@@ -264,6 +285,7 @@ async function loadInbound(){
   catch(e){document.getElementById('inbsum').textContent='Dati vēl nav savākti.';return;}
   const by=Object.entries(d.by_port).map(([k,v])=>k+' '+v).join(' · ');
   document.getElementById('inbsum').textContent=`${d.total} kravas un tankkuģi ar galamērķi Baltijas valstīs${by?': '+by:''}. Pēc AIS galamērķa, ko ievada kuģa apkalpe. Atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}.`;
+  loadWorld(d);
   inbLayer.clearLayers();
   const rows=d.ships.map(s=>{
     const k=kindOf(s.ais_type,s.type), col=k==='tank'?'#c2410c':'#0f766e';

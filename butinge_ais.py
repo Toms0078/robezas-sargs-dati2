@@ -32,7 +32,12 @@ AREA_KM = 40             # tuvāk par šo un stāv = gaida Būtiņģes reidā
 FORGET_DAYS = 5          # kuģi, kas nav dzirdēti tik ilgi, izmet
 
 # Visa Baltija, Dānijas šaurumi, Skagerraks un Ziemeļjūras dienvidi
-BOXES = [[[53.0, 3.0], [66.0, 31.0]]]
+BOXES = [[[53.0, 3.0], [66.0, 31.0]]]   # Baltija + pieejas: visas ziņas
+WORLD = [[[-90.0, -180.0], [90.0, 180.0]]]  # ārpus reģiona: tikai kuģi ar galamērķi Baltijas valstīs
+
+
+def in_region(lat, lon):
+    return lat is not None and 53.0 <= lat <= 66.0 and 3.0 <= lon <= 31.0
 DEST_RE = re.compile(r"BUT[I1]NG|LT\s*BOT|BUTINGE")
 MOORED_STATUS = {5}      # AIS: 5 = pietauvots
 ANCHOR_STATUS = {1}      # AIS: 1 = noenkurots
@@ -795,7 +800,7 @@ DEST_PORTS = [
     ("parnu", "Pērnava", "EE", r"P[AÄ]RNU|EE\s*PRN", (58.37, 24.48), "parnuApp"),
 ]
 LV_DEST = DEST_PORTS     # vecais nosaukums
-INBOUND_DAYS = 7         # kuģi, kas nav dzirdēti tik ilgi, izmet
+INBOUND_DAYS = 21        # okeānā kuģi var nebūt dzirdami daudzas dienas
 ARRIVED_KM = 12          # tuvāk ostai par šo = ieradies, izņem no saraksta
 
 TYPE_LV = [(80, 89, "tankkuģis"), (70, 79, "kravas kuģis"), (60, 69, "pasažieru/prāmis"),
@@ -822,6 +827,17 @@ lv_port_of = dest_port_of
 # Kuģu ceļu tīkls Baltijas jūrā un tās pieejās (mezgli un jūras ceļi starp tiem).
 # Ar to aprēķina ceļa garumu un simulē kustību, kad kuģis vairs nav dzirdams.
 NODES = {
+    "northScotland": (59.20, -3.00, "Ziemeļskotija"), "dover": (51.00, 1.50, "Lamanšs"),
+    "channelW": (49.60, -5.20, "Lamanšs"), "finisterre": (43.40, -9.80, "Biskaja / Spānija"),
+    "gibraltar": (36.00, -5.80, "Gibraltārs"), "sicily": (37.40, 11.50, "Vidusjūra"),
+    "crete": (34.80, 24.00, "Vidusjūra"), "portSaid": (31.40, 32.40, "Suecas kanāls"),
+    "bosporus": (40.90, 29.10, "Bosfors"), "aegean": (38.50, 25.50, "Egejas jūra"),
+    "redSea": (20.00, 38.80, "Sarkanā jūra"), "bab": (12.50, 43.50, "Adenas līcis"),
+    "capeTown": (-35.00, 19.00, "Labās Cerības rags"), "westAfrica": (5.00, -15.00, "Rietumāfrika"),
+    "canaries": (28.00, -16.00, "Kanāriju salas"), "atlanticN": (45.00, -30.00, "Atlantijas okeāns"),
+    "newYork": (40.30, -73.50, "ASV austrumkrasts"), "gulfMexico": (25.00, -88.00, "Meksikas līcis"),
+    "germanBight": (54.20, 7.60, "Vācu līcis"), "jutlandW": (57.20, 7.60, "Jitlande"),
+    "kielCanal": (54.30, 9.80, "Ķīles kanāls"),
     "norwayW": (60.30, 4.60, "Norvēģijas rietumi"), "lindesnes": (57.90, 7.00, "Norvēģijas dienvidi"), "skagen": (57.85, 10.70, "Skagena"),
     "oresundN": (55.95, 12.65, "Ēresunds"), "oresundS": (55.40, 12.85, "Ēresunds"),
     "fehmarn": (54.55, 11.30, "Fehmarna / Kīle"), "gedser": (54.35, 12.30, "Gēdsera"),
@@ -838,6 +854,13 @@ NODES = {
     "gdanskBay": (54.70, 18.90, "Gdaņskas līcis"),
 }
 EDGES = [
+    ("northScotland", "norwayW"), ("northScotland", "lindesnes"), ("dover", "germanBight"),
+    ("channelW", "dover"), ("finisterre", "channelW"), ("gibraltar", "finisterre"), ("sicily", "gibraltar"),
+    ("crete", "sicily"), ("portSaid", "crete"), ("aegean", "crete"), ("bosporus", "aegean"),
+    ("redSea", "portSaid"), ("bab", "redSea"), ("capeTown", "westAfrica"), ("westAfrica", "canaries"),
+    ("canaries", "finisterre"), ("atlanticN", "channelW"), ("atlanticN", "northScotland"),
+    ("newYork", "atlanticN"), ("gulfMexico", "newYork"), ("germanBight", "jutlandW"),
+    ("jutlandW", "skagen"), ("germanBight", "kielCanal"), ("kielCanal", "fehmarn"),
     ("norwayW", "lindesnes"), ("lindesnes", "skagen"), ("skagen", "oresundN"), ("oresundN", "oresundS"), ("oresundS", "bornholm"),
     ("fehmarn", "gedser"), ("gedser", "bornholm"), ("gedser", "oresundS"), ("bornholm", "bornholmE"),
     ("bornholmE", "hoburg"), ("bornholmE", "klaipedaW"), ("bornholmE", "gdanskBay"), ("gdanskBay", "klaipedaW"),
@@ -980,6 +1003,7 @@ def process_inbound(messages, state, vessels, now):
             sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"),
                        "last_seen": iso(now)})
         center = next(p[4] for p in DEST_PORTS if p[0] == sh["port_id"])
+        sh["dest_pos"] = list(center)
         sh.setdefault("country", next(p[2] for p in DEST_PORTS if p[0] == sh["port_id"]))
         if sh.get("first_pos") and not sh.get("from_area"):
             sh["from_area"] = area_name(tuple(sh["first_pos"]))
@@ -1087,11 +1111,15 @@ def fetch_digitraffic():
         return []
 
 
-async def listen(key, seconds):
+async def listen(key, seconds, tracked=()):
+    """Klausās visu pasauli. Reģionā patur visu; ārpus tā tikai kuģus, kuru galamērķis ir
+    Baltijas valstu osta (vai kas jau tiek sekoti), lai dati nebūtu milzīgi."""
     import websockets  # importē tikai šeit, lai process() var testēt bez tā
-    sub = {"APIKey": key, "BoundingBoxes": BOXES,
+    sub = {"APIKey": key, "BoundingBoxes": WORLD,
            "FilterMessageTypes": ["PositionReport", "ShipStaticData", "StandardClassBPositionReport"]}
     msgs = []
+    keep = set(int(x) for x in tracked)
+    seen_total = 0
     loop = asyncio.get_event_loop()
     end = loop.time() + seconds
     async with websockets.connect("wss://stream.aisstream.io/v0/stream", max_size=2**22) as ws:
@@ -1104,7 +1132,22 @@ async def listen(key, seconds):
             m = json.loads(raw)
             if "error" in m:
                 raise RuntimeError(f"aisstream kļūda: {m['error']}")
-            msgs.append(m)
+            seen_total += 1
+            meta = m.get("MetaData", {})
+            mmsi = meta.get("MMSI")
+            if in_region(meta.get("latitude"), meta.get("longitude")):
+                msgs.append(m)
+                continue
+            body = m.get("Message", {})
+            if "ShipStaticData" in body:
+                if dest_port_of(body["ShipStaticData"].get("Destination")):
+                    keep.add(mmsi)
+                    msgs.append(m)
+                elif mmsi in keep:
+                    msgs.append(m)   # galamērķis mainījies — process_inbound to izņems
+            elif mmsi in keep:
+                msgs.append(m)
+    print(f"aisstream: {seen_total} ziņas pasaulē, paturētas {len(msgs)}")
     return msgs
 
 
@@ -1117,7 +1160,9 @@ def main():
     state = json.loads(LATEST.read_text()) if LATEST.exists() else {}
     vessels = json.loads(VESSELS.read_text()) if VESSELS.exists() else {}
     # Digitraffic pirmais, lai svaigākās aisstream ziņas (pēc tam) virsrakstītu tās pašas MMSI pozīcijas
-    msgs = fetch_digitraffic() + asyncio.run(listen(key, seconds))
+    _inb_path = INBOUND_FILE if INBOUND_FILE.exists() else None
+    _tracked = [x["mmsi"] for x in json.loads(_inb_path.read_text()).get("ships", [])] if _inb_path else []
+    msgs = fetch_digitraffic() + asyncio.run(listen(key, seconds, _tracked))
     new_state, events = process(msgs, state, vessels, now_utc())
     LATEST.write_text(json.dumps(new_state, ensure_ascii=False, indent=1))
     if events:
