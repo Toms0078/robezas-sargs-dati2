@@ -1,31 +1,31 @@
 {
- "updated": "2026-10-11T21:34:05Z",
+ "updated": "2026-10-11T21:49:05Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 7176,
+ "messages_heard": 7284,
  "diag": {
-  "static_msgs": 1482,
-  "ships_heard": 3656,
-  "within_60km": 31,
+  "static_msgs": 1565,
+  "ships_heard": 3625,
+  "within_60km": 36,
   "nearest": [
-   {
-    "mmsi": 277585000,
-    "name": "TAK-9",
-    "km": 38.3,
-    "sog": 1.9
-   },
    {
     "mmsi": 255806519,
     "name": "RUBIKON 202",
     "km": 38.5,
-    "sog": 0.9
+    "sog": 0
    },
    {
-    "mmsi": 341832000,
-    "name": "HELGA",
+    "mmsi": 245618000,
+    "name": "RIO",
+    "km": 38.7,
+    "sog": 8.2
+   },
+   {
+    "mmsi": 277533000,
+    "name": "A.BARAUSKAS",
     "km": 39.2,
     "sog": 0
    },
@@ -36,35 +36,66 @@
     "sog": 0
    },
    {
+    "mmsi": 231921000,
+    "name": "HAV LEITI",
+    "km": 40.2,
+    "sog": 0
+   },
+   {
+    "mmsi": 246499000,
+    "name": "LINDEBORG",
+    "km": 40.2,
+    "sog": 0
+   },
+   {
     "mmsi": 341333002,
     "name": "FEGDA",
     "km": 40.6,
-    "sog": 0
+    "sog": 0.1
    },
    {
-    "mmsi": 211513210,
-    "name": "AURORA",
-    "km": 40.9,
-    "sog": 0
-   },
-   {
-    "mmsi": 277078000,
-    "name": "LTU SAR SHIP SAKIAI",
-    "km": 41.2,
-    "sog": 0
-   },
-   {
-    "mmsi": 211123456,
-    "name": "NATO WARSHIP",
-    "km": 41.2,
+    "mmsi": 277199900,
+    "name": "TILSTA-2",
+    "km": 40.7,
     "sog": 0
    }
   ],
-  "dest_like_butinge": [
-   "BRUNSBUTTEL"
-  ]
+  "dest_like_butinge": []
  },
  "ships": [
+  {
+   "mmsi": 255806519,
+   "first_seen": "2026-10-11T21:49:05Z",
+   "name": "RUBIKON 202",
+   "imo": 9344423,
+   "callsign": "CQEY4",
+   "ais_type": 80,
+   "length": 144,
+   "beam": 23,
+   "destination": "LT KLJ",
+   "dest_match": false,
+   "eta": "11.10 14:00 UTC",
+   "draught": 6.5,
+   "static_time": "2026-10-11T21:49:05Z",
+   "lat": 55.72502,
+   "lon": 21.09798,
+   "sog": 0,
+   "cog": 224,
+   "nav_status": 5,
+   "pos_time": "2026-10-11T21:46:35Z",
+   "last_seen": "2026-10-11T21:49:05Z",
+   "dist_buoy_km": 38.47,
+   "status": "gaida",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 57,
+   "empty_pct": 43,
+   "cargo_t_est": 6500,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (144 m), iegrime 6.5 m"
+  },
   {
    "mmsi": 277447000,
    "first_seen": "2026-10-11T19:04:05Z",
