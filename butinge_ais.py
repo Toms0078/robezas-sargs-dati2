@@ -367,6 +367,32 @@ PORTS = [
     ("lulea", "Luleo", "SE", 65.580, 22.150, 9),
     ("gothenburg", "Gēteborga", "SE", 57.690, 11.850, 12),
 ]
+# LNG termināļi Baltijas jūrā (aptuvenas koordinātas; peldošās krātuves var pārvietoties)
+LNG_TERMINALS = [
+    {"name": "Klaipēdas LNG (peldošā krātuve Independence)", "country": "LT", "lat": 55.64, "lon": 21.13, "kind": "FSRU"},
+    {"name": "Inkoo LNG (peldošā krātuve)", "country": "FI", "lat": 60.03, "lon": 24.00, "kind": "FSRU"},
+    {"name": "Svinoujsces LNG terminālis", "country": "PL", "lat": 53.93, "lon": 14.27, "kind": "krasta"},
+    {"name": "Mukrānas LNG (Deutsche Ostsee)", "country": "DE", "lat": 54.50, "lon": 13.62, "kind": "FSRU"},
+    {"name": "Haminas LNG terminālis", "country": "FI", "lat": 60.55, "lon": 27.17, "kind": "krasta"},
+    {"name": "Pori LNG terminālis", "country": "FI", "lat": 61.60, "lon": 21.45, "kind": "krasta"},
+    {"name": "Tornio Manga LNG", "country": "FI", "lat": 65.80, "lon": 24.15, "kind": "krasta"},
+    {"name": "Nīneshamnas LNG", "country": "SE", "lat": 58.90, "lon": 17.95, "kind": "krasta"},
+    {"name": "Visockas LNG", "country": "RU", "lat": 60.62, "lon": 28.57, "kind": "krasta"},
+    {"name": "Portovaja LNG", "country": "RU", "lat": 60.43, "lon": 28.07, "kind": "krasta"},
+    {"name": "Kaļiņingradas FSRU (Marshal Vasilevskiy)", "country": "RU", "lat": 54.70, "lon": 19.95, "kind": "FSRU"},
+]
+# Gāzes kuģi AIS nav atsevišķs tips; tos atpazīst pēc nosaukuma
+GAS_RE = re.compile(r"LNG|LPG|GAS(?!US)|HOEGH|EXEMPLAR|ENERGOS|TRANSGAS|VASILEVSK|GASLOG|ECOGAS")
+GAS_FSRU_NAMES = re.compile(r"^(INDEPENDENCE|EXEMPLAR|HOEGH .*|NEPTUNE|ENERGOS .*|TRANSGAS .*|MARSHAL VASILEVSKIY)$")
+
+
+def is_gas_ship(name, t):
+    n = (name or "").upper().strip()
+    if GAS_RE.search(n):
+        return True
+    return bool(GAS_FSRU_NAMES.match(n)) and (t is None or 80 <= t <= 89 or t == 90)
+
+
 COUNTRY_LV = {"LT": "Lietuva", "LV": "Latvija", "EE": "Igaunija", "FI": "Somija", "RU": "Krievija",
               "PL": "Polija", "DE": "Vācija", "DK": "Dānija", "SE": "Zviedrija"}
 CACHE_DAYS = 14
@@ -374,6 +400,34 @@ CACHE_DAYS = 14
 
 def is_tanker(t):
     return t is not None and 80 <= t <= 89
+
+
+def gas_ships(pos, cache):
+    """Visi dzirdamie gāzes kuģi, ar tuvāko LNG termināli."""
+    out = []
+    for mmsi, (p, meta) in pos.items():
+        c = cache.get(str(mmsi))
+        if not c or not is_gas_ship(c.get("name"), c.get("type")):
+            continue
+        la, lo = p.get("Latitude"), p.get("Longitude")
+        if la is None or abs(la) > 90:
+            continue
+        term = min(LNG_TERMINALS, key=lambda t: km((la, lo), (t["lat"], t["lon"])))
+        dt = km((la, lo), (term["lat"], term["lon"]))
+        sog = p.get("Sog") or 0
+        name = (c.get("name") or "").upper()
+        kind = "LPG" if "LPG" in name else ("LNG" if re.search(r"LNG|HOEGH|EXEMPLAR|ENERGOS|TRANSGAS|VASILEVSK|INDEPENDENCE", name) else "gāze")
+        out.append({
+            "mmsi": mmsi, "name": c.get("name"), "imo": c.get("imo"), "length": c.get("length"),
+            "draught": c.get("draught") or None, "destination": c.get("destination"), "eta": c.get("eta"),
+            "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"), "cog": p.get("Cog"),
+            "gas_kind": kind,
+            "status": "kustībā" if sog >= 1 else ("pie LNG termināļa" if dt <= 3 else "stāv"),
+            "near_terminal": term["name"] if dt <= 15 else None,
+            "terminal_km": round(dt, 1),
+        })
+    out.sort(key=lambda x: (x["status"] == "kustībā", x["terminal_km"]))
+    return out
 
 
 def process_ports(messages, cache, vessels, now):
@@ -397,7 +451,7 @@ def process_ports(messages, cache, vessels, now):
     cache = dict(cache)
     for mmsi, s in static.items():
         key = str(mmsi)
-        if 70 <= (s.get("Type") or 0) <= 89:      # kravas un tankkuģi
+        if 70 <= (s.get("Type") or 0) <= 89 or is_gas_ship(s.get("Name"), s.get("Type")):
             dim = s.get("Dimension") or {}
             cache[key] = {
                 "name": (s.get("Name") or "").strip(),
@@ -478,6 +532,8 @@ def process_ports(messages, cache, vessels, now):
         "tankers_heard_now": sum(1 for m in pos if str(m) in cache and is_tanker(cache[str(m)].get("type"))),
         "tanker_cells": dict(sorted(where.items(), key=lambda x: -x[1])[:25]),
         "ports": ports,
+        "gas_ships": gas_ships(pos, cache),
+        "lng_terminals": LNG_TERMINALS,
     }
     return summary, cache
 

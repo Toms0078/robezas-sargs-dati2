@@ -74,6 +74,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div class="tw"><table id="inbarr"></table></div>
     <p class="note">Kad kuģis vairs nav dzirdams, tā ceļš tiek simulēts pa parasto kuģu ceļu ar pēdējo zināmo ātrumu. "Ienāca pēc prognozes" nozīmē aprēķinu, nevis apstiprinājumu. Tankkuģu "iespējamā krava" ir novērtējums pēc ostas, kuģa izmēra, nosaukuma un iegrimes: AIS kravu nepārraida, tāpēc dīzeli no benzīna atšķirt nevar.</p>
   </section>
+  <section class="panel"><h2>Gāzes kuģi un LNG termināļi</h2>
+    <div class="note" id="gassum">Ielādē…</div>
+    <div class="tw"><table id="gas"></table></div>
+  </section>
   <section class="panel"><h2>Kuģi Baltijas jūras ostās</h2>
     <div class="note" id="portsum">Ielādē…</div>
     <div class="ports" id="ports"></div>
@@ -89,7 +93,7 @@ const LABEL={pie_bojas:'pie bojas',gaida:'gaida reidā','ceļā':'ceļā'};
 // Kuģu emblēmas (skats no augšas, priekšgals uz augšu) pēc AIS tipa
 const HULL='M0 -19 C6 -12 7 -6 7 0 L7 16 Q7 19 4 19 L-4 19 Q-7 19 -7 16 L-7 0 C-7 -6 -6 -12 0 -19Z';
 const SHORT='M0 -11 C6 -7 7 -3 7 3 L7 9 Q7 12 4 12 L-4 12 Q-7 12 -7 9 L-7 3 C-7 -3 -6 -7 0 -11Z';
-const KIND_LV={tank:'tankkuģis',cargo:'kravas kuģis',pass:'pasažieru / prāmis',tug:'velkonis',fish:'zvejas kuģis',other:'cits kuģis'};
+const KIND_LV={gas:'gāzes kuģis (LNG/LPG)',tank:'tankkuģis',cargo:'kravas kuģis',pass:'pasažieru / prāmis',tug:'velkonis',fish:'zvejas kuģis',other:'cits kuģis'};
 function kindOf(t,name){
   if(typeof t==='number'){if(t>=80&&t<=89)return'tank';if(t>=70&&t<=79)return'cargo';if(t>=60&&t<=69)return'pass';
     if(t===31||t===32||t===52)return'tug';if(t===30)return'fish';return'other';}
@@ -98,7 +102,8 @@ function kindOf(t,name){
 function shipSVG(kind,color,h,rot){
   const w=Math.round(h*0.6), W='rgba(255,255,255,.92)', o='stroke="rgba(0,0,0,.55)" stroke-width="1.2"';
   let g;
-  if(kind==='tank') g=`<path d="${HULL}" fill="${color}" ${o}/><line x1="0" y1="-13" x2="0" y2="9" stroke="${W}" stroke-width="1.6"/><line x1="-5" y1="-1" x2="5" y2="-1" stroke="${W}" stroke-width="1.6"/><rect x="-5" y="11" width="10" height="6" rx="1" fill="${W}"/>`;
+  if(kind==='gas') g=`<path d="${HULL}" fill="${color}" ${o}/><circle cx="0" cy="-9" r="4.2" fill="${W}"/><circle cx="0" cy="-0.5" r="4.2" fill="${W}"/><circle cx="0" cy="8" r="4.2" fill="${W}"/><rect x="-4" y="13" width="8" height="4" rx="1" fill="${W}" opacity=".7"/>`;
+  else if(kind==='tank') g=`<path d="${HULL}" fill="${color}" ${o}/><line x1="0" y1="-13" x2="0" y2="9" stroke="${W}" stroke-width="1.6"/><line x1="-5" y1="-1" x2="5" y2="-1" stroke="${W}" stroke-width="1.6"/><rect x="-5" y="11" width="10" height="6" rx="1" fill="${W}"/>`;
   else if(kind==='cargo') g=`<path d="${HULL}" fill="${color}" ${o}/><rect x="-5" y="-11" width="10" height="5" fill="${W}"/><rect x="-5" y="-4" width="10" height="5" fill="${W}"/><rect x="-5" y="3" width="10" height="5" fill="${W}"/><rect x="-5" y="11" width="10" height="5" rx="1" fill="${W}" opacity=".6"/>`;
   else if(kind==='pass') g=`<path d="${HULL}" fill="${color}" ${o}/><rect x="-5" y="-11" width="10" height="27" rx="4" fill="${W}"/><line x1="-5" y1="2" x2="5" y2="2" stroke="${color}" stroke-width="2"/>`;
   else if(kind==='tug') g=`<path d="${SHORT}" fill="${color}" ${o}/><circle cx="0" cy="0" r="3.5" fill="${W}"/><rect x="-3" y="6" width="6" height="3" fill="${W}"/>`;
@@ -152,9 +157,26 @@ async function load(){
       rows.map(e=>`<tr><td>${e.time.replace('T',' ').slice(0,16)}</td><td>${e.event}</td><td>${esc(e.name||e.mmsi)}</td><td>${e.arrival_draught?e.arrival_draught+' → ':''}${e.draught??'–'} m</td></tr>`).join('');
   }}catch(e){}
 }
-document.getElementById('legend').innerHTML=['tank','cargo','pass','tug','fish','other'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
+document.getElementById('legend').innerHTML=['gas','tank','cargo','pass','tug','fish','other'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
+
+const gasLayer=L.layerGroup().addTo(map);
+const GASCOL='#7c3aed';
+function lngIcon(fsru){return L.divIcon({className:'',iconSize:[22,22],iconAnchor:[11,11],
+  html:`<svg width="22" height="22" viewBox="-11 -11 22 22"><rect x="-9" y="-9" width="18" height="18" rx="${fsru?9:3}" fill="#fff" stroke="${GASCOL}" stroke-width="2.5"/><path d="M0 -5 C3 -1 4 1 4 2.5 A4 4 0 0 1 -4 2.5 C-4 1 -3 -1 0 -5Z" fill="${GASCOL}"/></svg>`});}
+async function loadGas(d){
+  gasLayer.clearLayers();
+  (d.lng_terminals||[]).forEach(t=>L.marker([t.lat,t.lon],{icon:lngIcon(t.kind==='FSRU'),zIndexOffset:500})
+    .bindPopup(`<b>${esc(t.name)}</b><br>${t.kind==='FSRU'?'Peldošā LNG krātuve un regazifikācija':'LNG terminālis krastā'} · ${t.country}<br><span style="color:#64748b">Vieta aptuvena</span>`).addTo(gasLayer));
+  const g=d.gas_ships||[];
+  document.getElementById('gassum').textContent=`${g.length} gāzes kuģi dzirdami Baltijā un pieejās · ${(d.lng_terminals||[]).length} LNG termināļi kartē (violeti; apaļš = peldošā krātuve). Gāzes kuģus atpazīst pēc nosaukuma (LNG, LPG, GAS, Höegh u.c.), jo AIS tiem nav atsevišķa tipa, tāpēc daži var palikt neatpazīti.`;
+  g.forEach(s=>{const m=L.marker([s.lat,s.lon],{icon:shipIcon('gas',GASCOL,s.cog),zIndexOffset:400})
+    .bindPopup(`<b>${esc(s.name)}</b> · ${s.gas_kind}<br>${s.status}${s.near_terminal?' · '+esc(s.near_terminal):''}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m garš<br>Galamērķis ${esc(s.destination||'–')}${s.eta?' · ETA '+esc(s.eta):''}`).addTo(gasLayer);s._m=m;});
+  document.getElementById('gas').innerHTML=g.length?'<tr><th>Kuģis</th><th>Veids</th><th>Statuss</th><th>Tuvākais LNG terminālis</th><th>Galamērķis</th><th>Iegrime</th></tr>'+
+    g.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer"><td>${badge('gas',GASCOL)}${esc(s.name)}</td><td>${s.gas_kind}</td><td>${s.status}</td><td>${s.near_terminal?esc(s.near_terminal):'– <span class="note">('+nf(Math.round(s.terminal_km))+' km)</span>'}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens gāzes kuģis nav dzirdams.</td></tr>';
+  document.querySelectorAll('#gas tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=g[+tr.dataset.i];map.setView([s.lat,s.lon],11);s._m.openPopup();});
+}
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-L.control.layers(null,{'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
+L.control.layers(null,{'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
@@ -173,6 +195,7 @@ async function loadPorts(){
   try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
   catch(e){document.getElementById('portsum').textContent='Ostu dati vēl nav savākti.';return;}
   document.getElementById('portsum').innerHTML=`${d.total_in_ports} tankkuģi un ${d.cargo_in_ports??0} kravas kuģi ${d.ports.length} Baltijas jūras ostās · atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}. Kuģu tipu atpazīst pēc AIS statiskajiem datiem, tāpēc saraksts pirmajās stundās papildinās. Ostas bez neviena dzirdama kuģa var būt ārpus aisstream pārklājuma. Zila = stāv ostā, brūna = enkurvietā, pelēka = kustībā.`;
+  loadGas(d);
   portLayer.clearLayers(); cargoLayer.clearLayers();
   const box=document.getElementById('ports'); box.innerHTML='';
   const by={}; d.ports.forEach(p=>(by[p.country]=by[p.country]||[]).push(p));
