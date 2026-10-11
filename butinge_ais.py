@@ -1111,46 +1111,80 @@ def fetch_digitraffic():
         return []
 
 
-async def listen(key, seconds, tracked=()):
-    """Klausās visu pasauli. Reģionā patur visu; ārpus tā tikai kuģus, kuru galamērķis ir
-    Baltijas valstu osta (vai kas jau tiek sekoti), lai dati nebūtu milzīgi."""
-    import websockets  # importē tikai šeit, lai process() var testēt bez tā
-    sub = {"APIKey": key, "BoundingBoxes": WORLD,
-           "FilterMessageTypes": ["PositionReport", "ShipStaticData", "StandardClassBPositionReport"]}
-    msgs = []
-    keep = set(int(x) for x in tracked)
-    seen_total = 0
+_DEST_RX = re.compile(r'"Destination"\s*:\s*"([^"]*)"')
+
+
+async def _stream(key, boxes, types, seconds, on_msg, mmsi_filter=None, label=""):
+    """Viens aisstream savienojums ar atkārtotu pieslēgšanos, līdz beidzas laiks."""
+    import websockets
     loop = asyncio.get_event_loop()
     end = loop.time() + seconds
-    async with websockets.connect("wss://stream.aisstream.io/v0/stream", max_size=2**22) as ws:
-        await ws.send(json.dumps(sub))
-        while loop.time() < end:
-            try:
-                raw = await asyncio.wait_for(ws.recv(), timeout=max(1, end - loop.time()))
-            except asyncio.TimeoutError:
-                break
-            except websockets.exceptions.ConnectionClosed as e:
-                print(f"aisstream savienojums aizvērts: {e}")
-                break
-            m = json.loads(raw)
-            if "error" in m:
-                raise RuntimeError(f"aisstream kļūda: {m['error']}")
-            seen_total += 1
-            meta = m.get("MetaData", {})
-            mmsi = meta.get("MMSI")
-            if in_region(meta.get("latitude"), meta.get("longitude")):
-                msgs.append(m)
-                continue
-            body = m.get("Message", {})
-            if "ShipStaticData" in body:
-                if dest_port_of(body["ShipStaticData"].get("Destination")):
-                    keep.add(mmsi)
-                    msgs.append(m)
-                elif mmsi in keep:
-                    msgs.append(m)   # galamērķis mainījies — process_inbound to izņems
-            elif mmsi in keep:
-                msgs.append(m)
-    print(f"aisstream: {seen_total} ziņas pasaulē, paturētas {len(msgs)}")
+    n = 0
+    while loop.time() < end - 5:
+        sub = {"APIKey": key, "BoundingBoxes": boxes, "FilterMessageTypes": types}
+        if mmsi_filter:
+            sub["FiltersShipMMSI"] = [str(m) for m in mmsi_filter][:50]
+        try:
+            async with websockets.connect("wss://stream.aisstream.io/v0/stream", max_size=2**22,
+                                          ping_interval=20, ping_timeout=60) as ws:
+                await ws.send(json.dumps(sub))
+                while loop.time() < end:
+                    try:
+                        raw = await asyncio.wait_for(ws.recv(), timeout=max(1, end - loop.time()))
+                    except asyncio.TimeoutError:
+                        break
+                    n += 1
+                    on_msg(raw.decode("utf-8", "replace") if isinstance(raw, bytes) else raw)
+        except Exception as e:  # savienojums pārtrūka: mēģina vēlreiz
+            print(f"aisstream {label}: {type(e).__name__}: {e}")
+            await asyncio.sleep(2)
+    return n
+
+
+async def listen(key, seconds, tracked=()):
+    """Trīs savienojumi: (1) Baltija un pieejas — viss; (2) visa pasaule — tikai kuģu statiskie dati,
+    patur tikai ar galamērķi Baltijas valstīs; (3) pozīcijas jau sekotajiem kuģiem ārpus reģiona."""
+    msgs = []
+    world_keep = set()
+
+    def on_region(raw):
+        m = json.loads(raw)
+        if "error" in m:
+            raise RuntimeError(f"aisstream kļūda: {m['error']}")
+        msgs.append(m)
+
+    def on_world_static(raw):
+        g = _DEST_RX.search(raw)
+        if not g or not dest_port_of(g.group(1)):
+            return
+        m = json.loads(raw)
+        meta = m.get("MetaData", {})
+        if in_region(meta.get("latitude"), meta.get("longitude")):
+            return  # reģiona savienojums to jau dzird
+        msgs.append(m)
+        world_keep.add(meta.get("MMSI"))
+        # pozīcija no metadatiem (ātrums nav zināms)
+        msgs.append({"MetaData": {"MMSI": meta.get("MMSI"), "time_utc": meta.get("time_utc", "")},
+                     "Message": {"PositionReport": {"Latitude": meta.get("latitude"),
+                                                    "Longitude": meta.get("longitude"),
+                                                    "Sog": None, "Cog": None}}})
+
+    def on_tracked(raw):
+        m = json.loads(raw)
+        meta = m.get("MetaData", {})
+        if not in_region(meta.get("latitude"), meta.get("longitude")):
+            msgs.append(m)
+
+    tasks = [_stream(key, BOXES, ["PositionReport", "ShipStaticData", "StandardClassBPositionReport"],
+                     seconds, on_region, label="Baltija"),
+             _stream(key, WORLD, ["ShipStaticData"], seconds, on_world_static, label="pasaule")]
+    if tracked:
+        tasks.append(_stream(key, WORLD, ["PositionReport"], seconds, on_tracked,
+                             mmsi_filter=list(tracked), label="sekotie"))
+    counts = await asyncio.gather(*tasks)
+    print(f"aisstream: Baltija {counts[0]} ziņas, pasaules statiskie {counts[1]} "
+          f"(no tiem uz Baltijas valstīm {len(world_keep)} kuģi)"
+          + (f", sekoto pozīcijas {counts[2]}" if tracked else ""))
     return msgs
 
 
@@ -1164,7 +1198,8 @@ def main():
     vessels = json.loads(VESSELS.read_text()) if VESSELS.exists() else {}
     # Digitraffic pirmais, lai svaigākās aisstream ziņas (pēc tam) virsrakstītu tās pašas MMSI pozīcijas
     _inb_path = INBOUND_FILE if INBOUND_FILE.exists() else None
-    _tracked = [x["mmsi"] for x in json.loads(_inb_path.read_text()).get("ships", [])] if _inb_path else []
+    _tracked = [x["mmsi"] for x in json.loads(_inb_path.read_text()).get("ships", [])
+                if x.get("lat") is not None and not in_region(x["lat"], x["lon"])] if _inb_path else []
     msgs = fetch_digitraffic() + asyncio.run(listen(key, seconds, _tracked))
     new_state, events = process(msgs, state, vessels, now_utc())
     LATEST.write_text(json.dumps(new_state, ensure_ascii=False, indent=1))
