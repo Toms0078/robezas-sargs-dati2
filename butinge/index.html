@@ -248,24 +248,30 @@ OFFSHORE.forEach(o=>L.marker([o.lat,o.lon],{zIndexOffset:800,icon:L.divIcon({cla
   .bindPopup(`<b>${o.name}</b><br>${o.kind}<br><span style="color:#64748b">${o.info}</span>`).addTo(offLayer));
 const enLayer=L.layerGroup().addTo(map), enWorld=L.layerGroup();
 let enData=null;
+function origTxt(s){
+  const o=ORIG[String(s.imo||s.mmsi)];
+  if(o&&o.port){const d=(o.end||'').slice(5,10).split('-').reverse().join('.');
+    return `no ostas: <b>${esc(o.port)}</b> ${esc(o.country||'')}${d?' ('+d+')':''}${o.via&&o.via.length?' · caur '+o.via.map(esc).join(', '):''}`;}
+  return 'pirmoreiz redzēts: '+esc(s.from_area||'–')+(s.via?' · '+esc(s.via):'');
+}
 function enRow(s,i){
   const col=s.gas?GASCOL:(s.ru_linked?'#ea580c':'#c2410c'), k=s.gas?'gas':'tank';
   const flags=(s.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':'')+(s.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':'');
   const left=s.silent_h?`~${nf(s.pred_route_km)} km <span class="note">(simulēts)</span>`:(s.route_km!=null?nf(s.route_km)+' km':'–');
   const pa=s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
-  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${esc(s.flag||'')}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">no: ${esc(s.from_area||'–')}${s.via?' · '+esc(s.via):''}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
+  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${esc(s.flag||'')}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">${origTxt(s)}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
 }
 function renderEnergy(){
   const d=enData; if(!d)return;
   enLayer.clearLayers(); enWorld.clearLayers();
   const showEmpty=document.getElementById('en-empty').checked;
   const gas=d.ships.filter(s=>s.gas), tank=d.ships.filter(s=>!s.gas&&(showEmpty||s.laden!==false));
-  const head='<tr><th>Kuģis</th><th>Uz</th><th>Krava (novērtējums)</th><th>Iegrime</th><th>Atlikušais ceļš</th><th>Ierašanās prognoze</th></tr>';
+  const head='<tr><th>Kuģis</th><th>Uz</th><th>Krava (novērtējums)</th><th>Iegrime</th><th>Atlikušais ceļš · no kurienes</th><th>Ierašanās prognoze</th></tr>';
   document.getElementById('engas').innerHTML=gas.length?head+gas.map(s=>enRow(s,d.ships.indexOf(s))).join(''):'<tr><td class="note">Pašlaik neviens gāzes kuģis nav ziņojis Baltijas ostu kā galamērķi.</td></tr>';
   document.getElementById('entank').innerHTML=tank.length?head+tank.map(s=>enRow(s,d.ships.indexOf(s))).join(''):'<tr><td class="note">Nav.</td></tr>';
   [...gas,...tank].forEach(s=>{
     const col=s.gas?GASCOL:(s.ru_linked?'#ea580c':'#c2410c'), k=s.gas?'gas':'tank';
-    const pop=`<b>${esc(s.name)}</b> → ${esc(s.terminal||s.port)}<br>${esc(s.cargo_guess||'')}${s.cargo_state?' · '+esc(s.cargo_state):''}<br>Iegrime ${s.draught??'–'} m · atlikuši ~${nf(s.silent_h?s.pred_route_km:s.route_km)} km`;
+    const pop=`<b>${esc(s.name)}</b> → ${esc(s.terminal||s.port)}<br>${origTxt(s)}<br>${esc(s.cargo_guess||'')}${s.cargo_state?' · '+esc(s.cargo_state):''}<br>Iegrime ${s.draught??'–'} m · atlikuši ~${nf(s.silent_h?s.pred_route_km:s.route_km)} km`;
     s._m=L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1,zIndexOffset:450}).bindPopup(pop).addTo(enLayer);
     L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1}).bindPopup(pop).addTo(enWorld);
     if(s.dest_pos)L.polyline([[s.lat,s.lon],s.dest_pos],{color:col,weight:1,opacity:.5,dashArray:'3 5'}).addTo(enWorld);
@@ -274,7 +280,9 @@ function renderEnergy(){
   document.getElementById('worldsum').innerHTML=`${gas.length} gāzes kuģi (violeti) un ${tank.length} tankkuģi (oranži) ar galamērķi Baltijas jūras ostā, no tiem ${far} vēl ārpus Baltijas un Ziemeļjūras. Raustītā līnija rāda virzienu uz ostu, nevis maršrutu. Atvērtā okeānā AIS nav dzirdams, tāpēc tālie kuģi parādās tikai tuvāk krastiem.`;
   document.querySelectorAll('#engas tr[data-i],#entank tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=d.ships[+tr.dataset.i];map.setView([s.lat,s.lon],9);s._m.openPopup();document.getElementById('map').scrollIntoView({behavior:'smooth'});});
 }
+let ORIG={};
 async function loadEnergy(){
+  try{const r=await fetch('../data/ports/origins.json?t='+Date.now());if(r.ok)ORIG=await r.json();}catch(e){}
   try{const r=await fetch('../data/ports/energy_inbound.json?t='+Date.now());if(!r.ok)throw 0;enData=await r.json();}
   catch(e){document.getElementById('ensum').textContent='Dati vēl nav savākti.';return;}
   const d=enData, ladenT=d.ships.filter(s=>!s.gas&&s.laden).length, emptyT=d.ships.filter(s=>!s.gas&&s.laden===false).length;

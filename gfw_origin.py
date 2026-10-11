@@ -56,6 +56,7 @@ def vessel_ids(token, imo=None, mmsi=None):
     return [i for i in dict.fromkeys(ids) if i], res
 
 
+# tranzīts = šie punkti, ja kuģis tur stāvēja < 20 h (ilgāk = iekraušana/izkraušana)
 TRANSIT = ("PORT SAID", "PORTSAID", "SUEZ", "ISMAILIA", "GIBRALTAR", "SKAGEN", "KIEL", "BRUNSBUTTEL",
            "CANAKKALE", "ISTANBUL", "ALGECIRAS", "CEUTA", "LAS PALMAS", "FREDERICIA")
 
@@ -78,7 +79,7 @@ def last_port_visit(token, ids, days=120):
             continue
         v = {"port": name.title(), "country": anch.get("flag"), "start": e.get("start"), "end": e.get("end"),
              "at_dock": anch.get("atDock"), "hours": round(pv.get("durationHrs") or 0, 1),
-             "transit": any(t in name.upper() for t in TRANSIT)}
+             "transit": any(t in name.upper() for t in TRANSIT) and (pv.get("durationHrs") or 0) < 20}
         if visits and visits[-1]["port"] == v["port"]:
             continue
         visits.append(v)
