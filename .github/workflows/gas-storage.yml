@@ -29,6 +29,7 @@ jobs:
       - name: Krātuvju aizpildījums
         env:
           AGSI_KEY: ${{ secrets.AGSI_KEY }}
+          ALSI_KEY: ${{ secrets.ALSI_KEY }}
         run: |
           mkdir -p data/gas_storage
           python gas_storage.py ${{ inputs.test == 'yes' && '--test' || '' }} 2>&1 | tail -n 120 | tee data/gas_storage/last_run.log

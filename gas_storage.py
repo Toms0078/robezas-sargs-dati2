@@ -50,8 +50,10 @@ COORDS = [
 def call(params, base=BASE):
     url = base + ("?" + urllib.parse.urlencode(params) if params else "")
     headers = {"User-Agent": UA, "Accept": "application/json"}
-    if os.environ.get("AGSI_KEY"):
-        headers["x-key"] = os.environ["AGSI_KEY"]
+    key = os.environ.get("ALSI_KEY") if "alsi" in base else None
+    key = key or os.environ.get("AGSI_KEY")
+    if key:
+        headers["x-key"] = key
     for attempt in range(3):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as r:
@@ -169,7 +171,7 @@ def main():
         if not data:
             print("ALSI", cc, "tukšs:", json.dumps(res)[:600])
             try:
-                hdr = {"User-Agent": UA, "x-key": os.environ.get("AGSI_KEY", "")}
+                hdr = {"User-Agent": UA, "x-key": os.environ.get("ALSI_KEY") or os.environ.get("AGSI_KEY", "")}
                 with urllib.request.urlopen(urllib.request.Request("https://alsi.gie.eu/api/about?show=listing", headers=hdr), timeout=60) as rr:
                     lst = json.loads(rr.read())
                 items = lst if isinstance(lst, list) else [x for v in lst.values() for x in (v if isinstance(v, list) else [])]
