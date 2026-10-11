@@ -1,0 +1,154 @@
+"""Pazemes gāzes krātuves (Inčukalns u.c.) – aizpildījums no GIE AGSI+ (agsi.gie.eu).
+
+AGSI+ katru dienu publicē katras ES krātuves gāzes daudzumu (TWh), aizpildījumu (%),
+iesūknēšanu un izņemšanu (GWh/d). Dati par iepriekšējo gāzes dienu parādās ~18:00–19:30 CET.
+
+Ja ir GitHub noslēpums AGSI_KEY, to sūta galvenē "x-key"; bez tā mēģina bez atslēgas.
+Rezultāts: data/gas_storage/latest.json
+Palaišana:  python gas_storage.py [--test]
+"""
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime, timezone
+from pathlib import Path
+
+BASE = "https://agsi.gie.eu/api"
+OUT = Path(__file__).parent / "data" / "gas_storage"
+UA = "robezas-sargs (github.com/Toms0078/robezas-sargs-dati2)"
+COUNTRIES = ["LV", "PL", "DK", "SE", "DE"]
+
+# Aptuvenās krātuvju vietas kartei (atslēgvārds nosaukumā → koordinātas)
+COORDS = [
+    ("INCUKALNS", 57.105, 24.700), ("INČUKALNS", 57.105, 24.700),
+    ("KOSAKOWO", 54.590, 18.470), ("MOGILNO", 52.660, 17.950), ("WIERZCHOWICE", 51.380, 17.410),
+    ("HUSOW", 50.030, 22.350), ("HUSÓW", 50.030, 22.350), ("STRACHOCINA", 49.620, 22.080),
+    ("SWARZOW", 50.170, 21.030), ("SWARZÓW", 50.170, 21.030), ("BRZEZNICA", 49.970, 21.470),
+    ("BRZEŹNICA", 49.970, 21.470), ("BONIKOWO", 52.060, 16.630), ("DASZEWO", 53.980, 15.920),
+    ("STENLILLE", 55.530, 11.600), ("LILLE TORUP", 56.730, 9.350), ("TORUP", 56.730, 9.350),
+    ("SKALLEN", 56.660, 12.870),
+    ("REHDEN", 52.600, 8.480), ("ETZEL", 53.450, 7.850), ("JEMGUM", 53.270, 7.400), ("KIEL", 54.270, 10.150),
+    ("KRAAK", 53.430, 11.330), ("HARSEFELD", 53.450, 9.500), ("NUTTERMOOR", 53.270, 7.420),
+    ("HUNTORF", 53.190, 8.420), ("BERNBURG", 51.800, 11.740), ("STASSFURT", 51.850, 11.580),
+    ("KATHARINA", 51.800, 11.900), ("PEISSEN", 51.640, 11.920), ("BIERWANG", 48.030, 12.200),
+    ("INZENHAM", 47.860, 12.140), ("HAIDACH", 47.990, 13.180), ("EPE", 51.980, 7.060),
+    ("DOTERNHAUSEN", 48.250, 8.800), ("BREITBRUNN", 47.880, 12.380), ("RÜDERSDORF", 52.480, 13.780),
+    ("RUDERSDORF", 52.480, 13.780), ("KALLE", 52.570, 8.050), ("XANTEN", 51.660, 6.450),
+    ("BAD LAUCHSTÄDT", 51.390, 11.870), ("BAD LAUCHSTADT", 51.390, 11.870), ("STAßFURT", 51.850, 11.580),
+    ("ALLMENHAUSEN", 51.250, 10.720), ("HÄHNLEIN", 49.760, 8.520), ("HAHNLEIN", 49.760, 8.520),
+    ("REITBROOK", 53.480, 10.150), ("UELSEN", 52.500, 6.880), ("FRANKENTHAL", 49.540, 8.350),
+    ("WOLFERSBERG", 48.050, 11.940), ("SCHMIDHAUSEN", 48.200, 11.700), ("EMPELDE", 52.330, 9.640),
+    ("ENGE", 52.700, 10.900), ("LESUM", 53.170, 8.700), ("HARBERGEN", 52.900, 9.100),
+    ("JEMGUM", 53.270, 7.400), ("ZDP", 53.270, 7.400),
+]
+
+
+def call(params):
+    url = BASE + ("?" + urllib.parse.urlencode(params) if params else "")
+    headers = {"User-Agent": UA, "Accept": "application/json"}
+    if os.environ.get("AGSI_KEY"):
+        headers["x-key"] = os.environ["AGSI_KEY"]
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as r:
+                return json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            msg = e.read().decode("utf-8", "replace")[:300]
+            if e.code in (429, 503) and attempt < 2:
+                time.sleep(10)
+                continue
+            raise RuntimeError(f"HTTP {e.code}: {msg}")
+
+
+def fnum(x):
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return None
+
+
+def row(d):
+    return {"day": d.get("gasDayStart"), "gas_twh": fnum(d.get("gasInStorage")), "full_pct": fnum(d.get("full")),
+            "capacity_twh": fnum(d.get("workingGasVolume")), "injection_gwh": fnum(d.get("injection")),
+            "withdrawal_gwh": fnum(d.get("withdrawal")), "trend": fnum(d.get("trend")),
+            "status": d.get("status")}
+
+
+def coords_for(name):
+    n = (name or "").upper()
+    for k, la, lo in COORDS:
+        if k in n:
+            return la, lo
+    return None
+
+
+def listing():
+    url = BASE + "/about?show=listing"
+    headers = {"User-Agent": UA, "Accept": "application/json"}
+    if os.environ.get("AGSI_KEY"):
+        headers["x-key"] = os.environ["AGSI_KEY"]
+    with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60) as r:
+        return json.loads(r.read())
+
+
+def main():
+    test = "--test" in sys.argv
+    OUT.mkdir(parents=True, exist_ok=True)
+    out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "source": "GIE AGSI+ (agsi.gie.eu)", "countries": {}, "facilities": []}
+    # valstu kopsummas (pēdējās 60 dienas – grafikam)
+    for cc in COUNTRIES:
+        try:
+            res = call({"country": cc, "size": 60})
+        except Exception as e:
+            print(cc, e)
+            continue
+        data = res.get("data") or []
+        if test and cc == "LV":
+            print(json.dumps(res)[:1200])
+        if data:
+            out["countries"][cc] = {"name": data[0].get("name") or cc, "latest": row(data[0]),
+                                    "series": [[d.get("gasDayStart"), fnum(d.get("full"))] for d in reversed(data)]}
+            r = out["countries"][cc]["latest"]
+            print(f"{cc}: {r['day']} {r['full_pct']}% · {r['gas_twh']} TWh no {r['capacity_twh']} TWh "
+                  f"(iesūkn. {r['injection_gwh']}, izņem. {r['withdrawal_gwh']} GWh/d)")
+        time.sleep(1)
+    # atsevišķās krātuves
+    try:
+        lst = listing()
+    except Exception as e:
+        print("listing:", e)
+        lst = None
+    if test and lst:
+        print("listing:", json.dumps(lst)[:1500])
+    for cc in COUNTRIES:
+        comps = []
+        if isinstance(lst, dict):
+            comps = ((lst.get("SSO") or {}).get("Europe") or {}).get(cc) or lst.get(cc) or []
+        for comp in comps:
+            for fac in comp.get("facilities") or []:
+                try:
+                    res = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"), "size": 1})
+                except Exception as e:
+                    print(fac.get("name"), e)
+                    continue
+                data = res.get("data") or []
+                if not data:
+                    continue
+                name = fac.get("name") or data[0].get("name")
+                pos = coords_for(name)
+                out["facilities"].append({"country": cc, "name": name, "company": comp.get("name"),
+                                          "lat": pos[0] if pos else None, "lon": pos[1] if pos else None,
+                                          **row(data[0])})
+                r = out["facilities"][-1]
+                print(f"  {cc} {name}: {r['full_pct']}% {r['gas_twh']} TWh {'(nav koordinātu)' if not pos else ''}")
+                time.sleep(0.5)
+    (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
+
+
+if __name__ == "__main__":
+    main()
