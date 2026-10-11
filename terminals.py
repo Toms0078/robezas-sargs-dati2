@@ -221,16 +221,30 @@ def main():
         print(json.dumps(kl_all[0])[:1500])
     fsru = [e for e in kl_all if "INDEPENDENCE" in ((e.get("vessel") or {}).get("name") or "").upper()]
     if test:
-        vessel_info(token, list({(e.get("vessel") or {}).get("id") for e in kl_all}), cache)
-        seen = {}
+        # diagnostika: zināmu LNG kuģu visi apmeklējumi pie Klaipēdas
+        here = (KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"])
+        months = {}
         for e in kl_all:
-            v = e.get("vessel") or {}
-            p = e.get("position") or {}
-            dkm = km((p.get("lat", 0), p.get("lon", 0)), (KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"]))
-            i = cache.get(v.get("id")) or {}
-            seen.setdefault(v.get("name"), (round(dkm, 2), i.get("gt"), i.get("geartypes"), i.get("shiptypes")))
-        for n, x in sorted(seen.items(), key=lambda kv: kv[1][0])[:40]:
-            print("  pie FSRU:", n, x)
+            months[(e.get("start") or "")[:7]] = months.get((e.get("start") or "")[:7], 0) + 1
+        print("mazā apgabala apmeklējumi pa mēnešiem:", dict(sorted(months.items())))
+        for nm in ("VENTURE GATOR", "BW NIVALIS"):
+            ev = next((e for e in kl_all if (e.get("vessel") or {}).get("name") == nm), None)
+            if not ev:
+                continue
+            vid = ev["vessel"]["id"]
+            res = call(token, "/events", {"limit": 100, "offset": 0, "sort": "-start"},
+                       {"datasets": ["public-global-port-visits-c2-events:latest"], "vessels": [vid],
+                        "startDate": start.isoformat(), "endDate": end.isoformat()})
+            print(f"{nm}: {len(res.get('entries', []))} apmeklējumi")
+            for e in res.get("entries", []):
+                pv = e.get("port_visit") or {}
+                p = e.get("position") or {}
+                anchs = [(k[:5], (pv.get(k) or {}).get("id"), round(km(((pv.get(k) or {}).get("lat", 0),
+                          (pv.get(k) or {}).get("lon", 0)), here), 2)) for k in
+                         ("startAnchorage", "intermediateAnchorage", "endAnchorage")]
+                print("  ", (e.get("start") or "")[:16], round(pv.get("durationHrs") or 0, 1), pv.get("confidence"),
+                      (p.get("lat"), p.get("lon")), anchs)
+        return
     if fsru:
         p = fsru[0].get("position") or {}
         KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"] = p.get("lat", KLAIPEDA_LNG["lat"]), p.get("lon", KLAIPEDA_LNG["lon"])
