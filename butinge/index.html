@@ -613,7 +613,7 @@ function pipeFlows(){
 }
 async function loadFlows(){
   try{const r=await fetch('../data/gas_flows/latest.json?t='+Date.now());if(!r.ok)throw 0;FLOWS=await r.json();}catch(e){return;}
-  FLOWS._day=flowDay(); const F=pipeFlows(); pipeLayer.clearLayers();
+  FLOWS._day=flowDay(); const F=pipeFlows(); pipeLayer.clearLayers(); if(GS)drawOtherLng();
   PIPES.forEach(p=>{
     let val=p.closed?0:F[p.id]; if(p.id==='ltmain')val=Math.max(0,(F.ltlv||0)-(F.klp||0)); // ja Klaipēda nesedz visu, pārējais nāk pa maģistrāli
     const a=Math.abs(val||0), pts=(val||0)<0?[...p.pts].reverse():p.pts;
