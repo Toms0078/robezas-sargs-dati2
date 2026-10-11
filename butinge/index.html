@@ -630,7 +630,7 @@ function btLive(force){
     ${coming.length?'Ceļā: '+coming.map(x=>`${esc(x.name)} ${fl(x.mmsi,true)} (${x.dist_buoy_km??'–'} km, ETA ${esc(x.eta||'–')}${x.load_pct!=null?', pilns ~'+x.load_pct+'%':''})`).join('; '):''}</div>`;
   const b=document.getElementById('btreplay'); if(b)b.onclick=()=>{replay={kind:'bt',start:Date.now(),cargo:last.volume||110000,name:last.name};document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'});btLive();};
 }
-const KL_FSRU=()=>LIVE.fsru_pos||[TERM.klaipeda_lng.lat,TERM.klaipeda_lng.lon];
+const KL_FSRU=()=>LIVE.fsru_pos||[55.64,21.13];
 function lngNow(){
   const k=TERM.klaipeda_lng, ls=k.level_sim; if(!ls)return null;
   const days=(Date.now()-new Date(ls.series[ls.series.length-1][0]+'T12:00:00Z'))/864e5;
