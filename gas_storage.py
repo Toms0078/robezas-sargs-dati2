@@ -47,6 +47,24 @@ COORDS = [
 ]
 
 
+# Krātuves tips (vispārzināms) – atslēgvārds nosaukumā
+TYPES = [("INCUKALN", "porains ūdens nesējslānis (akvifērs)"), ("STENLILLE", "akvifērs"),
+         ("LILLE TORUP", "sāls kavernas"), ("SKALLEN", "oderēta klinšu kaverna"), ("KAWERNA", "sāls kavernas"),
+         ("KOSAKOWO", "sāls kavernas"), ("MOGILNO", "sāls kavernas"), ("WIERZCHOWICE", "izsmelta gāzes atradne"),
+         ("SANOK", "izsmeltas gāzes atradnes"), ("ETZEL", "sāls kavernas"), ("KIEL", "sāls kavernas"),
+         ("KRAAK", "sāls kavernas"), ("JEMGUM", "sāls kavernas"), ("NÜTTERMOOR", "sāls kavernas"),
+         ("HARSEFELD", "sāls kavernas"), ("EMPELDE", "sāls kavernas"), ("RÜDERSDORF", "sāls kavernas"),
+         ("LESUM", "sāls kavernas"), ("REHDEN", "izsmelta gāzes atradne"), ("UELSEN", "izsmelta gāzes atradne"),
+         ("EPE", "sāls kavernas"), ("STASSFURT", "sāls kavernas"), ("BERNBURG", "sāls kavernas"),
+         ("PECKENSEN", "sāls kavernas"), ("VSP NORD", "izsmelta atradne + sāls kavernas")]
+NORTH_DE_LAT = 52.3   # Vācijā kartē rāda tikai ziemeļu krātuves (Baltijas reģions)
+
+
+def ftype(name):
+    n = (name or "").upper()
+    return next((t for k, t in TYPES if k in n), None)
+
+
 def call(params, base=BASE):
     url = base + ("?" + urllib.parse.urlencode(params) if params else "")
     headers = {"User-Agent": UA, "Accept": "application/json"}
@@ -77,7 +95,8 @@ def row(d):
     return {"day": d.get("gasDayStart"), "gas_twh": fnum(d.get("gasInStorage")), "full_pct": fnum(d.get("full")),
             "capacity_twh": fnum(d.get("workingGasVolume")), "injection_gwh": fnum(d.get("injection")),
             "withdrawal_gwh": fnum(d.get("withdrawal")), "trend": fnum(d.get("trend")),
-            "status": d.get("status")}
+            "inj_cap_gwh": fnum(d.get("injectionCapacity")), "wd_cap_gwh": fnum(d.get("withdrawalCapacity")),
+            "cons_full_pct": fnum(d.get("consumptionFull")), "status": d.get("status")}
 
 
 def coords_for(name):
@@ -127,7 +146,7 @@ def main():
         lst = None
     if test and lst:
         print("listing:", json.dumps(lst)[:1500])
-    for cc in [c for c in COUNTRIES if c != "DE"]:   # Vācijai tikai kopsumma
+    for cc in COUNTRIES:
         comps = []
         if isinstance(lst, list):
             comps = [c for c in lst if c.get("country") == cc and c.get("type") == "SSO"]
@@ -143,8 +162,12 @@ def main():
                                               "lat": pos[0] if pos else None, "lon": pos[1] if pos else None,
                                               "full_pct": None})
                     continue
+                nm0 = fac.get("name") or ""
+                pos0 = coords_for(nm0)
+                if cc == "DE" and (not pos0 or pos0[0] < NORTH_DE_LAT or "decommissioned" in nm0.lower()):
+                    continue
                 try:
-                    res = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"), "size": 1})
+                    res = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"), "size": 35})
                 except Exception as e:
                     print(fac.get("name"), e)
                     continue
@@ -153,11 +176,23 @@ def main():
                     continue
                 name = fac.get("name") or data[0].get("name")
                 pos = coords_for(name)
+                ly = None
+                try:
+                    d0 = datetime.fromisoformat(data[0]["gasDayStart"]).date()
+                    r_ly = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"),
+                                 "from": (d0.replace(year=d0.year - 1)).isoformat(),
+                                 "to": (d0.replace(year=d0.year - 1)).isoformat(), "size": 1})
+                    ly = fnum(((r_ly.get("data") or [{}])[0]).get("full"))
+                except Exception as e:
+                    print("  pērn:", e)
+                ser = [[d.get("gasDayStart"), fnum(d.get("full"))] for d in reversed(data)]
                 out["facilities"].append({"country": cc, "name": name, "company": comp.get("name"),
                                           "lat": pos[0] if pos else None, "lon": pos[1] if pos else None,
+                                          "type": ftype(name), "last_year_pct": ly, "series": ser,
                                           **row(data[0])})
                 r = out["facilities"][-1]
-                print(f"  {cc} {name}: {r['full_pct']}% {r['gas_twh']} TWh {'(nav koordinātu)' if not pos else ''}")
+                print(f"  {cc} {name}: {r['full_pct']}% {r['gas_twh']} TWh pērn {r['last_year_pct']}% "
+                      f"maks. izņem. {r['wd_cap_gwh']} GWh/d {'(nav koordinātu)' if not pos else ''}")
                 time.sleep(0.5)
     # --- ALSI: LNG termināļi (Klaipēda u.c.)
     out["lng"] = {}
