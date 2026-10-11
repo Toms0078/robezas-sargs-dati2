@@ -61,7 +61,7 @@ def est_dwt(length):
     """Tankkuģa DWT novērtējums pēc garuma (m)."""
     if not length:
         return None
-    for lim, dwt in ((150, 12000), (185, 35000), (200, 50000), (235, 75000),
+    for lim, dwt in ((50, 600), (80, 2500), (110, 6000), (150, 12000), (185, 35000), (200, 50000), (235, 75000),
                      (255, 110000), (285, 160000)):
         if length <= lim:
             return dwt
@@ -85,7 +85,8 @@ def load_estimate(ship, vessels):
     ship["dwt"] = dwt
     ship["dwt_source"] = "registrs" if ref.get("dwt") else ("novērtēts" if dwt else None)
     ship["max_draught"] = tmax
-    t = ship.get("draught")
+    t = ship.get("draught") or None
+    ship["draught"] = t
     if t and tmax:
         tb = 0.45 * tmax                     # balasta iegrime ≈ 45 % no maksimālās
         f = max(0.0, min(1.0, (t - tb) / (tmax - tb)))
@@ -123,6 +124,9 @@ def cargo_guess(ship, port_id=None):
     elif length >= 120:
         kind = "naftas produkti: dīzelis, benzīns vai aviodegviela"
         why.append(f"produktu tankkuģa izmērs ({length} m)")
+    elif 0 < length < 60:
+        kind = "ostas vai bunkurēšanas tankkuģis (degviela citiem kuģiem)"
+        why.append(f"ļoti mazs tankkuģis ({length} m)")
     elif length > 0:
         kind = "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)"
         why.append(f"mazs tankkuģis ({length} m)")
