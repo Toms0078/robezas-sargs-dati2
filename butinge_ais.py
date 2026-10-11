@@ -379,7 +379,7 @@ PORTS = [
 ]
 # LNG termināļi Baltijas jūrā (aptuvenas koordinātas; peldošās krātuves var pārvietoties)
 LNG_TERMINALS = [
-    {"name": "Klaipēdas LNG (peldošā krātuve Independence)", "country": "LT", "lat": 55.6645, "lon": 21.1375, "kind": "FSRU"},
+    {"name": "Klaipēdas LNG (peldošā krātuve Independence)", "country": "LT", "lat": 55.64, "lon": 21.13, "kind": "FSRU"},
     {"name": "Inkoo LNG (peldošā krātuve)", "country": "FI", "lat": 60.03, "lon": 24.00, "kind": "FSRU"},
     {"name": "Svinoujsces LNG terminālis", "country": "PL", "lat": 53.93, "lon": 14.27, "kind": "krasta"},
     {"name": "Mukrānas LNG (Deutsche Ostsee)", "country": "DE", "lat": 54.50, "lon": 13.62, "kind": "FSRU"},
@@ -1497,7 +1497,7 @@ async def listen(key, seconds, tracked=()):
 
 # ---------------------------------------------------------------------------
 # Klaipēdas FSRU: LNG kuģu ierašanās pēc AIS (lai simulācija nav jāgaida uz GFW datiem)
-FSRU_POS = (55.6645, 21.1375)
+FSRU_POS = (55.640, 21.130)   # aptuveni; precīzo ņem no pašas krātuves AIS
 LIVE_LNG = Path(__file__).parent / "data" / "terminals" / "live_lng.json"
 
 

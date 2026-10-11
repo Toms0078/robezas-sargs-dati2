@@ -407,7 +407,8 @@ async function loadEnergy(){
 }
 document.getElementById('en-empty').addEventListener('change',renderEnergy);
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-L.control.layers(null,{'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
+const termLayer=L.layerGroup().addTo(map);
+L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
@@ -578,7 +579,7 @@ function kpis(sum,unit,big){const n=sum.calls,avg=n?sum.total_volume/n:0;
 let TERM=null, BTSHIPS=[], GASNOW=[], ENIN=[], replay=null, BUOY=null;
 // Būtiņģes krasta terminālis (aptuveni) un zemūdens cauruļvads no bojas
 const BT_SHORE=[56.052,21.062];
-const simLayer=L.layerGroup().addTo(map); let simKey=null, simTip=null;
+const simLayer=L.layerGroup().addTo(termLayer); let simKey=null, simTip=null;
 function mapSim(s,left,cargo,pumped,ph,isReplay){
   if(!BUOY){return;}
   const key=(s&&(s.mmsi||s.name))||null;
@@ -679,11 +680,11 @@ function btNextMap(){
   const dd=x=>x.toLocaleDateString('lv-LV',{day:'2-digit',month:'2-digit'});
   const t=!n.d?'Nafta: nākamā nav zināma':n.to&&n.to-n.d>864e5?`Nafta: nākamā ~${dd(n.d)}–${dd(n.to)}`:`Nafta: nākamā ~${dd(n.d)}${n.sure?' ('+esc(n.basis.split(':')[0])+')':''}`;
   const icon=L.divIcon({className:'',iconSize:[0,0],html:`<div style="width:max-content;transform:translate(calc(-100% - 14px),-12px);font:700 .78rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #d61f69;border-radius:4px;padding:2px 6px;box-shadow:0 1px 3px rgba(0,0,0,.3)">${t}</div>`});
-  if(!btNextMarker)btNextMarker=L.marker(BUOY,{icon,interactive:false,zIndexOffset:400}).addTo(map);else{btNextMarker.setLatLng(BUOY);btNextMarker.setIcon(icon);}
+  if(!btNextMarker)btNextMarker=L.marker(BUOY,{icon,interactive:false,zIndexOffset:400}).addTo(termLayer);else{btNextMarker.setLatLng(BUOY);btNextMarker.setIcon(icon);}
 }
 let lngMarker=null;
 let LIVE={at:{},arrivals:[]}, lngReplay=null, lngSimKey=null, lngSimTip=null;
-const lngSimLayer=L.layerGroup().addTo(map);
+const lngSimLayer=L.layerGroup().addTo(termLayer);
 function lngActive(){const now=Date.now();
   if(lngReplay){const h=(now-lngReplay.start)/1000;if(h>LNG_PREP+lngReplay.vol/LNG_RATE+2)lngReplay=null;
     else return {name:lngReplay.name,h,vol:lngReplay.vol,replay:true,pos:null,base:lngReplay.base};}
@@ -715,8 +716,8 @@ function lngMap(pct,cap,at){
       LNG ~${pct==null?'–':p}%${at?' <span class="dot" style="margin:0 0 0 4px"></span>':''}${(()=>{const n=nextLng(pct);return n?'<br><span style="font-weight:500">nākamā '+(n.d?'~'+n.d.toLocaleDateString('lv-LV',{day:'2-digit',month:'2-digit'}):'nav zināma')+'</span>':''})()}</div></div>`;
   const icon=L.divIcon({className:'',iconSize:[0,0],html});
   const pop=`<b>Klaipēdas LNG krātuve (FSRU Independence)</b><br>Aizpildījums ~${pct==null?'–':p}% (simulācija)<br>${nextTxt(nextLng(pct))}<br>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG ≈ ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes${at?'<br><b>'+esc(at.name)+'</b> stāv pie FSRU: notiek pārkraušana':''}<br><a href="#terminali">Vairāk: piegādes un grafiks ↓</a>`;
-  if(!lngMarker)lngMarker=L.marker(pos,{icon,zIndexOffset:500}).bindPopup(pop).addTo(map);
-  else{lngMarker.setIcon(icon);lngMarker.setPopupContent(pop);}
+  if(!lngMarker)lngMarker=L.marker(pos,{icon,zIndexOffset:500}).bindPopup(pop).addTo(termLayer);
+  else{lngMarker.setLatLng(pos);lngMarker.setIcon(icon);lngMarker.setPopupContent(pop);}
 }
 function lngLive(){
   const el=document.getElementById('lnglive'); if(!TERM)return;
