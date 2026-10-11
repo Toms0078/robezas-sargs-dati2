@@ -1,7 +1,21 @@
 Klaipēdas ostas apmeklējumi: 233
 FSRU INDEPENDENCE vieta: 55.6645, 21.1375
+Klaipēdas plašā apgabala apmeklējumi: 5000, no tiem pie FSRU piestātnes: 45
 Būtiņģes apgabala apmeklējumi: 262
 Būtiņģe: 37 piegādes
+  2026-02-03  45.9h PACIFIC GARNET         MHL GT 63555 ~111700  no Sidi Kerir EGY
+  2026-02-10  20.2h ELIAS TSAKOS           GRC GT 62557 ~109900  no Gothenburg SWE
+  2026-02-13  41.6h SWORD                  BHS GT 57164 ~100500  no Tees GBR
+  2026-02-20  36.8h PACIFIC GARNET         MHL GT 63555 ~111700  no Sture NOR
+  2026-03-04  35.9h LUZON SPIRIT           BHS GT 60193 ~105800  no Alexandria EGY
+  2026-04-12  40.0h KMARIN REASON          GBR GT 64309 ~113000  no Gothenburg SWE
+  2026-04-23  24.9h TORILL KNUTSEN         NOR GT 80850 ~142100  no Gullfaks NOR
+  2026-05-13  34.7h ALFA ALANDIA           BHS GT 57164 ~100500  no Hound Point GBR
+  2026-05-25  34.8h EAGLE KINABALU         SGP GT 60379 ~106100  no Sidi Kerir EGY
+  2026-06-04  37.4h EAGLE KLANG            SGP GT 60379 ~106100  no Sidi Kerir EGY
+  2026-06-11  47.2h EAGLE HYDRA            GBR GT 62851 ~110500  no Sidi Kerir EGY
+  2026-06-15  32.5h MARATHON TS            MLT GT 62557 ~109900  no Sture NOR
+  2026-06-18  35.3h ELIAS TSAKOS           GRC GT 62557 ~109900  no Porvoo FIN
   2026-06-21  55.2h FRONT ANTARES          MHL GT 62849 ~110500  no Sidi Kerir EGY
   2026-07-01  33.9h KMARIN REASON          GBR GT 64309 ~113000  no Hound Point GBR
   2026-07-05  32.7h THOMAS ZAFIRAS         GRC GT 62557 ~109900  no Tarragona ESP
@@ -14,11 +28,8 @@ Būtiņģe: 37 piegādes
   2026-09-03  29.6h BERGEN TS              MLT GT 62557 ~109900  no Malta MLT
   2026-09-09  34.5h ELIAS TSAKOS           GRC GT 62557 ~109900  no Sidi Kerir EGY
   2026-09-30  35.4h BERGEN TS              MLT GT 62557 ~109900  no Ck Off NOR
-Klaipēdas LNG: 4 piegādes
-Traceback (most recent call last):
-  File "/home/runner/work/robezas-sargs-dati2/robezas-sargs-dati2/terminals.py", line 333, in <module>
-    main()
-  File "/home/runner/work/robezas-sargs-dati2/robezas-sargs-dati2/terminals.py", line 325, in main
-    print(f"  {c['start'][:10]} {c['hours']:>5}h {c['name']:<22} {c['flag']} GT {c['gt']} "
-                                                 ^^^^^^^^^^^^^^^
-TypeError: unsupported format string passed to NoneType.__format__
+Klaipēdas LNG: 3 piegādes
+  2026-03-10  40.6h AVENIR ASCENSION       MLT GT 0 ~7100  no Sassnitz Trelleborg SWE
+  2026-05-14  33.7h BW NIVALIS             SGP GT 0 ~142500  no Hammerfest NOR
+  2026-07-26  34.1h VENTURE GATOR          LBR GT 0 ~142500  no Steutspass USA
+LNG simulācija: 57.1 %, izsūtīšana ~1357 m³/d (~0.79 mlj. m³ gāzes/d)
