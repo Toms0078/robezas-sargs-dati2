@@ -56,22 +56,36 @@ def vessel_ids(token, imo=None, mmsi=None):
     return [i for i in dict.fromkeys(ids) if i], res
 
 
+TRANSIT = ("PORT SAID", "PORTSAID", "SUEZ", "ISMAILIA", "GIBRALTAR", "SKAGEN", "KIEL", "BRUNSBUTTEL",
+           "CANAKKALE", "ISTANBUL", "ALGECIRAS", "CEUTA", "LAS PALMAS", "FREDERICIA")
+
+
 def last_port_visit(token, ids, days=120):
+    """Atgriež (izcelsme, pēdējās ostas, atbilde). Kanālu, šaurumu un bunkurēšanas punktus
+    atzīmē kā tranzītu; izcelsme ir pēdējā osta, kas nav tranzīts."""
     end = date.today()
     start = end - timedelta(days=days)
-    res = call(token, "/events", {"limit": 10, "offset": 0, "sort": "-start"},
+    res = call(token, "/events", {"limit": 15, "offset": 0, "sort": "-start"},
                {"datasets": ["public-global-port-visits-c2-events:latest"], "vessels": ids,
                 "confidences": ["3", "4"], "startDate": start.isoformat(), "endDate": end.isoformat()})
-    entries = res.get("entries", [])
-    entries.sort(key=lambda e: e.get("start") or "", reverse=True)
+    entries = sorted(res.get("entries", []), key=lambda e: e.get("start") or "", reverse=True)
+    visits = []
     for e in entries:
         pv = e.get("port_visit") or e.get("portVisit") or {}
         anch = pv.get("intermediateAnchorage") or pv.get("startAnchorage") or pv.get("endAnchorage") or {}
-        name = anch.get("topDestination") or anch.get("name")
-        if name:
-            return {"port": name.title(), "country": anch.get("flag"), "start": e.get("start"),
-                    "end": e.get("end")}, res
-    return None, res
+        name = (anch.get("topDestination") or anch.get("name") or "").strip()
+        if not name:
+            continue
+        v = {"port": name.title(), "country": anch.get("flag"), "start": e.get("start"), "end": e.get("end"),
+             "at_dock": anch.get("atDock"), "hours": round(pv.get("durationHrs") or 0, 1),
+             "transit": any(t in name.upper() for t in TRANSIT)}
+        if visits and visits[-1]["port"] == v["port"]:
+            continue
+        visits.append(v)
+        if len(visits) >= 5:
+            break
+    origin = next((v for v in visits if not v["transit"]), None)
+    return origin, visits, res
 
 
 def main():
@@ -83,9 +97,10 @@ def main():
         print("ID:", ids)
         print("search atbilde (sākums):", json.dumps(raw)[:1500])
         if ids:
-            pv, raw2 = last_port_visit(token, ids)
-            print("pēdējā osta:", pv)
-            print("events atbilde (sākums):", json.dumps(raw2)[:2500])
+            pv, visits, raw2 = last_port_visit(token, ids)
+            print("izcelsme:", pv)
+            for v in visits:
+                print("  ", v)
         return
     origins = json.loads(ORIGINS.read_text()) if ORIGINS.exists() else {}
     ships = json.loads(ENERGY.read_text()).get("ships", []) if ENERGY.exists() else []
@@ -97,11 +112,12 @@ def main():
             continue
         try:
             ids, _ = vessel_ids(token, imo=s.get("imo") or None, mmsi=None if s.get("imo") else s.get("mmsi"))
-            pv = last_port_visit(token, ids)[0] if ids else None
+            pv, visits = (last_port_visit(token, ids)[:2]) if ids else (None, [])
         except Exception as e:
             print(f"{s.get('name')}: {e}")
             continue
-        origins[key] = {**(pv or {}), "name": s.get("name"),
+        origins[key] = {**(pv or {}), "via": [v["port"] for v in visits if v["transit"]][:3],
+                        "recent": visits[:4], "name": s.get("name"),
                         "checked": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
         print(f"{s.get('name'):<24} → {s.get('port'):<16} pēdējā osta: {(pv or {}).get('port')} "
               f"({(pv or {}).get('country')}) {((pv or {}).get('end') or '')[:10]}")
