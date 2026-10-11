@@ -1,0 +1,49 @@
+name: Satelītu radars (Global Fishing Watch SAR)
+
+on:
+  schedule:
+    - cron: "13 8 * * *"     # reizi dienā; dati ar ~5 dienu nobīdi
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gfw-sar
+  cancel-in-progress: false
+
+jobs:
+  sar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: SAR atklājumi
+        env:
+          GFW_TOKEN: ${{ secrets.GFW_TOKEN }}
+        run: |
+          set -o pipefail
+          mkdir -p data/sar
+          python gfw_sar.py 2>&1 | tail -n 60 | tee data/sar/last_run.log
+
+      - name: Saglabā izmaiņas repozitorijā
+        if: always()
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/sar
+          if git diff --cached --quiet; then
+            echo "Nav izmaiņu"
+            exit 0
+          fi
+          git commit -m "SAR: $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
