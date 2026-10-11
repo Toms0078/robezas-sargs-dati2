@@ -467,6 +467,10 @@ def main():
     if test and kl_all:
         print(json.dumps(kl_all[0])[:1500])
     fsru = [e for e in kl_all if "INDEPENDENCE" in ((e.get("vessel") or {}).get("name") or "").upper()]
+    live = Path(__file__).parent / "data" / "terminals" / "live_lng.json"
+    fpos = json.loads(live.read_text()).get("fsru_pos") if live.exists() else None
+    if fpos:
+        print(f"FSRU vieta pēc AIS (kartei): {fpos}")
     if fsru:
         p = fsru[0].get("position") or {}
         KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"] = p.get("lat", KLAIPEDA_LNG["lat"]), p.get("lon", KLAIPEDA_LNG["lon"])
@@ -579,7 +583,8 @@ def main():
         "butinge": {**{k: BUTINGE[k] for k in ("name", "lat", "lon")}, "calls": bt_calls,
                     "summary": summarize_calls(bt_calls, "crude"),
                     "discharge_rate_m3h": 4932},
-        "klaipeda_lng": {**{k: KLAIPEDA_LNG[k] for k in ("name", "lat", "lon")}, "calls": kl_calls,
+        "klaipeda_lng": {**{k: KLAIPEDA_LNG[k] for k in ("name", "lat", "lon")},
+                         **({"lat": fpos[0], "lon": fpos[1]} if fpos else {}), "calls": kl_calls,
                          "summary": summarize_calls(kl_calls, "lng"), "capacity_m3": FSRU_CAPACITY_M3,
                          "small_scale": kl_small,
                          "level_sim": lng_level_sim(kl_calls)},

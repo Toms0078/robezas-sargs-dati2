@@ -1503,6 +1503,15 @@ LIVE_LNG = Path(__file__).parent / "data" / "terminals" / "live_lng.json"
 
 def fsru_watch(messages, cache, now):
     st = json.loads(LIVE_LNG.read_text()) if LIVE_LNG.exists() else {"at": {}, "arrivals": []}
+    # pašas krātuves (FSRU INDEPENDENCE, MMSI 277587000) AIS pozīcija = precīza termināļa vieta
+    for m in messages:
+        meta = m.get("MetaData", {})
+        body = m.get("Message", {})
+        if meta.get("MMSI") == 277587000:
+            for k in ("PositionReport", "StandardClassBPositionReport"):
+                if k in body and body[k].get("Latitude") is not None and abs(body[k]["Latitude"]) <= 90:
+                    st["fsru_pos"] = [round(body[k]["Latitude"], 5), round(body[k]["Longitude"], 5)]
+    fpos = tuple(st.get("fsru_pos") or FSRU_POS)
     seen = {}
     for m in messages:
         meta = m.get("MetaData", {})
@@ -1514,7 +1523,7 @@ def fsru_watch(messages, cache, now):
                 la, lo = p.get("Latitude"), p.get("Longitude")
                 if la is None or abs(la) > 90:
                     continue
-                if km((la, lo), FSRU_POS) <= 0.8 and (p.get("Sog") or 0) < 1:
+                if km((la, lo), fpos) <= 0.8 and (p.get("Sog") or 0) < 1 and mmsi != 277587000:
                     seen[str(mmsi)] = (la, lo)
     t = iso(now)
     for key in seen:
