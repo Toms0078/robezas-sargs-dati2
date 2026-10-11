@@ -318,7 +318,9 @@ function lngIcon(fsru){return L.divIcon({className:'',iconSize:[22,22],iconAncho
   html:`<svg width="22" height="22" viewBox="-11 -11 22 22"><rect x="-9" y="-9" width="18" height="18" rx="${fsru?9:3}" fill="#fff" stroke="${GASCOL}" stroke-width="2.5"/><path d="M0 -5 C3 -1 4 1 4 2.5 A4 4 0 0 1 -4 2.5 C-4 1 -3 -1 0 -5Z" fill="${GASCOL}"/></svg>`});}
 async function loadGas(d){
   gasLayer.clearLayers();
-  (d.lng_terminals||[]).forEach(t=>L.marker([t.lat,t.lon],{icon:lngIcon(t.kind==='FSRU'),zIndexOffset:500})
+  (d.gas_ships||[]).forEach(s=>{const fs=fsruOf(s.name);if(fs)FSRU_POS[fs]=[s.lat,s.lon];});
+  const tpos=t=>{const n=(t.name||'').toUpperCase();const k=Object.keys(FSRU_POS).find(k=>n.includes(k.split(' ')[0].toUpperCase().slice(0,5)));return k?FSRU_POS[k]:[t.lat,t.lon];};
+  (d.lng_terminals||[]).filter(t=>!(t.kind==='FSRU'&&tpos(t)!==null&&Object.keys(FSRU_POS).some(k=>(t.name||'').toUpperCase().includes(k.split(' ')[0].toUpperCase().slice(0,5))))).forEach(t=>L.marker([t.lat,t.lon],{icon:lngIcon(t.kind==='FSRU'),zIndexOffset:500})
     .bindPopup(`<b>${esc(t.name)}</b><br>${t.kind==='FSRU'?'Peldošā LNG krātuve un regazifikācija':'LNG terminālis krastā'} · ${t.country}<br><span style="color:#64748b">Vieta aptuvena</span>`).addTo(gasLayer));
   const g=d.gas_ships||[];
   document.getElementById('gassum').textContent=`${g.length} gāzes kuģi dzirdami Baltijā un pieejās · ${(d.lng_terminals||[]).length} LNG termināļi kartē (violeti; apaļš = peldošā krātuve). Kuģi, kuru AIS galamērķis ir LNG terminālis (piem. Klaipēda), rādīti augšā kā “ceļā uz LNG termināli”. Gāzes kuģus atpazīst pēc nosaukuma (LNG, LPG, GAS, Höegh u.c.), jo AIS tiem nav atsevišķa tipa, tāpēc daži var palikt neatpazīti.`;
