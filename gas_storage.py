@@ -127,10 +127,20 @@ def main():
         print("listing:", json.dumps(lst)[:1500])
     for cc in COUNTRIES:
         comps = []
-        if isinstance(lst, dict):
+        if isinstance(lst, list):
+            comps = [c for c in lst if c.get("country") == cc and c.get("type") == "SSO"]
+        elif isinstance(lst, dict):
             comps = ((lst.get("SSO") or {}).get("Europe") or {}).get(cc) or lst.get(cc) or []
         for comp in comps:
             for fac in comp.get("facilities") or []:
+                if "historical" in (fac.get("name") or "").lower():
+                    continue
+                if not os.environ.get("AGSI_KEY"):
+                    pos = coords_for(fac.get("name"))
+                    out["facilities"].append({"country": cc, "name": fac.get("name"), "company": comp.get("name"),
+                                              "lat": pos[0] if pos else None, "lon": pos[1] if pos else None,
+                                              "full_pct": None})
+                    continue
                 try:
                     res = call({"country": cc, "company": comp.get("eic"), "facility": fac.get("eic"), "size": 1})
                 except Exception as e:
@@ -147,6 +157,8 @@ def main():
                 r = out["facilities"][-1]
                 print(f"  {cc} {name}: {r['full_pct']}% {r['gas_twh']} TWh {'(nav koordinātu)' if not pos else ''}")
                 time.sleep(0.5)
+    out["needs_key"] = not os.environ.get("AGSI_KEY")
+    print("krātuves:", [(f["country"], f["name"], f["lat"] is not None) for f in out["facilities"]])
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
 
 
