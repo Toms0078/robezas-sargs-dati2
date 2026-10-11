@@ -32,9 +32,13 @@ jobs:
       - name: Klausās AIS un atjauno datus
         env:
           AISSTREAM_API_KEY: ${{ secrets.AISSTREAM_API_KEY }}
-        run: python butinge_ais.py "${{ inputs.seconds || '240' }}"
+        run: |
+          set -o pipefail
+          mkdir -p data/butinge
+          python butinge_ais.py "${{ inputs.seconds || '240' }}" 2>&1 | tail -n 60 | tee data/butinge/last_run.log
 
       - name: Saglabā izmaiņas repozitorijā
+        if: always()
         run: |
           git config user.name "robezas-sargs-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

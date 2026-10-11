@@ -1129,6 +1129,9 @@ async def listen(key, seconds, tracked=()):
                 raw = await asyncio.wait_for(ws.recv(), timeout=max(1, end - loop.time()))
             except asyncio.TimeoutError:
                 break
+            except websockets.exceptions.ConnectionClosed as e:
+                print(f"aisstream savienojums aizvērts: {e}")
+                break
             m = json.loads(raw)
             if "error" in m:
                 raise RuntimeError(f"aisstream kļūda: {m['error']}")
