@@ -233,6 +233,12 @@ def main():
 
     ids = list({(e.get("vessel") or {}).get("id") for e in bt_all + kl_all if (e.get("vessel") or {}).get("id")})
     vessel_info(token, ids, cache)
+    ais_path = Path(__file__).parent / "data" / "ports" / "tankers_cache.json"
+    ais_len = json.loads(ais_path.read_text()) if ais_path.exists() else {}
+    visits_per_vessel = {}
+    for e in kl_all:
+        vid = (e.get("vessel") or {}).get("id")
+        visits_per_vessel[vid] = visits_per_vessel.get(vid, 0) + 1
 
     def build(events, site, kind):
         calls = []
@@ -251,13 +257,37 @@ def main():
                 dwt = gt * 1.85
                 vol = round(dwt * 0.95, -2)
             else:
+                # GFW reģistrā LNG kuģiem bieži nav GT un tips ir "OTHER", tāpēc atlase pēc izslēgšanas:
+                # pie pašas FSRU piestātnes (≤0,5 km), stāvēja ≥ 8 h, nav vietējais/servisa/kravas kuģis
                 gtypes = " ".join((info.get("geartypes") or []) + (info.get("shiptypes") or [])).upper()
                 gasname = any(k in name for k in ("LNG", "LPG", "GAS", "HOEGH", "FLEX", "CLIPPER"))
-                if "INDEPENDENCE" in name or gt < 3000 or dur < 4:
+                dkm = km((pos.get("lat"), pos.get("lon")), (site["lat"], site["lon"]))
+                ais = ais_len.get(str(v.get("ssvid"))) or {}
+                length = ais.get("length") or info.get("length") or 0
+                if "INDEPENDENCE" in name or dur < 8 or dkm > 0.5:
                     continue
-                if not (gasname or "LNG" in gtypes or "GAS" in gtypes or "TANKER" in gtypes):
-                    continue
-                cap = gt * (1.5 if gt > 50000 else 1.25)
+                if not gasname:
+                    if any(t in gtypes for t in ("FISH", "TRAWL", "PASSENGER", "SEISMIC", "CARGO", "CONTAINER",
+                                                 "REEFER", "CARRIER", "TUG", "DREDGE", "PILOT", "BUNKER")):
+                        continue
+                    if (v.get("flag") or "") == "LTU" or "PILOT" in name or name.startswith("LT-"):
+                        continue  # vietējie velkoņi, loči, robežsardze
+                    if visits_per_vessel.get(v.get("id"), 0) > 12:
+                        continue  # bieži atgriežas = vietējais kuģis
+                    if gt and gt < 3000 or (length and length < 90):
+                        continue
+                if length >= 260 or gt > 80000:
+                    cap = 170000
+                elif length >= 200 or gt > 40000:
+                    cap = 140000
+                elif length >= 120 or gt > 8000:
+                    cap = 30000
+                elif length:
+                    cap = 7500
+                elif gt:
+                    cap = gt * (1.5 if gt > 50000 else 1.25)
+                else:
+                    cap = 150000  # nezināms izmērs: tipisks LNG tankkuģis
                 vol = round(cap * 0.95, -2)
             frm = previous_port(token, v.get("id"), e.get("start") or "", (site["lat"], site["lon"]), cache)
             calls.append({"start": e.get("start"), "end": e.get("end"), "hours": round(dur, 1),
