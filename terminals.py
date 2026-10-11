@@ -30,8 +30,8 @@ UA = "robezas-sargs (github.com/Toms0078/robezas-sargs-dati2)"
 
 BUTINGE = {"id": "butinge", "name": "Būtiņģes SPM boja", "lat": 56.062, "lon": 20.958, "r_km": 4.0}
 # Klaipēdas FSRU vieta tiek precizēta pēc paša FSRU "INDEPENDENCE" ostas apmeklējumiem
-KLAIPEDA_LNG = {"id": "klaipeda_lng", "name": "Klaipēdas LNG (FSRU Independence)", "lat": 55.64, "lon": 21.13,
-                "r_km": 1.5, "search_box": (55.55, 55.76, 21.05, 21.20)}
+KLAIPEDA_LNG = {"id": "klaipeda_lng", "name": "Klaipēdas LNG (FSRU Independence)", "lat": 55.6645, "lon": 21.1375,
+                "r_km": 1.0, "search_box": (55.645, 55.685, 21.105, 21.170)}
 FSRU_CAPACITY_M3 = 170000
 TRANSIT = ("PORT SAID", "SUEZ CANAL", "GIBRALTAR", "SKAGEN", "KIEL", "BRUNSBUTTEL", "CANAKKALE", "ISTANBUL")
 
@@ -204,6 +204,17 @@ def main():
     if test and kl_all:
         print(json.dumps(kl_all[0])[:1500])
     fsru = [e for e in kl_all if "INDEPENDENCE" in ((e.get("vessel") or {}).get("name") or "").upper()]
+    if test:
+        vessel_info(token, list({(e.get("vessel") or {}).get("id") for e in kl_all}), cache)
+        seen = {}
+        for e in kl_all:
+            v = e.get("vessel") or {}
+            p = e.get("position") or {}
+            dkm = km((p.get("lat", 0), p.get("lon", 0)), (KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"]))
+            i = cache.get(v.get("id")) or {}
+            seen.setdefault(v.get("name"), (round(dkm, 2), i.get("gt"), i.get("geartypes"), i.get("shiptypes")))
+        for n, x in sorted(seen.items(), key=lambda kv: kv[1][0])[:40]:
+            print("  pie FSRU:", n, x)
     if fsru:
         p = fsru[0].get("position") or {}
         KLAIPEDA_LNG["lat"], KLAIPEDA_LNG["lon"] = p.get("lat", KLAIPEDA_LNG["lat"]), p.get("lon", KLAIPEDA_LNG["lon"])
@@ -240,7 +251,11 @@ def main():
                 dwt = gt * 1.85
                 vol = round(dwt * 0.95, -2)
             else:
-                if "INDEPENDENCE" in name or gt < 5000 or dur < 6:
+                gtypes = " ".join((info.get("geartypes") or []) + (info.get("shiptypes") or [])).upper()
+                gasname = any(k in name for k in ("LNG", "LPG", "GAS", "HOEGH", "FLEX", "CLIPPER"))
+                if "INDEPENDENCE" in name or gt < 3000 or dur < 4:
+                    continue
+                if not (gasname or "LNG" in gtypes or "GAS" in gtypes or "TANKER" in gtypes):
                     continue
                 cap = gt * (1.5 if gt > 50000 else 1.25)
                 vol = round(cap * 0.95, -2)
@@ -249,7 +264,15 @@ def main():
                           "name": v.get("name"), "mmsi": v.get("ssvid"), "flag": v.get("flag"),
                           "imo": info.get("imo"), "gt": gt, "volume": vol, "from": frm})
         calls.sort(key=lambda c: c["start"] or "")
-        return calls
+        merged = []
+        for c in calls:
+            if merged and merged[-1]["name"] == c["name"] and \
+                    (datetime.fromisoformat(c["start"][:19]) - datetime.fromisoformat(merged[-1]["end"][:19])).days < 3:
+                merged[-1]["end"] = c["end"]
+                merged[-1]["hours"] = round(merged[-1]["hours"] + c["hours"], 1)
+                continue
+            merged.append(c)
+        return merged
 
     bt_calls = build(bt_all, BUTINGE, "crude")
     kl_calls = build(kl_all, KLAIPEDA_LNG, "lng")
