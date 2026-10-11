@@ -616,6 +616,46 @@ def ru_tankers(pos, cache, ports, sanctions):
     return out
 
 
+# ---------------------------------------------------------------------------
+# Militārie un dienesta kuģi (tikai tie, kas paši raida AIS; daudzi to nedara)
+MIL_NAME_RE = re.compile(
+    r"WARSHIP|NAVY|NAVAL|MILITARY|^(HMS|USS|USNS|HNLMS|HDMS|FGS|HMCS|ESPS|ITS|FS|ORP|KNM|HSWMS|HMSWS|"
+    r"LVNS|LNS|EML|BNS|FNS|RFS|TCG|NRP|HS|SPS|HNOMS|FNFL)\s")
+GOV_NAME_RE = re.compile(r"COAST ?GUARD|KYSTVAKT|KUSTBEVAKNING|VARTIOSTO|BORDER|BUNDESPOLIZEI|POLIZEI|"
+                         r"STRAZ GRANICZNA|POGRANICHN|RESCUE|SAR |POLICE|ROBEZSARDZE|PIIRIVALVE|PASIENIO")
+
+
+def service_kind(name, t):
+    n = (name or "").upper().strip()
+    if t == 35 or MIL_NAME_RE.search(n):
+        return "militārais"
+    if t == 55 or GOV_NAME_RE.search(n):
+        return "robežsardze / krasta apsardze"
+    return None
+
+
+def service_ships(pos, cache):
+    out = []
+    for mmsi, (p, meta) in pos.items():
+        c = cache.get(str(mmsi))
+        if not c:
+            continue
+        kind = service_kind(c.get("name"), c.get("type"))
+        if not kind:
+            continue
+        la, lo = p.get("Latitude"), p.get("Longitude")
+        if la is None or abs(la) > 90:
+            continue
+        out.append({
+            "mmsi": mmsi, "name": c.get("name") or (meta.get("ShipName") or "").strip(), "kind": kind,
+            "flag": flag_of(mmsi), "length": c.get("length"), "destination": c.get("destination"),
+            "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"), "cog": p.get("Cog"),
+            "status": "kustībā" if (p.get("Sog") or 0) >= 1 else "stāv", "area": area_name((la, lo)),
+        })
+    out.sort(key=lambda x: (x["kind"] != "militārais", x.get("flag") or "", x.get("name") or ""))
+    return out
+
+
 _SANCTIONS = {}
 
 
@@ -640,7 +680,8 @@ def process_ports(messages, cache, vessels, now):
     cache = dict(cache)
     for mmsi, s in static.items():
         key = str(mmsi)
-        if 70 <= (s.get("Type") or 0) <= 89 or is_gas_ship(s.get("Name"), s.get("Type")):
+        if 70 <= (s.get("Type") or 0) <= 89 or is_gas_ship(s.get("Name"), s.get("Type")) \
+                or service_kind(s.get("Name"), s.get("Type")):
             dim = s.get("Dimension") or {}
             cache[key] = {
                 "name": (s.get("Name") or "").strip(),
@@ -702,6 +743,8 @@ def process_ports(messages, cache, vessels, now):
                   "destination": c["destination"], "eta": c["eta"],
                   "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"),
                   "cog": p.get("Cog"), "status": st, "dist_km": round(d, 1)}
+            if service_kind(c.get("name"), c.get("type")) or not (70 <= (c.get("type") or 0) <= 89):
+                break
             if is_tanker(c.get("type")):
                 port["tankers"].append(cargo_guess(load_estimate(sh, vessels), port["id"]))
             else:
@@ -723,6 +766,7 @@ def process_ports(messages, cache, vessels, now):
         "ports": ports,
         "gas_ships": gas_ships(pos, cache),
         "ru_tankers": ru_tankers(pos, cache, ports, _SANCTIONS),
+        "service_ships": service_ships(pos, cache),
         "lng_terminals": LNG_TERMINALS,
     }
     return summary, cache
@@ -1085,6 +1129,7 @@ def main():
     global _SANCTIONS
     _SANCTIONS = update_sanctions()
     summary, cache = process_ports(msgs, cache, vessels, now_utc())
+    print(f"Militārie / dienesta kuģi: {len(summary['service_ships'])}")
     print(f"Krievijai piesaistīti tankkuģi: {len(summary['ru_tankers'])}, no tiem sankciju sarakstā: "
           f"{sum(1 for x in summary['ru_tankers'] if x['sanctioned'])}, ēnu flotes sarakstā: "
           f"{sum(1 for x in summary['ru_tankers'] if x['shadow_listed'])}")

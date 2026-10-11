@@ -74,6 +74,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div class="tw"><table id="inbarr"></table></div>
     <p class="note">Kad kuģis vairs nav dzirdams, tā ceļš tiek simulēts pa parasto kuģu ceļu ar pēdējo zināmo ātrumu. "Ienāca pēc prognozes" nozīmē aprēķinu, nevis apstiprinājumu. Tankkuģu "iespējamā krava" ir novērtējums pēc ostas, kuģa izmēra, nosaukuma un iegrimes: AIS kravu nepārraida, tāpēc dīzeli no benzīna atšķirt nevar.</p>
   </section>
+  <section class="panel"><h2>Militārie un dienesta kuģi</h2>
+    <div class="note" id="milsum">Ielādē…</div>
+    <div class="tw"><table id="mil"></table></div>
+  </section>
   <section class="panel"><h2>Krievijai piesaistītie tankkuģi Baltijā</h2>
     <div class="note" id="rusum">Ielādē…</div>
     <div class="tw"><table id="ru"></table></div>
@@ -97,7 +101,7 @@ const LABEL={pie_bojas:'pie bojas',gaida:'gaida reidā','ceļā':'ceļā'};
 // Kuģu emblēmas (skats no augšas, priekšgals uz augšu) pēc AIS tipa
 const HULL='M0 -19 C6 -12 7 -6 7 0 L7 16 Q7 19 4 19 L-4 19 Q-7 19 -7 16 L-7 0 C-7 -6 -6 -12 0 -19Z';
 const SHORT='M0 -11 C6 -7 7 -3 7 3 L7 9 Q7 12 4 12 L-4 12 Q-7 12 -7 9 L-7 3 C-7 -3 -6 -7 0 -11Z';
-const KIND_LV={gas:'gāzes kuģis (LNG/LPG)',tank:'tankkuģis',cargo:'kravas kuģis',pass:'pasažieru / prāmis',tug:'velkonis',fish:'zvejas kuģis',other:'cits kuģis'};
+const KIND_LV={mil:'militārais kuģis',gov:'robežsardze / krasta apsardze',gas:'gāzes kuģis (LNG/LPG)',tank:'tankkuģis',cargo:'kravas kuģis',pass:'pasažieru / prāmis',tug:'velkonis',fish:'zvejas kuģis',other:'cits kuģis'};
 function kindOf(t,name){
   if(typeof t==='number'){if(t>=80&&t<=89)return'tank';if(t>=70&&t<=79)return'cargo';if(t>=60&&t<=69)return'pass';
     if(t===31||t===32||t===52)return'tug';if(t===30)return'fish';return'other';}
@@ -106,7 +110,9 @@ function kindOf(t,name){
 function shipSVG(kind,color,h,rot){
   const w=Math.round(h*0.6), W='rgba(255,255,255,.92)', o='stroke="rgba(0,0,0,.55)" stroke-width="1.2"';
   let g;
-  if(kind==='gas') g=`<path d="${HULL}" fill="${color}" ${o}/><circle cx="0" cy="-9" r="4.2" fill="${W}"/><circle cx="0" cy="-0.5" r="4.2" fill="${W}"/><circle cx="0" cy="8" r="4.2" fill="${W}"/><rect x="-4" y="13" width="8" height="4" rx="1" fill="${W}" opacity=".7"/>`;
+  if(kind==='mil') g=`<path d="M0 -20 C4 -12 6 -4 6 4 L5 17 L-5 17 L-6 4 C-6 -4 -4 -12 0 -20Z" fill="${color}" ${o}/><circle cx="0" cy="-9" r="2.6" fill="${W}"/><line x1="0" y1="-9" x2="0" y2="-15" stroke="${W}" stroke-width="1.4"/><rect x="-3.5" y="-3" width="7" height="10" rx="1" fill="${W}"/><line x1="-4" y1="11" x2="4" y2="11" stroke="${W}" stroke-width="1.4"/>`;
+  else if(kind==='gov') g=`<path d="${SHORT}" fill="${color}" ${o}/><line x1="-7" y1="-3" x2="7" y2="1" stroke="${W}" stroke-width="2.2"/><rect x="-3.5" y="2" width="7" height="6" rx="1" fill="${W}"/>`;
+  else if(kind==='gas') g=`<path d="${HULL}" fill="${color}" ${o}/><circle cx="0" cy="-9" r="4.2" fill="${W}"/><circle cx="0" cy="-0.5" r="4.2" fill="${W}"/><circle cx="0" cy="8" r="4.2" fill="${W}"/><rect x="-4" y="13" width="8" height="4" rx="1" fill="${W}" opacity=".7"/>`;
   else if(kind==='tank') g=`<path d="${HULL}" fill="${color}" ${o}/><line x1="0" y1="-13" x2="0" y2="9" stroke="${W}" stroke-width="1.6"/><line x1="-5" y1="-1" x2="5" y2="-1" stroke="${W}" stroke-width="1.6"/><rect x="-5" y="11" width="10" height="6" rx="1" fill="${W}"/>`;
   else if(kind==='cargo') g=`<path d="${HULL}" fill="${color}" ${o}/><rect x="-5" y="-11" width="10" height="5" fill="${W}"/><rect x="-5" y="-4" width="10" height="5" fill="${W}"/><rect x="-5" y="3" width="10" height="5" fill="${W}"/><rect x="-5" y="11" width="10" height="5" rx="1" fill="${W}" opacity=".6"/>`;
   else if(kind==='pass') g=`<path d="${HULL}" fill="${color}" ${o}/><rect x="-5" y="-11" width="10" height="27" rx="4" fill="${W}"/><line x1="-5" y1="2" x2="5" y2="2" stroke="${color}" stroke-width="2"/>`;
@@ -161,9 +167,23 @@ async function load(){
       rows.map(e=>`<tr><td>${e.time.replace('T',' ').slice(0,16)}</td><td>${e.event}</td><td>${esc(e.name||e.mmsi)}</td><td>${e.arrival_draught?e.arrival_draught+' → ':''}${e.draught??'–'} m</td></tr>`).join('');
   }}catch(e){}
 }
-document.getElementById('legend').innerHTML=['gas','tank','cargo','pass','tug','fish','other'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
+document.getElementById('legend').innerHTML=['mil','gov','gas','tank','cargo','pass','tug','fish','other'].map(k=>`<span>${badge(k,'#475569')}${KIND_LV[k]}</span>`).join('');
 
 
+
+const milLayer=L.layerGroup().addTo(map);
+const MILCOL='#3f4f2f', GOVCOL='#1d4ed8';
+function loadMil(d){
+  milLayer.clearLayers();
+  const r=d.service_ships||[], nm=r.filter(x=>x.kind==='militārais').length;
+  document.getElementById('milsum').textContent=`${nm} militārie un ${r.length-nm} robežsardzes vai krasta apsardzes kuģi pašlaik raida AIS. Karakuģiem AIS nav obligāts, un daudzi to izslēdz (īpaši Krievijas flote; zemūdenes neraida nemaz), tāpēc šis saraksts nekad nav pilnīgs. Daži raida tikai “NATO WARSHIP” bez nosaukuma. Atpazīst pēc AIS tipa (35 militārais, 55 tiesībsargājošs) un flotes priekšvārda nosaukumā (HMS, USS, FGS, ORP u.c.).`;
+  r.forEach(s=>{const mil=s.kind==='militārais', col=mil?MILCOL:GOVCOL;
+    s._m=L.marker([s.lat,s.lon],{icon:shipIcon(mil?'mil':'gov',col,s.cog),zIndexOffset:700})
+    .bindPopup(`<b>${esc(s.name||('MMSI '+s.mmsi))}</b><br>${s.kind} · ${esc(s.flag||'karogs nav zināms')}<br>${s.status}${s.sog!=null?' · '+s.sog+' kn':''} · ${esc(s.area)}${s.destination?'<br>Galamērķis '+esc(s.destination):''}`).addTo(milLayer);});
+  document.getElementById('mil').innerHTML=r.length?'<tr><th>Kuģis</th><th>Veids</th><th>Karogs (pēc MMSI)</th><th>Kur</th><th>Statuss</th></tr>'+
+    r.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer"><td>${badge(s.kind==='militārais'?'mil':'gov',s.kind==='militārais'?MILCOL:GOVCOL)}${esc(s.name||('MMSI '+s.mmsi))}</td><td>${s.kind}</td><td>${esc(s.flag||'–')}</td><td>${esc(s.area)}</td><td>${s.status}</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens neraida.</td></tr>';
+  document.querySelectorAll('#mil tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=r[+tr.dataset.i];map.setView([s.lat,s.lon],10);s._m.openPopup();});
+}
 const ruLayer=L.layerGroup().addTo(map);
 const RUCOL='#b91c1c';
 function loadRu(d){
@@ -194,7 +214,7 @@ async function loadGas(d){
   document.querySelectorAll('#gas tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=g[+tr.dataset.i];map.setView([s.lat,s.lon],11);s._m.openPopup();});
 }
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-L.control.layers(null,{'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
+L.control.layers(null,{'Militārie un dienesta kuģi':milLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
@@ -213,7 +233,7 @@ async function loadPorts(){
   try{const r=await fetch('../data/ports/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
   catch(e){document.getElementById('portsum').textContent='Ostu dati vēl nav savākti.';return;}
   document.getElementById('portsum').innerHTML=`${d.total_in_ports} tankkuģi un ${d.cargo_in_ports??0} kravas kuģi ${d.ports.length} Baltijas jūras ostās · atjaunots ${new Date(d.updated).toLocaleString('lv-LV')}. Kuģu tipu atpazīst pēc AIS statiskajiem datiem, tāpēc saraksts pirmajās stundās papildinās. Ostas bez neviena dzirdama kuģa var būt ārpus aisstream pārklājuma. Zila = stāv ostā, brūna = enkurvietā, pelēka = kustībā.`;
-  loadGas(d); loadRu(d);
+  loadGas(d); loadRu(d); loadMil(d);
   portLayer.clearLayers(); cargoLayer.clearLayers();
   const box=document.getElementById('ports'); box.innerHTML='';
   const by={}; d.ports.forEach(p=>(by[p.country]=by[p.country]||[]).push(p));
