@@ -52,6 +52,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
 .chip{font:600 .82rem var(--body);padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+#layerchips .chip[aria-pressed="true"]::before{content:"✓ "}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .badge{display:inline-flex;vertical-align:middle;margin-right:6px;transform:rotate(90deg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font:.8rem var(--body);color:var(--muted);margin-top:8px}
@@ -108,7 +109,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div id="upd">Ielādē…</div>
   </header>
   <div class="grid">
-    <div><div id="map"></div><div class="legend" id="legend"></div></div>
+    <div><div id="map"></div><div class="chips" id="layerchips" role="group" aria-label="Kartes slāņi"></div><div class="legend" id="legend"></div></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
   <section class="panel" id="terminali"><h2>Termināļi: Būtiņģes nafta un Klaipēdas LNG</h2>
@@ -417,7 +418,13 @@ async function loadEnergy(){
 document.getElementById('en-empty').addEventListener('change',renderEnergy);
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
 const termLayer=L.layerGroup().addTo(map), ugsLayer=L.layerGroup().addTo(map), pipeLayer=L.layerGroup().addTo(map);
-L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Gāzesvadi un plūsmas':pipeLayer,'Pazemes gāzes krātuves':ugsLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
+const MAP_LAYERS={'Krātuves un uzpilde (nafta, LNG)':termLayer,'Gāzesvadi un plūsmas':pipeLayer,'Pazemes gāzes krātuves':ugsLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer};
+(function(){const box=document.getElementById('layerchips');let saved={};try{saved=JSON.parse(localStorage.getItem('mapLayers')||'{}');}catch(e){}
+  Object.entries(MAP_LAYERS).forEach(([name,lay])=>{const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=name;
+    if(saved[name]===false)map.removeLayer(lay);
+    const sync=()=>b.setAttribute('aria-pressed',map.hasLayer(lay)?'true':'false');sync();
+    b.onclick=()=>{map.hasLayer(lay)?map.removeLayer(lay):map.addLayer(lay);sync();saved[name]=map.hasLayer(lay);try{localStorage.setItem('mapLayers',JSON.stringify(saved));}catch(e){}};
+    box.append(b);});})();
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
