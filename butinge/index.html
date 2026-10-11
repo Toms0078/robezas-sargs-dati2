@@ -309,6 +309,10 @@ function loadRu(d){
   document.querySelectorAll('#ru tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=r[+tr.dataset.i];map.setView([s.lat,s.lon],10);s._m.openPopup();});
 }
 const gasLayer=L.layerGroup().addTo(map);
+// Peldošās krātuves (FSRU) – tie ir paši termināļi, nevis piegādes kuģi
+const FSRU_SHIPS={'EXEMPLAR':'Inkoo LNG','INDEPENDENCE':'Klaipēdas LNG','ENERGOS POWER':'Mukrānas LNG','NEPTUNE':'Mukrānas LNG','MARSHAL VASILEVSKIY':'Kaļiņingradas FSRU','HOEGH ESPERANZA':'Vilhelmshāfenes LNG','HOEGH GANNET':'Brunsbiteles LNG','EXCELSIOR':'Vilhelmshāfenes LNG 2','ENERGOS FORCE':'Stades LNG'};
+const fsruOf=n=>{const u=(n||'').toUpperCase();const k=Object.keys(FSRU_SHIPS).find(k=>u.includes(k));return k?FSRU_SHIPS[k]:null;};
+let FSRU_POS={};
 const GASCOL='#7c3aed';
 function lngIcon(fsru){return L.divIcon({className:'',iconSize:[22,22],iconAnchor:[11,11],
   html:`<svg width="22" height="22" viewBox="-11 -11 22 22"><rect x="-9" y="-9" width="18" height="18" rx="${fsru?9:3}" fill="#fff" stroke="${GASCOL}" stroke-width="2.5"/><path d="M0 -5 C3 -1 4 1 4 2.5 A4 4 0 0 1 -4 2.5 C-4 1 -3 -1 0 -5Z" fill="${GASCOL}"/></svg>`});}
@@ -318,11 +322,13 @@ async function loadGas(d){
     .bindPopup(`<b>${esc(t.name)}</b><br>${t.kind==='FSRU'?'Peldošā LNG krātuve un regazifikācija':'LNG terminālis krastā'} · ${t.country}<br><span style="color:#64748b">Vieta aptuvena</span>`).addTo(gasLayer));
   const g=d.gas_ships||[];
   document.getElementById('gassum').textContent=`${g.length} gāzes kuģi dzirdami Baltijā un pieejās · ${(d.lng_terminals||[]).length} LNG termināļi kartē (violeti; apaļš = peldošā krātuve). Kuģi, kuru AIS galamērķis ir LNG terminālis (piem. Klaipēda), rādīti augšā kā “ceļā uz LNG termināli”. Gāzes kuģus atpazīst pēc nosaukuma (LNG, LPG, GAS, Höegh u.c.), jo AIS tiem nav atsevišķa tipa, tāpēc daži var palikt neatpazīti.`;
-  g.forEach(s=>{const m=L.marker([s.lat,s.lon],{icon:shipIcon('gas',GASCOL,s.cog),zIndexOffset:400})
-    .bindPopup(`<b>${esc(s.name)}</b> ${fl(s.mmsi,true)} · ${s.gas_kind}<br>${fl(s.mmsi)}<br>${s.status}${s.to_terminal?' → '+esc(s.to_terminal)+' ('+nf(s.to_terminal_km)+' km)':s.near_terminal?' · '+esc(s.near_terminal):''}${s.load?'<br>'+s.load:''}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m garš<br>Galamērķis ${esc(s.destination||'–')}${s.eta?' · ETA '+esc(s.eta):''}`).addTo(gasLayer);s._m=m;});
+  g.forEach(s=>{const fs=fsruOf(s.name); if(fs)FSRU_POS[fs]=[s.lat,s.lon];
+    const m=L.marker([s.lat,s.lon],{icon:shipIcon('gas',GASCOL,s.cog),zIndexOffset:400})
+    .bindPopup(`<b>${esc(s.name)}</b> ${fl(s.mmsi,true)} · ${s.gas_kind}<br>${fs?`<b>Šī ir pati peldošā LNG krātuve (FSRU) – ${esc(fs)} terminālis, nevis piegādes kuģis.</b> Tā stāv piestātnē pastāvīgi; LNG tajā ieved citi kuģi.<br>`:''}${fl(s.mmsi)}<br>${fs?'pie piestātnes':s.status}${s.to_terminal?' → '+esc(s.to_terminal)+' ('+nf(s.to_terminal_km)+' km)':s.near_terminal?' · '+esc(s.near_terminal):''}${s.load?'<br>'+s.load:''}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m garš<br>Galamērķis ${esc(s.destination||'–')}${s.eta?' · ETA '+esc(s.eta):''}`).addTo(gasLayer);s._m=m;});
   document.getElementById('gas').innerHTML=g.length?'<tr><th>Kuģis</th><th>Veids</th><th>Statuss</th><th>Pilns / tukšs</th><th>LNG terminālis</th><th>Galamērķis</th><th>Iegrime</th></tr>'+
     g.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer"><td>${badge('gas',GASCOL)}${esc(s.name)} ${fl(s.mmsi,true)}</td><td>${s.gas_kind}</td><td>${s.to_terminal?'<b style="color:'+GASCOL+'">'+s.status+'</b>':s.status}</td><td>${s.load||'–'}</td><td>${s.to_terminal?'→ '+esc(s.to_terminal)+' <span class="note">('+nf(s.to_terminal_km)+' km)</span>':s.near_terminal?esc(s.near_terminal):'– <span class="note">('+nf(Math.round(s.terminal_km))+' km)</span>'}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens gāzes kuģis nav dzirdams.</td></tr>';
   document.querySelectorAll('#gas tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=g[+tr.dataset.i];map.setView([s.lat,s.lon],11);s._m.openPopup();});
+  if(typeof GS!=='undefined'&&GS)drawOtherLng();
 }
 
 
@@ -910,7 +916,7 @@ function drawOtherLng(){
     const html=`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(14px,-22px)">
       <div style="flex:none;width:${has?14:10}px;height:${has?40:26}px;border:2px solid ${col};border-radius:3px;background:var(--panel);position:relative;overflow:hidden"><div style="position:absolute;left:0;right:0;bottom:0;height:${p||0}%;background:${col}"></div></div>
       <div style="font:700 ${has?.74:.66}rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:4px;padding:1px 5px">${t.name} ${has?p+'%':'–'}</div></div>`;
-    otherLngMarkers.push(L_marker(t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f?lngFacInfo(f):'ALSI dati vēl nav ielādēti')));});
+    otherLngMarkers.push(L_marker(FSRU_POS[t.name]||t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f?lngFacInfo(f):'ALSI dati vēl nav ielādēti')));});
 }
 function L_marker(pos,html,pop){return L.marker(pos,{icon:L.divIcon({className:'',iconSize:[0,0],html}),zIndexOffset:450}).bindPopup(pop,{maxWidth:320}).addTo(termLayer);}
 async function loadTerminals(){
