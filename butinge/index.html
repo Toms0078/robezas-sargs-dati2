@@ -353,12 +353,12 @@ async function loadSar(){
   catch(e){document.getElementById('sarsum').textContent='Satelītu dati vēl nav savākti.';return;}
   sarLayer.clearLayers();
   const dark=d.dark||[];
-  document.getElementById('sarsum').textContent=`Sentinel-1 radara attēlos atklātie kuģi (Global Fishing Watch), periods ${d.period[0]} – ${d.period[1]}. Radars redz kuģi arī tad, ja tas neraida AIS. Sarkanie apļi kartē ir atklājumi, kuriem nav atbilstoša AIS signāla. Tas var nozīmēt izslēgtu AIS, bet arī mazu kuģi bez AIS vai kļūdainu atklājumu. Satelīts pārlido katru vietu tikai ik pāris dienas, dati ar ~5 dienu nobīdi.`;
+  document.getElementById('sarsum').textContent=`Sentinel-1 radara attēlos atklātie kuģi (Global Fishing Watch), periods ${d.period[0]} – ${d.period[1]}. Radars redz kuģi arī tad, ja tas neraida AIS. Sarkanie apļi kartē ir atklājumi, kuriem nav atbilstoša AIS signāla. Tas var nozīmēt izslēgtu AIS, bet arī mazu kuģi bez AIS vai kļūdainu atklājumu. Satelīts pārlido katru vietu tikai ik pāris dienas, dati ar ~5 dienu nobīdi. Tipu (zvejas / nav zvejas) novērtē GFW neironu tīkls pēc radara attēla; daudziem tas paliek nenoteikts.`;
   dark.forEach(x=>L.circleMarker([x.lat,x.lon],{radius:6,color:'#b91c1c',weight:2,fill:false})
-    .bindPopup(`<b>Kuģis bez AIS</b> (radars)<br>${x.date}<br>${x.lat.toFixed(3)}, ${x.lon.toFixed(3)}${x.buoy_km<=3?'<br><b>pie Būtiņģes bojas</b>':''}`).addTo(sarLayer));
+    .bindPopup(`<b>Kuģis bez AIS</b> (radars)<br>GFW novērtējums: ${esc(x.class||'nenoteikts')}<br>${x.date}<br>${x.lat.toFixed(3)}, ${x.lon.toFixed(3)}${x.buoy_km<=3?'<br><b>pie Būtiņģes bojas</b>':''}`).addTo(sarLayer));
   const box=document.getElementById('sarreg');box.innerHTML='';
   Object.values(d.regions||{}).forEach(r=>{const el=document.createElement('div');el.className='port';
-    el.innerHTML=`<h3>${esc(r.name)}</h3>`+(r.error?`<div class="empty">Kļūda</div>`:`<ul><li><b>Atklājumi</b><span>${r.total??0}</span></li><li><b>Bez AIS</b><span style="color:#b91c1c">${r.dark??0}</span></li></ul>`);box.append(el);});
+    el.innerHTML=`<h3>${esc(r.name)}</h3>`+(r.error?`<div class="empty">Kļūda</div>`:`<ul><li><b>Atklājumi</b><span>${r.total??0}</span></li><li><b>Bez AIS</b><span style="color:#b91c1c">${r.dark??0}</span></li>${Object.entries(r.dark_by_class||{}).map(([k,v])=>`<li><b class="note">· ${esc(k)}</b><span>${v}</span></li>`).join('')}</ul>`);box.append(el);});
   const bu=d.at_butinge_buoy||[];
   document.getElementById('sarbuoy').innerHTML=bu.length?'<tr><th>Datums</th><th>Kuģis</th><th>Karogs</th><th>Tips (GFW)</th><th>No bojas</th></tr>'+
     bu.map(x=>`<tr><td>${esc(x.date)}</td><td>${x.matched?esc(x.name||x.mmsi):'<b style="color:#b91c1c">bez AIS</b>'}</td><td>${esc(x.flag||'–')}</td><td>${esc(x.type||'–')}</td><td>${x.buoy_km} km</td></tr>`).join(''):'<tr><td class="note">Šajā periodā satelīta attēlos pie bojas neviena kuģa.</td></tr>';
