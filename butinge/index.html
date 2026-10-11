@@ -131,6 +131,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     </div>
     <p class="note">Piegādes: Global Fishing Watch ostu apmeklējumi pēdējo 12 mēnešu laikā (kuģis stāvēja pie bojas vai FSRU). Izcelsme ir kuģa iepriekšējā osta (bez kanāliem un šaurumiem). <b>Apjomi ir aplēses</b> pēc kuģa izmēra: jēlnafta ≈ 95 % no DWT (DWT ≈ 1,85 × GT); LNG ≈ 95 % no tipiskā kravas tilpuma pēc kuģa garuma. Izkraušanas simulācija: Būtiņģē ~3 h pievienošana, tad ~4 200 t/h (bojas jauda 4 932 m³/h); LNG ~4 h sagatavošana, tad ~5 000 m³/h. Krātuves aizpildījums ir <b>simulācija</b>, nevis mērījums: piegādes mīnus izsūtīšana tīklā (vidējā no gada piegādēm, pilnākā krātuvē izsūta vairāk, tukšākā mazāk; ~5 % paliek vienmēr). Ja kāda piegāde nav atpazīta, simulācija tajā brīdī rāda par zemu. Klaipēdā LNG kuģi tiek atpazīti pēc tā, ka pirms tam krāvušies LNG eksporta terminālī (Hammerfest, ASV termināļi u.c.).</p>
   </section>
+  <section class="panel" id="kratuves"><h2>Pazemes gāzes krātuves</h2>
+    <div class="note" id="ugssum">Ielādē…</div>
+    <div class="tw" style="margin-top:8px"><table id="ugstab"></table></div>
+  </section>
   <section class="panel" id="energija"><h2>Enerģijas kravas uz Baltiju</h2>
     <div class="note" id="ensum">Ielādē…</div>
     <div class="chips" id="enfilter" role="group" aria-label="Galamērķa valsts"></div>
@@ -407,8 +411,8 @@ async function loadEnergy(){
 }
 document.getElementById('en-empty').addEventListener('change',renderEnergy);
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-const termLayer=L.layerGroup().addTo(map);
-L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
+const termLayer=L.layerGroup().addTo(map), ugsLayer=L.layerGroup().addTo(map);
+L.control.layers(null,{'Krātuves un uzpilde (nafta, LNG)':termLayer,'Pazemes gāzes krātuves':ugsLayer,'Satelītu radars: kuģi bez AIS':sarLayer,'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
@@ -551,6 +555,32 @@ async function loadInbound(){
   const arr=(d.arrived||[]).slice().reverse().slice(0,12).map(a=>`<tr><td>${esc(a.port)}</td><td>${esc(a.name)}</td><td>${a.type||''}</td><td colspan="3">${a.how==='AIS'?'ienāca (AIS)':'ienāca pēc prognozes'}</td><td>${new Date(a.time).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td><td>${a.draught??'–'} m</td></tr>`).join('');
   document.getElementById('inbarr').innerHTML=arr?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th colspan="3">Kā noteikts</th><th>Laiks</th><th>Iegrime</th></tr>'+arr:'<tr><td class="note">Vēl neviena.</td></tr>';
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
+}
+
+// ---------- Pazemes gāzes krātuves (AGSI) ----------
+const UGSCOL='#4d7c0f', UGS_MAP=['LV','PL','DK','SE'];
+const CC_LV={LV:'Latvija',PL:'Polija',DK:'Dānija',SE:'Zviedrija',DE:'Vācija'};
+function ugsIcon(f){const p=f.full_pct, has=p!=null, w=Math.round(p||0);
+  const pm=/\(([^)]*)\)/.exec(f.name||''), short=(pm?pm[1].split(',').slice(0,2).map(x=>x.trim()).join('/')+(pm[1].split(',').length>2?'…':''):(f.name||'').replace(/^(UGS|VGS)\s+/,'')).replace('Incukalns','Inčukalns');
+  return L.divIcon({className:'',iconSize:[0,0],html:`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(-8px,-20px)">
+    <div style="flex:none;width:14px;height:38px;border:2px solid ${UGSCOL};border-radius:3px;background:var(--panel);position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.4)">
+      <div style="position:absolute;left:0;right:0;bottom:0;height:${w}%;background:${UGSCOL}"></div></div>
+    <div style="font:700 .74rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${UGSCOL};border-radius:4px;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,.3)">${esc(short)} ${has?w+'%':'–'}</div></div>`});}
+async function loadUgs(){
+  let d; try{const r=await fetch('../data/gas_storage/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  catch(e){document.getElementById('ugssum').textContent='Dati vēl nav savākti.';return;}
+  ugsLayer.clearLayers();
+  const fac=(d.facilities||[]).filter(f=>UGS_MAP.includes(f.country)&&f.lat!=null);
+  fac.forEach(f=>{const r=f;L.marker([f.lat,f.lon],{icon:ugsIcon(f),zIndexOffset:300}).bindPopup(`<b>${esc(f.name)}</b> · ${CC_LV[f.country]||f.country}<br>${esc(f.company||'')}<br>`+
+    (r.full_pct!=null?`Aizpildījums <b>${r.full_pct.toFixed(1)}%</b> (${esc(r.day)})<br>Gāze: ${nf(r.gas_twh)} TWh no ${nf(r.capacity_twh)} TWh (≈ ${nf(Math.round(r.gas_twh/10.55*100)/100)} mljrd. m³)<br>Iesūknē ${nf(r.injection_gwh)} · izņem ${nf(r.withdrawal_gwh)} GWh/d${r.trend!=null?'<br>Izmaiņa: '+(r.trend>0?'+':'')+r.trend+' %/d':''}`
+      :'Aizpildījuma dati vēl nav (vajag AGSI atslēgu)')+`<br><span style="color:#64748b">Avots: GIE AGSI+ · vieta aptuvena</span>`).addTo(ugsLayer);});
+  const cs=d.countries||{};
+  document.getElementById('ugssum').innerHTML=d.needs_key?'Krātuvju saraksts ir, bet aizpildījuma datiem vajag bezmaksas AGSI atslēgu (GitHub noslēpums <code>AGSI_KEY</code>). Kad tā būs, šeit un kartē parādīsies procenti.':
+    `Avots: GIE AGSI+ (oficiālie operatoru dati, iepriekšējā gāzes diena). 1 mljrd. m³ gāzes ≈ 10,55 TWh. Inčukalns ir vienīgā krātuve Baltijas valstīs – to izmanto arī Lietuva un Igaunija.`;
+  const rows=[...Object.entries(cs).map(([cc,c])=>({cc,name:(CC_LV[cc]||cc)+' – visas krātuves',r:c.latest,bold:true})),
+    ...(d.facilities||[]).filter(f=>UGS_MAP.includes(f.country)).map(f=>({cc:f.country,name:f.name,r:f}))];
+  document.getElementById('ugstab').innerHTML=rows.length?'<tr><th>Krātuve</th><th>Aizpild.</th><th>Gāze, TWh</th><th>Ietilpība, TWh</th><th>Iesūknē / izņem, GWh/d</th><th>Diena</th></tr>'+
+    rows.map(x=>`<tr${x.bold?' style="font-weight:600"':''}><td>${emojiOf(x.cc)} ${esc(x.name)}</td><td>${x.r.full_pct!=null?`<span style="display:inline-block;width:46px;height:8px;background:var(--track);border-radius:2px;vertical-align:middle;margin-right:6px"><span style="display:block;height:100%;width:${x.r.full_pct}%;background:${UGSCOL};border-radius:2px"></span></span>${x.r.full_pct.toFixed(1)}%`:'–'}</td><td>${nf(x.r.gas_twh)}</td><td>${nf(x.r.capacity_twh)}</td><td>${x.r.injection_gwh!=null?nf(x.r.injection_gwh)+' / '+nf(x.r.withdrawal_gwh):'–'}</td><td>${esc(x.r.day||'–')}</td></tr>`).join(''):'<tr><td class="note">Nav datu.</td></tr>';
 }
 
 // ---------- Termināļi: Būtiņģe un Klaipēdas LNG ----------
@@ -773,7 +803,7 @@ async function loadTerminals(){
 }
 setInterval(()=>{btLive();},1000); setInterval(()=>{lngLive();},60000);
 
-load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals()},5*60*1000);
+load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); loadUgs(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals();loadUgs()},5*60*1000);
 </script>
 </body>
 </html>
