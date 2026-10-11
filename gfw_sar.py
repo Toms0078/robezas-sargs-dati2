@@ -83,14 +83,40 @@ def main():
             print(f"{name}: kļūda {e}")
             out["regions"][rid] = {"name": name, "error": str(e)}
             continue
-        if rows:
-            print(f"{name}: {len(rows)} rindas, kolonnas {list(rows[0])}")
-            for r in rows[:3]:
-                print("   ", r)
-        else:
-            print(f"{name}: 0 rindas")
         out["regions"][rid] = {"name": name, "bbox": reg[1:], "rows": rows}
         time.sleep(3)
+    # apkopojums: katrs atklājums, tumšie (bez AIS) un tie, kas stāv pie Būtiņģes bojas
+    import math
+    buoy = (56.062, 20.958)
+
+    def km(a, b):
+        la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1]))
+        h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
+        return 12742 * math.asin(math.sqrt(h))
+
+    dets = []
+    for rid, reg in out["regions"].items():
+        for r in reg.get("rows", []):
+            try:
+                lat, lon = float(r["Lat"]), float(r["Lon"])
+            except (KeyError, ValueError):
+                continue
+            d = {"region": rid, "date": r.get("Time Range"), "lat": lat, "lon": lon,
+                 "matched": bool(r.get("Vessel ID")), "name": r.get("Vessel Name") or None,
+                 "flag": r.get("Flag") or None, "type": r.get("Vessel Type") or None,
+                 "mmsi": r.get("MMSI") or None, "imo": r.get("IMO") or None,
+                 "n": int(float(r.get("Detections") or 1))}
+            d["buoy_km"] = round(km((lat, lon), buoy), 1)
+            dets.append(d)
+        reg["total"] = sum(1 for d in dets if d["region"] == rid)
+        reg["dark"] = sum(1 for d in dets if d["region"] == rid and not d["matched"])
+        reg.pop("rows", None)
+    out["detections"] = dets
+    out["dark"] = [d for d in dets if not d["matched"]]
+    out["at_butinge_buoy"] = sorted([d for d in dets if d["buoy_km"] <= 3.0], key=lambda d: d["date"] or "")
+    for rid, reg in out["regions"].items():
+        print(f"{reg['name']}: {reg.get('total', 0)} atklājumi, bez AIS {reg.get('dark', 0)}")
+    print(f"Pie Būtiņģes bojas (≤3 km): {[(d['date'], d['name'] or 'BEZ AIS') for d in out['at_butinge_buoy']]}")
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "latest.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
 
