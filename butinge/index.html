@@ -48,6 +48,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .port li b{font-weight:500;min-width:0;overflow-wrap:anywhere}
 .cargo{font-size:.88rem}.cargo b{font-weight:600}
 .sub{font:700 1.05rem var(--display);margin:14px 0 6px}
+.flag{white-space:nowrap}
 .badge{display:inline-flex;vertical-align:middle;margin-right:6px;transform:rotate(90deg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font:.8rem var(--body);color:var(--muted);margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:2px}
@@ -116,6 +117,17 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+
+// Karogs pēc MMSI pirmajiem 3 cipariem (MID, ITU)
+const MID={};(function(){const t={AL:'201',AD:'202',AT:'203',BE:'205',BY:'206',BG:'207',VA:'208',CY:'209 210 212',DE:'211 218',GE:'213',MD:'214',MT:'215 229 248 249 256',AM:'216',DK:'219 220',ES:'224 225',FR:'226 227 228',FI:'230',FO:'231',GB:'232 233 234 235',GI:'236',GR:'237 239 240 241',HR:'238',MA:'242',HU:'243',NL:'244 245 246',IT:'247',IE:'250',IS:'251',LI:'252',LU:'253',MC:'254',PT:'204 255 263',NO:'257 258 259',PL:'261',ME:'262',RO:'264',SE:'265 266',SK:'267',SM:'268',CH:'269',CZ:'270',TR:'271',UA:'272',RU:'273',MK:'274',LV:'275',EE:'276',LT:'277',SI:'278',RS:'279',AI:'301',AG:'304 305',CW:'306',AW:'307',BS:'308 309 311',BM:'310',BZ:'312',BB:'314',CA:'316',KY:'319',CR:'321',CU:'323',DM:'325',DO:'327',GP:'329',GD:'330',GL:'331',GT:'332',HN:'334',HT:'336',US:'303 338 366 367 368 369',JM:'339',KN:'341',LC:'343',MX:'345',MQ:'347',MS:'348',NI:'350',PA:'351 352 353 354 355 356 357 370 371 372 373 374',PR:'358',SV:'359',PM:'361',TT:'362',TC:'364',VC:'375 376 377',VG:'378',VI:'379',AF:'401',SA:'403',BD:'405',BH:'408',BT:'410',CN:'412 413 414',TW:'416',LK:'417',IN:'419',IR:'422',AZ:'423',IQ:'425',IL:'428',JP:'431 432',TM:'434',KZ:'436',UZ:'437',JO:'438',KR:'440 441',PS:'443',KP:'445',KW:'447',LB:'450',KG:'451',MO:'453',MV:'455',MN:'457',NP:'459',OM:'461',PK:'463',QA:'466',SY:'468',AE:'470 471',TJ:'472',YE:'473 475',HK:'477',BA:'478',AU:'503',MM:'506',BN:'508',FM:'510',PW:'511',NZ:'512',KH:'514 515',CK:'518',FJ:'520',ID:'525',KI:'529',LA:'531',MY:'533',MP:'536',MH:'538',NC:'540',NU:'542',NR:'544',PF:'546',PH:'548',TL:'550',PG:'553',SB:'557',AS:'559',WS:'561',SG:'563 564 565 566',TH:'567',TO:'570',TV:'572',VN:'574',VU:'576 577',ZA:'601',AO:'603',DZ:'605',BI:'609',BJ:'610',BW:'611',CF:'612',CM:'613',CG:'615',KM:'616 620',CV:'617',CI:'619',DJ:'621',EG:'622',ET:'624',ER:'625',GA:'626',GH:'627',GM:'629',GW:'630',GQ:'631',GN:'632',BF:'633',KE:'634',LR:'636 637',SS:'638',LY:'642',LS:'644',MU:'645',MG:'647',ML:'649',MZ:'650',MR:'654',MW:'655',NE:'656',NG:'657',NA:'659',RE:'660',RW:'661',SD:'662',SN:'663',SC:'664',SH:'665',SO:'666',SL:'667',ST:'668',SZ:'669',TD:'670',TG:'671',TN:'672',TZ:'674 677',UG:'675',CD:'676',ZM:'678',ZW:'679',AR:'701',BR:'710',BO:'720',CL:'725',CO:'730',EC:'735',FK:'740',GY:'750',PY:'755',PE:'760',SR:'765',UY:'770',VE:'775'};
+  Object.entries(t).forEach(([cc,ms])=>ms.split(' ').forEach(m=>MID[m]=cc));})();
+let _dn=null;try{_dn=new Intl.DisplayNames(['lv'],{type:'region'});}catch(e){}
+function ccOf(mmsi){const m=String(mmsi||'');return m.length===9?MID[m.slice(0,3)]||null:null;}
+function emojiOf(cc){return cc?String.fromCodePoint(...[...cc].map(c=>0x1F1E6+c.charCodeAt(0)-65)):'';}
+function cname(cc){try{return _dn?_dn.of(cc):cc}catch(e){return cc}}
+// fl(mmsi) – karogs ar valsts nosaukumu; fl(mmsi,true) – tikai karogs
+function fl(mmsi,short){const cc=ccOf(mmsi);if(!cc)return short?'':'<span class="flag note">karogs nav zināms</span>';
+  return short?`<span class="flag" title="${esc(cname(cc))}">${emojiOf(cc)}</span>`:`<span class="flag" title="${esc(cname(cc))}">${emojiOf(cc)} ${esc(cname(cc))}</span>`;}
 const LABEL={pie_bojas:'pie bojas',gaida:'gaida reidā','ceļā':'ceļā'};
 
 // Kuģu emblēmas (skats no augšas, priekšgals uz augšu) pēc AIS tipa
@@ -172,11 +184,11 @@ async function load(){
         .bindPopup(`<b>${esc(s.name||s.mmsi)}</b><br>${LABEL[s.status]} · ${s.sog??'–'} kn<br>Iegrime ${s.draught??'–'} m · Galamērķis ${esc(s.destination||'–')}`).addTo(layer);}
     const el=document.createElement('article');el.className='ship '+s.status;
     const dwt=s.dwt?(s.dwt_source==='novērtēts'?'~':'')+nf(s.dwt)+' t':'–';
-    el.innerHTML=`<div class="top"><b>${badge(kindOf(s.ais_type),COLOR[s.status])}${esc(s.name||('MMSI '+s.mmsi))}</b><span class="pill" style="color:${COLOR[s.status]}">${LABEL[s.status]}${s.eta&&s.status!=='pie_bojas'?' · ETA '+esc(s.eta):''}</span></div>
+    el.innerHTML=`<div class="top"><b>${badge(kindOf(s.ais_type),COLOR[s.status])}${esc(s.name||('MMSI '+s.mmsi))} ${fl(s.mmsi,true)}</b><span class="pill" style="color:${COLOR[s.status]}">${LABEL[s.status]}${s.eta&&s.status!=='pie_bojas'?' · ETA '+esc(s.eta):''}</span></div>
       <div class="row"><div><span>Iegrime</span>${s.draught??'–'} m</div><div><span>Maks. iegrime</span>${s.max_draught?'~'+s.max_draught+' m':'–'}</div><div><span>Ietilpība</span>${dwt}</div><div><span>Kravā ~</span>${nf(s.cargo_t_est)} t</div></div>
       ${s.load_pct!=null?`<div class="gauge"><div style="width:${s.load_pct}%"></div></div><div class="gtext"><span>Pilns ~${s.load_pct}%</span><span style="color:var(--ink)"><b>Tukšs ~${s.empty_pct}%</b></span></div>`:'<p class="note">Iegrime vēl nav saņemta.</p>'}
       ${s.cargo_guess?`<div class="cargo"><b>Iespējamā krava:</b> ${esc(s.cargo_guess)}${s.cargo_state?' · '+esc(s.cargo_state):''} <span class="note">(${esc(s.cargo_basis)})</span></div>`:''}
-      <div class="note">${s.dist_buoy_km!=null?s.dist_buoy_km+' km no bojas · ':''}galamērķis „${esc(s.destination||'–')}” · ${s.arrival_draught?'ieradās ar '+s.arrival_draught+' m · ':''}redzēts ${ago(s.last_seen)} atpakaļ${s.imo?' · IMO '+s.imo:''}</div>`;
+      <div class="note">${fl(s.mmsi)} · ${s.dist_buoy_km!=null?s.dist_buoy_km+' km no bojas · ':''}galamērķis „${esc(s.destination||'–')}” · ${s.arrival_draught?'ieradās ar '+s.arrival_draught+' m · ':''}redzēts ${ago(s.last_seen)} atpakaļ${s.imo?' · IMO '+s.imo:''}</div>`;
     if(m)el.onclick=()=>{map.setView([s.lat,s.lon],12);m.openPopup()};
     list.append(el);
   });
@@ -212,9 +224,9 @@ function loadRu(d){
   r.forEach(x=>x._hot=x.sanctioned||x.shadow_listed);
   document.getElementById('rusum').textContent=`${r.length} tankkuģi, kas dzirdami Baltijā un pieejās un ir saistīti ar Krieviju${ns?`, ${ns} sankcijās`:''}${nsh?`, ${nsh} ēnu flotes sarakstā`:''}. Kritēriji: Krievijas karogs, galamērķis vai atrašanās Krievijas ostā (Primorska, Ustjluga, Sanktpēterburga, Visocka, Kaļiņingrada), vai IMO numurs OpenSanctions sarakstā kā sankcionēts vai ēnu flotes kuģis. “Ēnu flotes karogs” ir tikai pazīme, nevis pierādījums. Krievijas ostās aisstream pārklājums ir vājš, tāpēc kuģi tur bieži nav redzami.`;
   r.forEach(s=>{s._m=L.marker([s.lat,s.lon],{icon:shipIcon(kindOf(84),s._hot?RUCOL:'#ea580c',s.cog),zIndexOffset:s._hot?600:300})
-    .bindPopup(`<b>${esc(s.name)}</b>${s.sanctioned?' <b style="color:'+RUCOL+'">· SANKCIJAS</b>':s.shadow_listed?' <b style="color:'+RUCOL+'">· ĒNU FLOTE</b>':''}<br>Karogs: ${esc(s.flag||'–')} · ${s.status} · ${esc(s.area)}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m<br>Galamērķis ${esc(s.destination||'–')}<br><span style="color:#64748b">${s.reasons.map(esc).join('; ')}</span>${s.sanction_url?'<br><a href="'+esc(s.sanction_url)+'" target="_blank" rel="noopener">OpenSanctions profils</a>':''}`).addTo(ruLayer);});
+    .bindPopup(`<b>${esc(s.name)}</b>${s.sanctioned?' <b style="color:'+RUCOL+'">· SANKCIJAS</b>':s.shadow_listed?' <b style="color:'+RUCOL+'">· ĒNU FLOTE</b>':''}<br>Karogs: ${fl(s.mmsi)} · ${s.status} · ${esc(s.area)}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m<br>Galamērķis ${esc(s.destination||'–')}<br><span style="color:#64748b">${s.reasons.map(esc).join('; ')}</span>${s.sanction_url?'<br><a href="'+esc(s.sanction_url)+'" target="_blank" rel="noopener">OpenSanctions profils</a>':''}`).addTo(ruLayer);});
   document.getElementById('ru').innerHTML=r.length?'<tr><th>Kuģis</th><th>Karogs</th><th>Kur</th><th>Galamērķis</th><th>Iegrime</th><th>Kāpēc sarakstā</th></tr>'+
-    r.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer${s._hot?';background:color-mix(in srgb,'+RUCOL+' 10%,transparent)':''}"><td>${badge('tank',s._hot?RUCOL:'#ea580c')}${esc(s.name)}${s.sanctioned?' <b style="color:'+RUCOL+'">SANKCIJAS</b>':s.shadow_listed?' <b style="color:'+RUCOL+'">ĒNU FLOTE</b>':''}</td><td>${esc(s.flag||'–')}</td><td>${esc(s.area)} · ${s.status}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td><td class="note">${s.reasons.map(esc).join('; ')}</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens nav dzirdams.</td></tr>';
+    r.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer${s._hot?';background:color-mix(in srgb,'+RUCOL+' 10%,transparent)':''}"><td>${badge('tank',s._hot?RUCOL:'#ea580c')}${esc(s.name)}${s.sanctioned?' <b style="color:'+RUCOL+'">SANKCIJAS</b>':s.shadow_listed?' <b style="color:'+RUCOL+'">ĒNU FLOTE</b>':''}</td><td>${fl(s.mmsi)}</td><td>${esc(s.area)} · ${s.status}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td><td class="note">${s.reasons.map(esc).join('; ')}</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens nav dzirdams.</td></tr>';
   document.querySelectorAll('#ru tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=r[+tr.dataset.i];map.setView([s.lat,s.lon],10);s._m.openPopup();});
 }
 const gasLayer=L.layerGroup().addTo(map);
@@ -228,9 +240,9 @@ async function loadGas(d){
   const g=d.gas_ships||[];
   document.getElementById('gassum').textContent=`${g.length} gāzes kuģi dzirdami Baltijā un pieejās · ${(d.lng_terminals||[]).length} LNG termināļi kartē (violeti; apaļš = peldošā krātuve). Kuģi, kuru AIS galamērķis ir LNG terminālis (piem. Klaipēda), rādīti augšā kā “ceļā uz LNG termināli”. Gāzes kuģus atpazīst pēc nosaukuma (LNG, LPG, GAS, Höegh u.c.), jo AIS tiem nav atsevišķa tipa, tāpēc daži var palikt neatpazīti.`;
   g.forEach(s=>{const m=L.marker([s.lat,s.lon],{icon:shipIcon('gas',GASCOL,s.cog),zIndexOffset:400})
-    .bindPopup(`<b>${esc(s.name)}</b> · ${s.gas_kind}<br>${s.status}${s.to_terminal?' → '+esc(s.to_terminal)+' ('+nf(s.to_terminal_km)+' km)':s.near_terminal?' · '+esc(s.near_terminal):''}${s.load?'<br>'+s.load:''}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m garš<br>Galamērķis ${esc(s.destination||'–')}${s.eta?' · ETA '+esc(s.eta):''}`).addTo(gasLayer);s._m=m;});
+    .bindPopup(`<b>${esc(s.name)}</b> ${fl(s.mmsi,true)} · ${s.gas_kind}<br>${fl(s.mmsi)}<br>${s.status}${s.to_terminal?' → '+esc(s.to_terminal)+' ('+nf(s.to_terminal_km)+' km)':s.near_terminal?' · '+esc(s.near_terminal):''}${s.load?'<br>'+s.load:''}<br>Iegrime ${s.draught??'–'} m · ${s.length??'–'} m garš<br>Galamērķis ${esc(s.destination||'–')}${s.eta?' · ETA '+esc(s.eta):''}`).addTo(gasLayer);s._m=m;});
   document.getElementById('gas').innerHTML=g.length?'<tr><th>Kuģis</th><th>Veids</th><th>Statuss</th><th>Pilns / tukšs</th><th>LNG terminālis</th><th>Galamērķis</th><th>Iegrime</th></tr>'+
-    g.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer"><td>${badge('gas',GASCOL)}${esc(s.name)}</td><td>${s.gas_kind}</td><td>${s.to_terminal?'<b style="color:'+GASCOL+'">'+s.status+'</b>':s.status}</td><td>${s.load||'–'}</td><td>${s.to_terminal?'→ '+esc(s.to_terminal)+' <span class="note">('+nf(s.to_terminal_km)+' km)</span>':s.near_terminal?esc(s.near_terminal):'– <span class="note">('+nf(Math.round(s.terminal_km))+' km)</span>'}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens gāzes kuģis nav dzirdams.</td></tr>';
+    g.map((s,i)=>`<tr data-i="${i}" style="cursor:pointer"><td>${badge('gas',GASCOL)}${esc(s.name)} ${fl(s.mmsi,true)}</td><td>${s.gas_kind}</td><td>${s.to_terminal?'<b style="color:'+GASCOL+'">'+s.status+'</b>':s.status}</td><td>${s.load||'–'}</td><td>${s.to_terminal?'→ '+esc(s.to_terminal)+' <span class="note">('+nf(s.to_terminal_km)+' km)</span>':s.near_terminal?esc(s.near_terminal):'– <span class="note">('+nf(Math.round(s.terminal_km))+' km)</span>'}</td><td>${esc(s.destination||'–')}</td><td>${s.draught??'–'} m</td></tr>`).join(''):'<tr><td class="note">Šobrīd neviens gāzes kuģis nav dzirdams.</td></tr>';
   document.querySelectorAll('#gas tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=g[+tr.dataset.i];map.setView([s.lat,s.lon],11);s._m.openPopup();});
 }
 
@@ -259,7 +271,7 @@ function enRow(s,i){
   const flags=(s.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':'')+(s.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':'');
   const left=s.silent_h?`~${nf(s.pred_route_km)} km <span class="note">(simulēts)</span>`:(s.route_km!=null?nf(s.route_km)+' km':'–');
   const pa=s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
-  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${esc(s.flag||'')}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">${origTxt(s)}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
+  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${fl(s.mmsi)}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">${origTxt(s)}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
 }
 function renderEnergy(){
   const d=enData; if(!d)return;
@@ -271,7 +283,7 @@ function renderEnergy(){
   document.getElementById('entank').innerHTML=tank.length?head+tank.map(s=>enRow(s,d.ships.indexOf(s))).join(''):'<tr><td class="note">Nav.</td></tr>';
   [...gas,...tank].forEach(s=>{
     const col=s.gas?GASCOL:(s.ru_linked?'#ea580c':'#c2410c'), k=s.gas?'gas':'tank';
-    const pop=`<b>${esc(s.name)}</b> → ${esc(s.terminal||s.port)}<br>${origTxt(s)}<br>${esc(s.cargo_guess||'')}${s.cargo_state?' · '+esc(s.cargo_state):''}<br>Iegrime ${s.draught??'–'} m · atlikuši ~${nf(s.silent_h?s.pred_route_km:s.route_km)} km`;
+    const pop=`<b>${esc(s.name)}</b> ${fl(s.mmsi,true)} → ${esc(s.terminal||s.port)}<br>${fl(s.mmsi)}<br>${origTxt(s)}<br>${esc(s.cargo_guess||'')}${s.cargo_state?' · '+esc(s.cargo_state):''}<br>Iegrime ${s.draught??'–'} m · atlikuši ~${nf(s.silent_h?s.pred_route_km:s.route_km)} km`;
     s._m=L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1,zIndexOffset:450}).bindPopup(pop).addTo(enLayer);
     L.marker([s.lat,s.lon],{icon:shipIcon(k,col,s.cog),opacity:s.silent_h?.55:1}).bindPopup(pop).addTo(enWorld);
     if(s.dest_pos)L.polyline([[s.lat,s.lon],s.dest_pos],{color:col,weight:1,opacity:.5,dashArray:'3 5'}).addTo(enWorld);
@@ -301,9 +313,9 @@ try{const o=JSON.parse(localStorage.getItem('openCountries')||'null');if(Array.i
 function shipLi(t,kind,portName,layer){
   const col=PCOL[t.status];
   const m=L.marker([t.lat,t.lon],{icon:shipIcon(kind,col,t.cog)})
-    .bindPopup(`<b>${esc(t.name||t.mmsi)}</b><br>${esc(portName)} · ${t.status}<br>Iegrime ${t.draught??'–'} m${kind==='tank'?' · DWT '+(t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'):''}${t.empty_pct!=null?'<br>Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}${t.cargo_guess?'<br><b>Iespējamā krava:</b> '+esc(t.cargo_guess)+(t.cargo_state?' · '+esc(t.cargo_state):''):''}`).addTo(layer);
+    .bindPopup(`<b>${esc(t.name||t.mmsi)}</b> ${fl(t.mmsi,true)}<br>${fl(t.mmsi)}<br>${esc(portName)} · ${t.status}<br>Iegrime ${t.draught??'–'} m${kind==='tank'?' · DWT '+(t.dwt?(t.dwt_source==='novērtēts'?'~':'')+nf(t.dwt):'–'):''}${t.empty_pct!=null?'<br>Tukšs ~'+t.empty_pct+'%':''}<br>Galamērķis ${esc(t.destination||'–')}${t.cargo_guess?'<br><b>Iespējamā krava:</b> '+esc(t.cargo_guess)+(t.cargo_state?' · '+esc(t.cargo_state):''):''}`).addTo(layer);
   const li=document.createElement('li');
-  li.innerHTML=`<b>${badge(kind,col)}${esc(t.name||t.mmsi)}</b><span style="color:${col}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
+  li.innerHTML=`<b>${badge(kind,col)}${esc(t.name||t.mmsi)} ${fl(t.mmsi,true)}</b><span style="color:${col}">${t.draught??'–'} m${t.empty_pct!=null?' · tukšs '+t.empty_pct+'%':''}</span>`;
   li.onclick=()=>{if(!map.hasLayer(layer))layer.addTo(map);map.setView([t.lat,t.lon],13);m.openPopup()};
   return li;
 }
@@ -351,7 +363,7 @@ async function loadGates(){
   const last=days[days.length-1]; if(!last)return;
   try{const r=await fetch(`../data/gates/${last}.json?t=`+Date.now());if(!r.ok)return;const L=await r.json();
     document.getElementById('gatelist').innerHTML='<tr><th>Laiks (UTC)</th><th>Virziens</th><th>Kuģis</th><th>Galamērķis</th><th>Krava (novērtējums)</th><th>Iegrime</th></tr>'+
-      L.slice().reverse().map(g=>`<tr><td>${esc((g.time||'').replace('T',' ').slice(0,16))}</td><td>${g.direction==='ienāca'?'<b>→ ienāca</b>':'← izgāja'}</td><td>${badge(g.gas?'gas':'tank',g.gas?GASCOL:'#c2410c')}${esc(g.name||g.mmsi)}${g.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':''}${g.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':''}<br><span class="note">${esc(g.flag||'')}</span></td><td>${esc(g.dest_port||g.destination||'–')}</td><td>${esc(g.cargo_guess||'–')}<br><span class="note">${esc(g.cargo_state||'')}</span></td><td>${g.draught??'–'} m</td></tr>`).join('');
+      L.slice().reverse().map(g=>`<tr><td>${esc((g.time||'').replace('T',' ').slice(0,16))}</td><td>${g.direction==='ienāca'?'<b>→ ienāca</b>':'← izgāja'}</td><td>${badge(g.gas?'gas':'tank',g.gas?GASCOL:'#c2410c')}${esc(g.name||g.mmsi)} ${fl(g.mmsi,true)}${g.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':''}${g.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':''}<br><span class="note">${fl(g.mmsi)}</span></td><td>${esc(g.dest_port||g.destination||'–')}</td><td>${esc(g.cargo_guess||'–')}<br><span class="note">${esc(g.cargo_state||'')}</span></td><td>${g.draught??'–'} m</td></tr>`).join('');
   }catch(e){}
 }
 
@@ -377,7 +389,7 @@ async function loadSar(){
     el.innerHTML=`<h3>${esc(r.name)}</h3>`+(r.error?`<div class="empty">Kļūda</div>`:`<ul><li><b>Atklājumi</b><span>${r.total??0}</span></li><li><b>Bez AIS</b><span style="color:#b91c1c">${r.dark??0}</span></li>${Object.entries(r.dark_by_class||{}).map(([k,v])=>`<li><b class="note">· ${esc(k)}</b><span>${v}</span></li>`).join('')}</ul>`);box.append(el);});
   const bu=(d.at_butinge_buoy||[]).slice().reverse();
   document.getElementById('sarbuoy').innerHTML=bu.length?'<tr><th>Datums</th><th>Kuģis</th><th>Karogs</th><th>Tips (GFW)</th><th>No bojas</th></tr>'+
-    bu.map(x=>`<tr><td>${esc(x.date)}</td><td>${x.matched?esc(x.name||x.mmsi):'<b style="color:#b91c1c">bez AIS</b>'}</td><td>${esc(x.flag||'–')}</td><td>${esc(x.type||'–')}</td><td>${x.buoy_km} km</td></tr>`).join(''):'<tr><td class="note">Šajā periodā satelīta attēlos pie bojas neviena kuģa.</td></tr>';
+    bu.map(x=>`<tr><td>${esc(x.date)}</td><td>${x.matched?esc(x.name||x.mmsi):'<b style="color:#b91c1c">bez AIS</b>'}</td><td>${x.mmsi?fl(x.mmsi):'–'}</td><td>${esc(x.type||'–')}</td><td>${x.buoy_km} km</td></tr>`).join(''):'<tr><td class="note">Šajā periodā satelīta attēlos pie bojas neviena kuģa.</td></tr>';
 }
 async function loadVapi(){
   let d;
@@ -391,7 +403,7 @@ async function loadVapi(){
   let tk=new Set();
   try{const r=await fetch('../data/ports/tankers_cache.json?t='+Date.now());if(r.ok){const cc=await r.json();
     Object.entries(cc).forEach(([m,v])=>{const t=v.type||0,n=(v.name||'').toUpperCase();if((t>=80&&t<=89)||/LNG|LPG/.test(n))tk.add(+m);});}}catch(e){}
-  const ev=k=>(c[k]&&c[k].ok?(c[k].data.portEvents||[]):[]).filter(e=>tk.has(+((e.vessel||{}).mmsi))).map(e=>`<li><b>${esc((e.vessel||{}).name||'')}</b><span style="color:${e.event==='Arrival'?'#15803d':'#64748b'}">${e.event==='Arrival'?'ieradās':'aizgāja'} ${fmt(e.timestamp)}</span></li>`);
+  const ev=k=>(c[k]&&c[k].ok?(c[k].data.portEvents||[]):[]).filter(e=>tk.has(+((e.vessel||{}).mmsi))).map(e=>`<li><b>${esc((e.vessel||{}).name||'')} ${fl((e.vessel||{}).mmsi,true)}</b><span style="color:${e.event==='Arrival'?'#15803d':'#64748b'}">${e.event==='Arrival'?'ieradās':'aizgāja'} ${fmt(e.timestamp)}</span></li>`);
   card('Rīga · 24 h',ev('riga_events'),c.riga_events&&!c.riga_events.ok?'Kļūda: '+esc(c.riga_events.status):'Nav tankkuģu notikumu');
   card('Ventspils · 24 h',ev('ventspils_events'),c.ventspils_events&&!c.ventspils_events.ok?'Kļūda: '+esc(c.ventspils_events.status):'Nav tankkuģu notikumu');
   const inb=(c.riga_inbound&&c.riga_inbound.ok?(c.riga_inbound.data.vesselETAs||[]):[]).map(v=>`<li><b>${esc(v.vessel_name||v.mmsi)}</b><span>ETA ${fmt(v.eta)}${v.draught?' · '+v.draught+' m':''}</span></li>`);
