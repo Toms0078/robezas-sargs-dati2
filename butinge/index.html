@@ -78,6 +78,12 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <h3 class="sub">Pēdējās ierašanās</h3>
     <div class="tw"><table id="enarr"></table></div>
   </section>
+  <section class="panel"><h2>Baltijas vārti</h2>
+    <div class="note" id="gatesum">Ielādē…</div>
+    <div class="tw"><table id="gatetab"></table></div>
+    <h3 class="sub">Pēdējie šķērsojumi</h3>
+    <div class="tw"><table id="gatelist"></table></div>
+  </section>
   <section class="panel"><h2>Rīga un Ventspils (VesselAPI)</h2>
     <div class="note" id="vapisum">Ielādē…</div>
     <div class="ports" id="vapi"></div>
@@ -240,7 +246,7 @@ function enRow(s,i){
   const flags=(s.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':'')+(s.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':'');
   const left=s.silent_h?`~${nf(s.pred_route_km)} km <span class="note">(simulēts)</span>`:(s.route_km!=null?nf(s.route_km)+' km':'–');
   const pa=s.pred_arrival?new Date(s.pred_arrival).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
-  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${esc(s.flag||'')}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">no: ${esc(s.from_area||'–')}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
+  return `<tr data-i="${i}" style="cursor:pointer"><td>${badge(k,col)}${esc(s.name)}${flags}<br><span class="note">${esc(s.flag||'')}</span></td><td>${esc(s.terminal||s.port)} <span class="note">${s.country}</span></td><td>${esc(s.cargo_guess||'–')}<br><span class="note">${esc(s.cargo_state||'')}</span></td><td>${s.draught??'–'} m</td><td>${left}<br><span class="note">no: ${esc(s.from_area||'–')}${s.via?' · '+esc(s.via):''}</span></td><td>${pa}<br><span class="note">AIS ETA ${esc(s.eta||'–')}</span></td></tr>`;
 }
 function renderEnergy(){
   const d=enData; if(!d)return;
@@ -316,6 +322,23 @@ async function loadPorts(){
 }
 
 
+
+async function loadGates(){
+  let sm, days;
+  try{const r=await fetch('../data/gates/summary.json?t='+Date.now());if(!r.ok)throw 0;sm=await r.json();}
+  catch(e){document.getElementById('gatesum').textContent='Vārtu dati vēl nav savākti.';return;}
+  days=sm.days||[];
+  document.getElementById('gatesum').textContent=`Tankkuģi un gāzes kuģi, kas šķērsoja Dānijas šaurumus (Ēresundu, Lielo Beltu, Fehmarnas šaurumu), pēc Dānijas Jūras administrācijas AIS arhīva. Dati ar ~3 dienu nobīdi. Periods: ${days.length?days[0]+' – '+days[days.length-1]:'–'} (${days.length} dienas). “Ar kravu” un krava ir novērtējums pēc iegrimes un kuģa izmēra.`;
+  const inn=(sm.by_direction||{})['ienāca']||{};
+  const rows=Object.entries(inn).sort((a,b)=>b[1].total-a[1].total);
+  document.getElementById('gatetab').innerHTML=rows.length?'<tr><th>Ienāca Baltijā, galamērķis</th><th>Kuģi</th><th>Ar kravu</th><th>Jēlnafta</th><th>Naftas produkti</th><th>Gāze</th><th>Sankcijas / ēnu flote</th></tr>'+
+    rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.total}</td><td>${v.laden}</td><td>${v.crude}</td><td>${v.products}</td><td>${v.gas}</td><td>${v.sanctioned_or_shadow||''}</td></tr>`).join(''):'<tr><td class="note">Vēl nav.</td></tr>';
+  const last=days[days.length-1]; if(!last)return;
+  try{const r=await fetch(`../data/gates/${last}.json?t=`+Date.now());if(!r.ok)return;const L=await r.json();
+    document.getElementById('gatelist').innerHTML='<tr><th>Laiks (UTC)</th><th>Virziens</th><th>Kuģis</th><th>Galamērķis</th><th>Krava (novērtējums)</th><th>Iegrime</th></tr>'+
+      L.slice().reverse().map(g=>`<tr><td>${esc((g.time||'').replace('T',' ').slice(0,16))}</td><td>${g.direction==='ienāca'?'<b>→ ienāca</b>':'← izgāja'}</td><td>${badge(g.gas?'gas':'tank',g.gas?GASCOL:'#c2410c')}${esc(g.name||g.mmsi)}${g.sanctioned?' <b style="color:#b91c1c">SANKCIJAS</b>':''}${g.shadow_listed?' <b style="color:#b91c1c">ĒNU FLOTE</b>':''}<br><span class="note">${esc(g.flag||'')}</span></td><td>${esc(g.dest_port||g.destination||'–')}</td><td>${esc(g.cargo_guess||'–')}<br><span class="note">${esc(g.cargo_state||'')}</span></td><td>${g.draught??'–'} m</td></tr>`).join('');
+  }catch(e){}
+}
 async function loadVapi(){
   let d;
   try{const r=await fetch('../data/vesselapi/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
@@ -374,7 +397,7 @@ async function loadInbound(){
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
 }
 
-load(); loadPorts(); loadVapi(); loadEnergy(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy()},5*60*1000);
+load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates()},5*60*1000);
 </script>
 </body>
 </html>

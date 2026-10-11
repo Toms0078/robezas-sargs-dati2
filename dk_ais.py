@@ -5,7 +5,7 @@ kas šķērsoja Dānijas šaurumus (Ēresunds, Lielais Belts / Fehmarnas šaurum
   data/gates/YYYY-MM-DD.json  – dienas šķērsojumi
   data/gates/log.jsonl        – visi šķērsojumi (viens ieraksts rindā)
   data/gates/summary.json     – pēdējo 30 dienu kopsavilkums pa galamērķiem
-  data/gates/recent.json      – pēdējo 4 dienu ienākušie (simulācijas sākumpunktiem)
+  data/gates/recent.json      – pēdējo 7 dienu ienākušie (simulācijas sākumpunktiem)
 
 Palaišana:  python dk_ais.py [YYYY-MM-DD]
 """
@@ -214,7 +214,7 @@ def summarize():
     days = sorted({r["date"] for r in recs})
     (OUT / "summary.json").write_text(json.dumps({"days": days, "by_direction": by, "count": len(recs)},
                                                 ensure_ascii=False, indent=1))
-    cutoff4 = (date.today() - timedelta(days=4)).isoformat()
+    cutoff4 = (date.today() - timedelta(days=7)).isoformat()
     recent = [r for r in recs if r["date"] >= cutoff4 and r["direction"] == "ienāca"]
     (OUT / "recent.json").write_text(json.dumps(recent, ensure_ascii=False, indent=1))
 
@@ -227,7 +227,7 @@ def main():
         days = [date.fromisoformat(sys.argv[1])]
     else:
         today = datetime.now(timezone.utc).date()
-        days = [today - timedelta(days=k) for k in (3, 2, 1)]
+        days = [today - timedelta(days=k) for k in (6, 5, 4, 3, 2, 1)]   # arhīvs kavējas ~3 dienas
     any_found = False
     for day in days:
         if str(day) in done:
