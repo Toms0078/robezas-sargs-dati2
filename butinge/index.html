@@ -67,6 +67,10 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div><div id="map"></div><div class="legend" id="legend"></div></div>
     <section class="panel"><h2>Pie bojas un ceļā uz Būtiņģi</h2><div class="list" id="list"></div></section>
   </div>
+  <section class="panel"><h2>Rīga un Ventspils (VesselAPI)</h2>
+    <div class="note" id="vapisum">Ielādē…</div>
+    <div class="ports" id="vapi"></div>
+  </section>
   <section class="panel"><h2>Pasaules karte: ceļā uz Baltijas valstīm</h2>
     <div class="note" id="worldsum">Ielādē…</div>
     <div id="world" style="height:460px;border-radius:6px;border:1px solid var(--line);margin-top:8px"></div>
@@ -262,6 +266,25 @@ async function loadPorts(){
   });
 }
 
+
+async function loadVapi(){
+  let d;
+  try{const r=await fetch('../data/vesselapi/latest.json?t='+Date.now());if(!r.ok)throw 0;d=await r.json();}
+  catch(e){document.getElementById('vapisum').textContent='VesselAPI dati vēl nav savākti.';return;}
+  const c=d.checks||{}, fmt=t=>t?new Date(t).toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'–';
+  document.getElementById('vapisum').textContent=`Ostu notikumi un kuģi no VesselAPI (bezmaksas plāns, pārbaude reizi dienā). Aisstream un Digitraffic šīs ostas neredz. Atjaunots ${fmt(d.updated)}.`;
+  const box=document.getElementById('vapi'); box.innerHTML='';
+  const card=(title,rows,empty)=>{const el=document.createElement('div');el.className='port';
+    el.innerHTML=`<h3>${title}</h3>`+(rows.length?`<ul>${rows.join('')}</ul>`:`<div class="empty">${empty}</div>`);box.append(el);};
+  const ev=k=>(c[k]&&c[k].ok?(c[k].data.portEvents||[]):[]).map(e=>`<li><b>${esc((e.vessel||{}).name||'')}</b><span style="color:${e.event==='Arrival'?'#15803d':'#64748b'}">${e.event==='Arrival'?'ieradās':'aizgāja'} ${fmt(e.timestamp)}</span></li>`);
+  card('Rīga · 24 h',ev('riga_events'),c.riga_events&&!c.riga_events.ok?'Kļūda: '+esc(c.riga_events.status):'Nav notikumu');
+  card('Ventspils · 24 h',ev('ventspils_events'),c.ventspils_events&&!c.ventspils_events.ok?'Kļūda: '+esc(c.ventspils_events.status):'Nav notikumu');
+  const inb=(c.riga_inbound&&c.riga_inbound.ok?(c.riga_inbound.data.vesselETAs||[]):[]).map(v=>`<li><b>${esc(v.vessel_name||v.mmsi)}</b><span>ETA ${fmt(v.eta)}${v.draught?' · '+v.draught+' m':''}</span></li>`);
+  if(c.riga_inbound)card('Ceļā uz Rīgu · 72 h',inb,c.riga_inbound.ok?'Nav':'Kļūda: '+esc(c.riga_inbound.status));
+  const seen={};(c.butinge_area&&c.butinge_area.ok?(c.butinge_area.data.vessels||[]):[]).forEach(v=>{if(!seen[v.mmsi]||v.timestamp>seen[v.mmsi].timestamp)seen[v.mmsi]=v;});
+  const ba=Object.values(seen).map(v=>`<li><b>${esc(v.vessel_name||v.mmsi)}</b><span>${v.sog??'–'} kn · ${fmt(v.timestamp)}</span></li>`);
+  card('Pie Būtiņģes · 4 h',ba,'Neviens kuģis');
+}
 const world=L.map('world',{worldCopyJump:true}).setView([45,10],2);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:12,attribution:'© OpenStreetMap'}).addTo(world);
 const worldLayer=L.layerGroup().addTo(world);
@@ -297,7 +320,7 @@ async function loadInbound(){
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
 }
 L.control.layers(null,{'Ceļā uz Baltiju':inbLayer},{collapsed:false}).addTo(map);
-load(); loadPorts(); loadInbound(); setInterval(()=>{load();loadPorts();loadInbound()},5*60*1000);
+load(); loadPorts(); loadInbound(); loadVapi(); setInterval(()=>{load();loadPorts();loadInbound();loadVapi()},5*60*1000);
 </script>
 </body>
 </html>

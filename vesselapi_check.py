@@ -3,7 +3,7 @@
 Reizi dienā 4 pieprasījumi (bezmaksas plāns: 150 mēnesī):
   1. Rīgas ostas notikumi (ierašanās/aiziešanas) pēdējās 24 h
   2. Ventspils ostas notikumi pēdējās 24 h
-  3. Kuģi ceļā uz Būtiņģi (nākamās 72 h)
+  3. Kuģi ceļā uz Rīgu (nākamās 72 h) — Būtiņģes kodu LTBOT VesselAPI nepazīst
   4. Kuģi taisnstūrī ap Būtiņģes boju (pēdējās 4 h)
 
 Rezultāts: data/vesselapi/latest.json un dienas kopija.
@@ -54,7 +54,7 @@ def main():
                         {"time.from": day_ago, "time.to": iso(now), "pagination.limit": 50}),
         "ventspils_events": ("/v1/portevents/port/LVVNT",
                              {"time.from": day_ago, "time.to": iso(now), "pagination.limit": 50}),
-        "butinge_inbound": ("/v1/port/LTBOT/inbound",
+        "riga_inbound": ("/v1/port/LVRIX/inbound",
                             {"filter.etaFrom": iso(now), "filter.etaTo": iso(now + timedelta(hours=72)),
                              "pagination.limit": 50}),
         "butinge_area": ("/v1/location/vessels/bounding-box",
