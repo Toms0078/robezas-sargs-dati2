@@ -155,9 +155,14 @@ def anchor_min_km(e, pos):
 
 
 KL_PORT = (55.715, 21.06)   # Klaipēdas osta + reids (apmeklējumi ≤ 30 km)
-LNG_EXPORT_HINT = ("MELKOYA", "HAMMERFEST", "SABINE", "CAMERON", "CORPUS", "FREEPORT", "COVE POINT", "CALCASIEU",
-                   "PLAQUEMINES", "RAS LAFFAN", "DAMIETTA", "IDKU", "BONNY", "SOYO", "BIOKO", "POINT FORTIN",
-                   "ARZEW", "SKIKDA", "HAMMERFEST LNG", "ELBA", "ALTAMIRA", "USA-USA-1157", "USA-USA-1641")
+# LNG eksporta termināļi (kuģis, kas tur stāvējis ≥ 8 h, ir LNG tankkuģis)
+LNG_EXPORT = {"Hammerfest (Melkøya)": (70.684, 23.60), "Sabine Pass": (29.74, -93.87), "Cameron LNG": (29.80, -93.33),
+              "Calcasieu Pass": (29.77, -93.34), "Plaquemines": (29.46, -89.62), "Corpus Christi": (27.88, -97.25),
+              "Freeport": (28.94, -95.31), "Cove Point": (38.40, -76.38), "Elba Island": (32.08, -81.00),
+              "Ras Laffan": (25.90, 51.58), "Damietta": (31.47, 31.77), "Idku": (31.33, 30.30),
+              "Bonny": (4.42, 7.15), "Soyo": (-6.10, 12.35), "Bioko": (3.77, 8.70), "Point Fortin": (10.18, -61.69),
+              "Arzew": (35.84, -0.30), "Skikda": (36.90, 6.90), "Altamira": (22.48, -97.86),
+              "Cameroon FLNG": (2.75, 9.80), "Congo FLNG": (-4.75, 11.80), "Greater Tortue": (14.60, -17.50)}
 
 
 def is_lng_candidate(name, info, flag, n_visits, length):
@@ -258,10 +263,15 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                 evs.append({"start": e.get("start"), "end": e.get("end"), "h": round(pv.get("durationHrs") or 0, 1),
                             "port": (a.get("topDestination") or a.get("name") or "").strip(), "cc": a.get("flag"),
                             "aid": a.get("id") or "", "kl_km": round(anchor_min_km(e, KL_PORT), 1),
+                            "lng_exp": next((n for n, pp in LNG_EXPORT.items() if anchor_min_km(e, pp) <= 20), None),
                             "fsru_km": round(anchor_min_km(e, here), 2)})
             cache[key] = sorted(evs, key=lambda x: x["start"] or "")
             time.sleep(0.6)
         evs = cache[key]
+        gasname = any(k in name for k in ("LNG", "GAS", "HOEGH", "FLEX", "CLIPPER"))
+        exp = [x["lng_exp"] for x in evs if x.get("lng_exp") and x["h"] >= 8]
+        if not (gasname or exp or any(x["fsru_km"] <= 0.5 for x in evs)):
+            continue  # nav pazīmju, ka tas ir LNG kuģis
         groups, cur = [], None
         for ev in evs:
             in_kl = ev["kl_km"] <= 30 or ev["aid"].startswith("ltu-klaipeda")
@@ -280,7 +290,8 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                             continue
                         if pe["h"] < 3:
                             continue
-                        prev = {"port": pe["port"].title(), "country": pe["cc"], "end": pe["end"]}
+                        prev = {"port": pe.get("lng_exp") or pe["port"].title(), "country": pe["cc"], "end": pe["end"],
+                                "lng_export": bool(pe.get("lng_exp"))}
                         break
                     cur = {"start": ev["start"], "end": ev["end"], "hours": ev["h"], "fsru": ev["fsru_km"] <= 0.5,
                            "from": prev}
@@ -296,8 +307,8 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                    "length": c["length"] or None, "volume": round(cap * 0.95, -2), "at_fsru_seen": g["fsru"],
                    "from": g["from"]}
             (small if cap <= 30000 else big).append(row)
-        if test:
-            print(f"  {name}: Klaipēdā {len(groups)} reisi, garums {c['length']}, ~{cap} m³")
+        if test or groups:
+            print(f"  {name}: Klaipēdā {len(groups)} reisi, garums {c['length']}, ~{cap} m³, eksports: {sorted(set(exp))}")
     big.sort(key=lambda r: r["start"])
     small.sort(key=lambda r: r["start"])
     return big, small
@@ -382,6 +393,11 @@ def main():
     kl3 = port_visits_in(token, box(lat0, lat1, lon0, lon1), start3.isoformat(), end.isoformat())
     kl_all = [e for e in kl3 if anchor_min_km(e, here) <= 0.5]
     print(f"Klaipēdas FSRU apgabala apmeklējumi 3 gados: {len(kl3)}, pie FSRU: {len(kl_all)}")
+    # GFW bieži piesaista LNG kuģa apmeklējumu vispārējai Klaipēdas enkurvietai vai ārējam reidam
+    roads = []
+    for bx in ((55.720, 55.732, 21.085, 21.100), (55.74, 55.86, 20.70, 21.02)):
+        roads += port_visits_in(token, box(*bx), start.isoformat(), end.isoformat())
+    print(f"Klaipēdas reida/enkurvietu apmeklējumi gadā: {len(roads)}")
 
     # --- Būtiņģe
     b = BUTINGE
@@ -392,7 +408,7 @@ def main():
     if test and bt_all:
         print(json.dumps(bt_all[0])[:1500])
 
-    ids = list({(e.get("vessel") or {}).get("id") for e in bt_all + kl_all if (e.get("vessel") or {}).get("id")})
+    ids = list({(e.get("vessel") or {}).get("id") for e in bt_all + kl_all + roads if (e.get("vessel") or {}).get("id")})
     vessel_info(token, ids, cache)
     ais_path = Path(__file__).parent / "data" / "ports" / "tankers_cache.json"
     ais_len = json.loads(ais_path.read_text()) if ais_path.exists() else {}
@@ -466,7 +482,7 @@ def main():
         return merged
 
     bt_calls = build(bt_all, BUTINGE, "crude")
-    kl_calls, kl_small = lng_deliveries(token, cache, kl_all, visits_per_vessel, ais_len, start, end, test)
+    kl_calls, kl_small = lng_deliveries(token, cache, kl_all + roads, visits_per_vessel, ais_len, start, end, test)
     out = {
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "period": [start.isoformat(), end.isoformat()],
