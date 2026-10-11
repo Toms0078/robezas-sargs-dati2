@@ -1219,6 +1219,38 @@ def is_energy_ship(name, t):
     return is_gas_ship(name, t) or (t is not None and 80 <= t <= 89)
 
 
+GATES_RECENT = Path(__file__).parent / "data" / "gates" / "recent.json"
+
+
+def gate_messages():
+    """Dānijas arhīva šķērsojumi -> sintētiskas AIS ziņas ar precīzu laiku un ātrumu šaurumā,
+    lai simulācija varētu sākties no turienes (ja kuģis vēlāk vairs nav dzirdams)."""
+    if not GATES_RECENT.exists():
+        return []
+    out = []
+    for r in json.loads(GATES_RECENT.read_text()):
+        last = r.get("last") or {}
+        if not r.get("dest_port") or last.get("lat") is None:
+            continue
+        L = int(r.get("length") or 0)
+        eta = None
+        try:
+            et = datetime.strptime(r.get("eta_raw") or "", "%d/%m/%Y %H:%M:%S")
+            eta = {"Month": et.month, "Day": et.day, "Hour": et.hour, "Minute": et.minute}
+        except ValueError:
+            pass
+        meta = {"MMSI": r["mmsi"], "time_utc": last["t"].replace("T", " ").replace("Z", "")}
+        out.append({"MetaData": meta, "Message": {"ShipStaticData": {
+            "Name": r.get("name") or "", "ImoNumber": r.get("imo") or 0,
+            "Type": 84 if r.get("gas") else 80, "Destination": r.get("destination") or "",
+            "MaximumStaticDraught": r.get("draught"), "Eta": eta,
+            "Dimension": {"A": max(L - 20, 0), "B": min(L, 20), "C": 0, "D": 0}}}})
+        out.append({"MetaData": meta, "Message": {"PositionReport": {
+            "Latitude": last["lat"], "Longitude": last["lon"], "Sog": last.get("sog"), "Cog": last.get("cog"),
+            "_src": "Dānijas arhīvs"}}})
+    return out
+
+
 def process_energy(messages, state, vessels, sanctions, now):
     static, pos = {}, {}
     for m in messages:
@@ -1231,7 +1263,10 @@ def process_energy(messages, state, vessels, sanctions, now):
             static[mmsi] = body["ShipStaticData"]
         for k in ("PositionReport", "StandardClassBPositionReport"):
             if k in body:
-                pos[mmsi] = body[k]
+                tu = meta.get("time_utc") or ""
+                tiso = (tu[:19].replace(" ", "T") + "Z") if len(tu) >= 19 else iso(now)
+                if mmsi not in pos or tiso >= pos[mmsi][1]:
+                    pos[mmsi] = (body[k], tiso)
     ships = {str(s["mmsi"]): dict(s) for s in state.get("ships", [])}
     arrived = list(state.get("arrived", []))
 
@@ -1258,11 +1293,16 @@ def process_energy(messages, state, vessels, sanctions, now):
         })
 
     for key, sh in list(ships.items()):
-        p = pos.get(sh["mmsi"])
-        if p and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90:
+        pp = pos.get(sh["mmsi"])
+        p, ptime = pp if pp else (None, None)
+        if p and p.get("Latitude") is not None and abs(p["Latitude"]) <= 90 \
+                and (not sh.get("last_seen") or ptime >= sh["last_seen"]):
             la, lo = round(p["Latitude"], 4), round(p["Longitude"], 4)
             sh.setdefault("from_area", area_name((la, lo)))
-            sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"), "last_seen": iso(now)})
+            sh.update({"lat": la, "lon": lo, "sog": p.get("Sog"), "cog": p.get("Cog"),
+                       "last_seen": min(ptime, iso(now))})
+            if p.get("_src"):
+                sh["via"] = p["_src"]
         if sh.get("lat") is None:
             continue
         center = tuple(sh["dest_pos"])
@@ -1450,6 +1490,7 @@ def main():
     src = INBOUND_FILE if INBOUND_FILE.exists() else old_lv
     inbound_state = json.loads(src.read_text()) if src.exists() else {}
     energy_state = json.loads(ENERGY_FILE.read_text()) if ENERGY_FILE.exists() else {}
+    msgs = msgs + gate_messages()
     energy = process_energy(msgs, {"ships": energy_state.get("_state_ships", []),
                                    "arrived": energy_state.get("arrived", [])}, vessels, _SANCTIONS, now_utc())
     ENERGY_FILE.write_text(json.dumps(energy, ensure_ascii=False, indent=1))

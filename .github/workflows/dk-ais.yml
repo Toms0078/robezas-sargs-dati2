@@ -1,0 +1,51 @@
+name: Baltijas vārti (Dānijas AIS arhīvs)
+
+on:
+  schedule:
+    - cron: "47 7 * * *"     # reizi dienā; arhīvā parādās iepriekšējās dienas fails
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "Diena YYYY-MM-DD (tukšs = pēdējās 3 dienas)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dk-ais
+  cancel-in-progress: false
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Lejupielādē un apstrādā Dānijas AIS arhīvu
+        run: |
+          set -o pipefail
+          mkdir -p data/gates
+          python dk_ais.py ${{ inputs.day }} 2>&1 | tail -n 80 | tee data/gates/last_run.log
+
+      - name: Saglabā izmaiņas repozitorijā
+        if: always()
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/gates
+          if git diff --cached --quiet; then
+            echo "Nav izmaiņu"
+            exit 0
+          fi
+          git commit -m "Baltijas vārti: $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
