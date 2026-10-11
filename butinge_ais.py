@@ -583,11 +583,19 @@ def ru_tankers(pos, cache, ports, sanctions):
             why.append(f"stāv ostā: {in_ru_port[mmsi]}")
             risk += 2
         sanc = sanctions.get(str(c.get("imo") or "")) if c.get("imo") else None
-        if sanc and sanc.get("r") != "mentioned":
-            why.append("sankciju sarakstā")
+        tags = set((sanc or {}).get("r", "").split(";")) - {""}
+        sanctioned = "sanction" in tags
+        shadow = "mare.shadow" in tags
+        if sanctioned:
+            why.append("sankcijās (ES/ASV/LK u.c.)")
             risk += 5
+        if shadow:
+            why.append("ēnu flotes sarakstā (OpenSanctions)")
+            risk += 4
         if not why:
             continue
+        if "mare.detained" in tags:
+            why.append("bijis aizturēts ostas valsts kontrolē")
         if mid in SHADOW_FLAGS:
             why.append(f"karogs bieži lietots ēnu flotē ({flag})")
             risk += 1
@@ -600,7 +608,7 @@ def ru_tankers(pos, cache, ports, sanctions):
             "destination": c.get("destination"), "eta": c.get("eta"),
             "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"), "cog": p.get("Cog"),
             "status": "kustībā" if (p.get("Sog") or 0) >= 1 else "stāv",
-            "reasons": why, "risk": risk, "sanctioned": bool(sanc and sanc.get("r") != "mentioned"),
+            "reasons": why, "risk": risk, "sanctioned": sanctioned, "shadow_listed": shadow,
             "sanction_url": sanc.get("u") if sanc else None,
             "area": area_name((la, lo)),
         })
@@ -1004,7 +1012,8 @@ def main():
     _SANCTIONS = update_sanctions()
     summary, cache = process_ports(msgs, cache, vessels, now_utc())
     print(f"Krievijai piesaistīti tankkuģi: {len(summary['ru_tankers'])}, no tiem sankciju sarakstā: "
-          f"{sum(1 for x in summary['ru_tankers'] if x['sanctioned'])}")
+          f"{sum(1 for x in summary['ru_tankers'] if x['sanctioned'])}, ēnu flotes sarakstā: "
+          f"{sum(1 for x in summary['ru_tankers'] if x['shadow_listed'])}")
     PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
     old_lv = INBOUND_FILE.parent / "inbound_lv.json"
