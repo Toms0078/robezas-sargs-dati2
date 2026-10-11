@@ -156,13 +156,13 @@ def anchor_min_km(e, pos):
 
 KL_PORT = (55.715, 21.06)   # Klaipēdas osta + reids (apmeklējumi ≤ 30 km)
 # LNG eksporta termināļi (kuģis, kas tur stāvējis ≥ 8 h, ir LNG tankkuģis)
-LNG_EXPORT = {"Hammerfest (Melkøya)": (70.684, 23.60), "Sabine Pass": (29.74, -93.87), "Cameron LNG": (29.80, -93.33),
-              "Calcasieu Pass": (29.77, -93.34), "Plaquemines": (29.46, -89.62), "Corpus Christi": (27.88, -97.25),
-              "Freeport": (28.94, -95.31), "Cove Point": (38.40, -76.38), "Elba Island": (32.08, -81.00),
-              "Ras Laffan": (25.90, 51.58), "Damietta": (31.47, 31.77), "Idku": (31.33, 30.30),
-              "Bonny": (4.42, 7.15), "Soyo": (-6.10, 12.35), "Bioko": (3.77, 8.70), "Point Fortin": (10.18, -61.69),
-              "Arzew": (35.84, -0.30), "Skikda": (36.90, 6.90), "Altamira": (22.48, -97.86),
-              "Cameroon FLNG": (2.75, 9.80), "Congo FLNG": (-4.75, 11.80), "Greater Tortue": (14.60, -17.50)}
+LNG_EXPORT = {"Hammerfest (Melkøya)": (70.684, 23.600, 6), "Sabine Pass": (29.745, -93.870, 4),
+              "Cameron LNG": (30.035, -93.330, 4), "Calcasieu Pass": (29.770, -93.340, 4),
+              "Plaquemines": (29.460, -89.624, 5), "Corpus Christi": (27.885, -97.260, 2.5),
+              "Freeport": (28.935, -95.310, 2.5), "Cove Point": (38.400, -76.383, 4), "Elba Island": (32.087, -81.000, 3),
+              "Ras Laffan": (25.900, 51.580, 6), "Idku": (31.330, 30.300, 4), "Point Fortin": (10.180, -61.690, 4),
+              "Soyo": (-6.100, 12.350, 6), "Bioko": (3.770, 8.700, 5), "Greater Tortue": (14.600, -17.500, 15),
+              "Cameroon FLNG": (2.750, 9.800, 15), "Congo FLNG": (-4.750, 11.800, 20)}
 
 
 def is_lng_candidate(name, info, flag, n_visits, length):
@@ -170,7 +170,7 @@ def is_lng_candidate(name, info, flag, n_visits, length):
     gt = info.get("gt") or 0
     if not name or "INDEPENDENCE" in name:
         return False
-    if any(k in name for k in ("LNG", "GAS", "HOEGH", "FLEX", "CLIPPER")):
+    if any(k in name for k in ("LNG", "GAS", "HOEGH", "CLIPPER")):
         return True
     if any(t in gtypes for t in ("FISH", "TRAWL", "PASSENGER", "SEISMIC", "CARGO", "CONTAINER", "REEFER",
                                  "CARRIER", "TUG", "DREDGE", "PILOT", "BUNKER")):
@@ -215,7 +215,8 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
             continue
         if is_lng_candidate(name, info, v.get("flag") or "", visits_per_vessel.get(v.get("id"), 0), length):
             cands.setdefault(name, {"id": v.get("id"), "mmsi": v.get("ssvid"), "flag": v.get("flag"),
-                                    "gt": info.get("gt") or 0, "imo": info.get("imo"), "length": length})
+                                    "gt": info.get("gt") or 0, "imo": info.get("imo"), "length": length,
+                                    "fsru": anchor_min_km(e, here) <= 0.5, "ais_type": (ais_len.get(str(v.get("ssvid"))) or {}).get("type")})
     # papildus: LNG kuģi, ko redzam paši AIS (ceļā uz Baltiju vai Baltijā)
     extra = []
     for fn, key in (("latest.json", "gas_ships"), ("energy_inbound.json", "ships")):
@@ -263,15 +264,26 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                 evs.append({"start": e.get("start"), "end": e.get("end"), "h": round(pv.get("durationHrs") or 0, 1),
                             "port": (a.get("topDestination") or a.get("name") or "").strip(), "cc": a.get("flag"),
                             "aid": a.get("id") or "", "kl_km": round(anchor_min_km(e, KL_PORT), 1),
-                            "lng_exp": next((n for n, pp in LNG_EXPORT.items() if anchor_min_km(e, pp) <= 20), None),
+                            "lng_exp": next((n for n, pp in LNG_EXPORT.items() if anchor_min_km(e, pp[:2]) <= pp[2]), None),
                             "fsru_km": round(anchor_min_km(e, here), 2)})
             cache[key] = sorted(evs, key=lambda x: x["start"] or "")
             time.sleep(0.6)
         evs = cache[key]
-        gasname = any(k in name for k in ("LNG", "GAS", "HOEGH", "FLEX", "CLIPPER"))
-        exp = [x["lng_exp"] for x in evs if x.get("lng_exp") and x["h"] >= 8]
-        if not (gasname or exp or any(x["fsru_km"] <= 0.5 for x in evs)):
-            continue  # nav pazīmju, ka tas ir LNG kuģis
+        gasname = any(k in name for k in ("LNG", "GAS", "HOEGH", "CLIPPER"))
+        exp = [x["lng_exp"] for x in evs if x.get("lng_exp") and x["h"] >= 12]
+        gt = c["gt"]
+        # LNG pazīmes: nosaukums; vai GT 85–140 tūkst. (LNG kuģiem GT ir liels attiecībā pret izmēru;
+        # Aframax/Suezmax naftas tankkuģi ir 55–85 tūkst.); vai reģistrā nav, bet kuģis krauj LNG eksporta terminālī
+        if gasname or 85000 <= gt <= 140000:
+            ok = True
+        elif gt:
+            ok = False
+        else:
+            ok = bool(exp) or c.get("fsru", False)
+        if c.get("ais_type") and 70 <= c["ais_type"] <= 79:
+            ok = False  # AIS: kravas kuģis
+        if not ok:
+            continue
         groups, cur = [], None
         for ev in evs:
             in_kl = ev["kl_km"] <= 30 or ev["aid"].startswith("ltu-klaipeda")
@@ -300,7 +312,7 @@ def lng_deliveries(token, cache, near_events, visits_per_vessel, ais_len, start,
                 cur = None
         cap = lng_cap(c["length"], c["gt"])
         for g in groups:
-            if g["hours"] < 8:
+            if g["hours"] < 8 or g["hours"] > 240:
                 continue
             row = {"start": g["start"], "end": g["end"], "hours": round(g["hours"], 1), "name": name,
                    "mmsi": c["mmsi"], "flag": c["flag"], "imo": c["imo"], "gt": c["gt"],
