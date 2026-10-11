@@ -471,6 +471,146 @@ def gas_ships(pos, cache):
     return out
 
 
+# ---------------------------------------------------------------------------
+# Krievijai piesaistītie tankkuģi
+SANCTIONS_FILE = Path(__file__).parent / "data" / "ports" / "sanctioned_vessels.json"
+SANCTIONS_INDEX = "https://data.opensanctions.org/datasets/latest/maritime/index.json"
+RU_PORTS_RE = [
+    (r"PRIMORSK|RU\s*PRI", "Primorska"), (r"UST.?LUGA|RU\s*ULU", "Ustjluga"),
+    (r"PETERSB|S\.?\s*PETERS|RU\s*LED|SPB", "Sanktpēterburga"), (r"VYSOTSK|RU\s*VYS", "Visocka"),
+    (r"KALININGR|RU\s*KGD", "Kaļiņingrada"), (r"BALTIYSK|RU\s*BLT", "Baltijska"),
+    (r"(^|[^A-Z])RU\s*[A-Z]{3}($|[^A-Z])", "Krievijas osta"),
+]
+RU_PORT_IDS = {"st_petersburg", "ust_luga", "primorsk", "vysotsk", "kaliningrad"}
+FLAG_MID = {
+    "273": "Krievija", "626": "Gabona", "613": "Kamerūna", "616": "Komoras", "620": "Komoras",
+    "667": "Sjerraleone", "511": "Palau", "518": "Kuka salas", "341": "Sentkitsa un Nevisa",
+    "312": "Beliza", "577": "Vanuatu", "457": "Mongolija", "671": "Togo", "450": "Irāna",
+    "636": "Libērija", "538": "Māršala salas", "351": "Panama", "352": "Panama", "353": "Panama",
+    "354": "Panama", "355": "Panama", "356": "Panama", "357": "Panama", "370": "Panama",
+    "371": "Panama", "372": "Panama", "373": "Panama", "248": "Malta", "249": "Malta",
+    "256": "Malta", "209": "Kipra", "210": "Kipra", "212": "Kipra", "240": "Grieķija",
+    "241": "Grieķija", "477": "Honkonga", "563": "Singapūra", "564": "Singapūra", "565": "Singapūra",
+    "566": "Singapūra", "311": "Bahamas", "308": "Bahamas", "309": "Bahamas", "229": "Malta",
+    "215": "Malta", "472": "Tadžikistāna", "422": "Irāna", "403": "Saūda Arābija", "470": "AAE",
+    "419": "Indija", "412": "Ķīna", "413": "Ķīna", "414": "Ķīna", "219": "Dānija", "220": "Dānija",
+    "230": "Somija", "265": "Zviedrija", "266": "Zviedrija", "257": "Norvēģija", "258": "Norvēģija",
+    "259": "Norvēģija", "211": "Vācija", "218": "Vācija", "261": "Polija", "275": "Latvija",
+    "276": "Igaunija", "277": "Lietuva", "244": "Nīderlande", "245": "Nīderlande", "246": "Nīderlande",
+    "232": "Lielbritānija", "233": "Lielbritānija", "234": "Lielbritānija", "235": "Lielbritānija",
+}
+# karogi, kas bieži izmantoti "ēnu flotē" (pazīme, ne pierādījums)
+SHADOW_FLAGS = {"626", "613", "616", "620", "667", "511", "518", "341", "312", "577", "457", "671", "450", "472"}
+
+
+def flag_of(mmsi):
+    m = str(mmsi)
+    return FLAG_MID.get(m[:3]) if len(m) == 9 else None
+
+
+def ru_port_of(dest):
+    d = (dest or "").upper()
+    for rx, name in RU_PORTS_RE:
+        if re.search(rx, d):
+            return name
+    return None
+
+
+def load_sanctions():
+    try:
+        return json.loads(SANCTIONS_FILE.read_text())
+    except Exception:
+        return {}
+
+
+def update_sanctions(max_age_h=20):
+    """Lejupielādē OpenSanctions jūrniecības sarakstu (kuģi ar IMO), ne biežāk kā reizi ~dienā."""
+    import csv
+    import io
+    import urllib.request
+    old = load_sanctions()
+    upd = old.get("_updated")
+    if upd and datetime.strptime(upd, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc) > now_utc() - timedelta(hours=max_age_h):
+        return old
+    try:
+        req = lambda u: urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "robezas-sargs"}), timeout=60)
+        idx = json.load(req(SANCTIONS_INDEX))
+        url = next(r["url"] for r in idx.get("resources", []) if r.get("name") == "maritime.csv")
+        text = req(url).read().decode("utf-8")
+        out = {"_updated": iso(now_utc()), "_source": "OpenSanctions maritime (CC BY-NC 4.0)"}
+        for row in csv.DictReader(io.StringIO(text)):
+            if row.get("type") != "VESSEL":
+                continue
+            imo = re.sub(r"\D", "", row.get("imo") or "")
+            if not imo:
+                continue
+            out[imo] = {"n": row.get("caption"), "r": row.get("risk"), "u": row.get("url")}
+        if len(out) > 100:
+            SANCTIONS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            SANCTIONS_FILE.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+            print(f"Sankciju saraksts: {len(out) - 2} kuģi")
+            return out
+    except Exception as e:
+        print(f"Sankciju sarakstu neizdevās atjaunot: {e}")
+    return old
+
+
+def ru_tankers(pos, cache, ports, sanctions):
+    in_ru_port = {}
+    for p in ports:
+        if p["id"] in RU_PORT_IDS:
+            for t in p["tankers"]:
+                in_ru_port[t["mmsi"]] = p["name"]
+    out = []
+    for mmsi, (p, meta) in pos.items():
+        c = cache.get(str(mmsi))
+        if not c or not (is_tanker(c.get("type")) or is_gas_ship(c.get("name"), c.get("type"))):
+            continue
+        la, lo = p.get("Latitude"), p.get("Longitude")
+        if la is None or abs(la) > 90:
+            continue
+        why, risk = [], 0
+        mid = str(mmsi)[:3]
+        flag = flag_of(mmsi)
+        if mid == "273":
+            why.append("Krievijas karogs")
+            risk += 2
+        rp = ru_port_of(c.get("destination"))
+        if rp:
+            why.append(f"galamērķis: {rp}")
+            risk += 2
+        if mmsi in in_ru_port:
+            why.append(f"stāv ostā: {in_ru_port[mmsi]}")
+            risk += 2
+        sanc = sanctions.get(str(c.get("imo") or "")) if c.get("imo") else None
+        if sanc and sanc.get("r") != "mentioned":
+            why.append("sankciju sarakstā")
+            risk += 5
+        if not why:
+            continue
+        if mid in SHADOW_FLAGS:
+            why.append(f"karogs bieži lietots ēnu flotē ({flag})")
+            risk += 1
+        dest = (c.get("destination") or "").upper()
+        if re.search(r"FOR ORDER|ORDERS", dest):
+            why.append("galamērķis “for orders”")
+        out.append({
+            "mmsi": mmsi, "name": c.get("name"), "imo": c.get("imo"), "flag": flag,
+            "length": c.get("length"), "draught": c.get("draught") or None,
+            "destination": c.get("destination"), "eta": c.get("eta"),
+            "lat": round(la, 5), "lon": round(lo, 5), "sog": p.get("Sog"), "cog": p.get("Cog"),
+            "status": "kustībā" if (p.get("Sog") or 0) >= 1 else "stāv",
+            "reasons": why, "risk": risk, "sanctioned": bool(sanc and sanc.get("r") != "mentioned"),
+            "sanction_url": sanc.get("u") if sanc else None,
+            "area": area_name((la, lo)),
+        })
+    out.sort(key=lambda x: (-x["risk"], x.get("name") or ""))
+    return out
+
+
+_SANCTIONS = {}
+
+
 def process_ports(messages, cache, vessels, now):
     """Atgriež (ostu pārskats, atjaunots tankkuģu kešs).
 
@@ -574,6 +714,7 @@ def process_ports(messages, cache, vessels, now):
         "tanker_cells": dict(sorted(where.items(), key=lambda x: -x[1])[:25]),
         "ports": ports,
         "gas_ships": gas_ships(pos, cache),
+        "ru_tankers": ru_tankers(pos, cache, ports, _SANCTIONS),
         "lng_terminals": LNG_TERMINALS,
     }
     return summary, cache
@@ -859,7 +1000,11 @@ def main():
                 f.write(json.dumps(e, ensure_ascii=False) + "\n")
     PORTS_FILE.parent.mkdir(parents=True, exist_ok=True)
     cache = json.loads(TANKER_CACHE.read_text()) if TANKER_CACHE.exists() else {}
+    global _SANCTIONS
+    _SANCTIONS = update_sanctions()
     summary, cache = process_ports(msgs, cache, vessels, now_utc())
+    print(f"Krievijai piesaistīti tankkuģi: {len(summary['ru_tankers'])}, no tiem sankciju sarakstā: "
+          f"{sum(1 for x in summary['ru_tankers'] if x['sanctioned'])}")
     PORTS_FILE.write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     TANKER_CACHE.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")))
     old_lv = INBOUND_FILE.parent / "inbound_lv.json"
