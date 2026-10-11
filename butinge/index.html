@@ -233,6 +233,17 @@ async function loadGas(d){
   document.querySelectorAll('#gas tr[data-i]').forEach(tr=>tr.onclick=()=>{const s=g[+tr.dataset.i];map.setView([s.lat,s.lon],11);s._m.openPopup();});
 }
 
+
+// Naftas jūras objekti Baltijā
+const offLayer=L.layerGroup().addTo(map);
+const OFFSHORE=[
+  {name:'Būtiņģes SPM boja',lat:56.062,lon:20.958,kind:'SPM boja',info:'Vienīgā zināmā SPM (vienpunkta piestātnes) boja Baltijas jūrā. ORLEN Lietuva; jēlnaftas imports, tankkuģi līdz 150 000 t DWT. Zemūdens cauruļvads 7,5 km līdz krastam.'},
+  {name:'Kravcovskoje (D-6) platforma',lat:55.283,lon:20.600,kind:'naftas platforma',info:'Lukoil jūras naftas atradne ~22 km no Kaļiņingradas krasta. Nafta pa 47 km zemūdens cauruļvadu uz krastu, nevis caur boju.'},
+];
+OFFSHORE.forEach(o=>L.marker([o.lat,o.lon],{zIndexOffset:800,icon:L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12,12],
+  html:o.kind==='SPM boja'?`<svg width="24" height="24" viewBox="-12 -12 24 24"><circle r="10" fill="none" stroke="#d61f69" stroke-width="2" stroke-dasharray="3 2"/><circle r="5" fill="#d61f69" stroke="#fff" stroke-width="1.5"/></svg>`
+   :`<svg width="24" height="24" viewBox="-12 -12 24 24"><rect x="-7" y="-7" width="14" height="14" fill="#fff" stroke="#111" stroke-width="2"/><path d="M-7 -7 L7 7 M7 -7 L-7 7" stroke="#111" stroke-width="1.5"/></svg>`})})
+  .bindPopup(`<b>${o.name}</b><br>${o.kind}<br><span style="color:#64748b">${o.info}</span>`).addTo(offLayer));
 const enLayer=L.layerGroup().addTo(map), enWorld=L.layerGroup();
 let enData=null;
 function enRow(s,i){
@@ -270,7 +281,7 @@ async function loadEnergy(){
 }
 document.getElementById('en-empty').addEventListener('change',renderEnergy);
 const portLayer=L.layerGroup().addTo(map), cargoLayer=L.layerGroup();
-L.control.layers(null,{'Enerģijas kravas uz Baltiju':enLayer,'Militārie un dienesta kuģi':milLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
+L.control.layers(null,{'SPM boja un naftas platformas':offLayer,'Enerģijas kravas uz Baltiju':enLayer,'Militārie un dienesta kuģi':milLayer,'Krievijai piesaistītie tankkuģi':ruLayer,'Gāzes kuģi un LNG':gasLayer,'Tankkuģi ostās':portLayer,'Kravas kuģi ostās':cargoLayer},{collapsed:false}).addTo(map);
 const PCOL={'stāv ostā':'#2563eb','enkurvietā':'#b45309','kustībā':'#64748b'};
 const CORDER=['LV','LT','EE','FI','RU','PL','DE','DK','SE'];
 let openCountries=new Set(['LV','LT','EE']);
