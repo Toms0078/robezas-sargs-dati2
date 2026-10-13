@@ -1,31 +1,37 @@
 {
- "updated": "2026-10-13T07:02:10Z",
+ "updated": "2026-10-13T07:17:09Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 7293,
+ "messages_heard": 7281,
  "diag": {
-  "static_msgs": 1525,
-  "ships_heard": 3832,
+  "static_msgs": 1540,
+  "ships_heard": 3926,
   "within_60km": 38,
   "nearest": [
    {
     "mmsi": 212360000,
     "name": "CEMSOL",
-    "km": 37.2,
-    "sog": 10.8
+    "km": 33.7,
+    "sog": 10.6
    },
    {
-    "mmsi": 277199130,
-    "name": "021",
-    "km": 39.2,
-    "sog": 0.2
+    "mmsi": 538012596,
+    "name": "HORIZON ATHANASIA",
+    "km": 38.7,
+    "sog": 0
    },
    {
     "mmsi": 277533000,
     "name": "A.BARAUSKAS",
+    "km": 39.2,
+    "sog": 0.2
+   },
+   {
+    "mmsi": 277199130,
+    "name": "021",
     "km": 39.2,
     "sog": 0.1
    },
@@ -33,34 +39,31 @@
     "mmsi": 277542000,
     "name": "KLASCO-3",
     "km": 40.1,
-    "sog": 0
+    "sog": 0.3
    },
    {
     "mmsi": 341333002,
     "name": "FEGDA",
     "km": 40.6,
-    "sog": 0.1
+    "sog": 0
    },
    {
     "mmsi": 275490000,
     "name": "ROBIN",
     "km": 40.7,
-    "sog": 3.4
+    "sog": 0
    },
    {
     "mmsi": 277465000,
     "name": "BALTIJA",
-    "km": 40.9,
-    "sog": 1.4
-   },
-   {
-    "mmsi": 230941700,
-    "name": "MERI",
-    "km": 41.4,
+    "km": 40.8,
     "sog": 0
    }
   ],
-  "dest_like_butinge": []
+  "dest_like_butinge": [
+   "BRUNSBUTTEL-HAMBURG",
+   "PILOT BRUNSBUTTEL"
+  ]
  },
  "ships": [
   {
@@ -76,7 +79,7 @@
    "dest_match": false,
    "eta": "12.10 06:00 UTC",
    "draught": 6,
-   "static_time": "2026-10-13T06:17:10Z",
+   "static_time": "2026-10-13T07:17:09Z",
    "lat": 55.72636,
    "lon": 21.09369,
    "sog": 0.1,
@@ -128,6 +131,39 @@
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "pilns",
    "cargo_basis": "produktu tankkuģa izmērs (150 m), iegrime 7.3 m"
+  },
+  {
+   "mmsi": 538012596,
+   "first_seen": "2026-10-13T07:17:09Z",
+   "name": "HORIZON ATHANASIA",
+   "imo": 1067146,
+   "callsign": "V7B3083",
+   "ais_type": 80,
+   "length": 183,
+   "beam": 32,
+   "destination": "KLAIPEDA",
+   "dest_match": false,
+   "eta": "13.10 03:30 UTC",
+   "draught": 7.6,
+   "static_time": "2026-10-13T07:17:09Z",
+   "lat": 55.72346,
+   "lon": 21.10124,
+   "sog": 0,
+   "cog": 146.5,
+   "nav_status": 5,
+   "pos_time": "2026-10-13T07:15:30Z",
+   "last_seen": "2026-10-13T07:17:09Z",
+   "dist_buoy_km": 38.69,
+   "status": "gaida",
+   "dwt": 35000,
+   "dwt_source": "novērtēts",
+   "max_draught": 10.5,
+   "load_pct": 50,
+   "empty_pct": 50,
+   "cargo_t_est": 16600,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.6 m"
   },
   {
    "mmsi": 277447000,
