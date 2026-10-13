@@ -49,6 +49,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .cargo{font-size:.88rem}.cargo b{font-weight:600}
 .sub{font:700 1.05rem var(--display);margin:14px 0 6px}
 .flag{white-space:nowrap}
+.flagimg{display:inline-block;vertical-align:-2px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
 .chip{font:600 .82rem var(--body);padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
@@ -186,7 +187,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     <div class="ports" id="ports"></div>
   </section>
   <section class="panel"><h2>Pēdējie notikumi pie bojas</h2><div class="tw"><table id="calls"><tr><td class="note">Vēl nav notikumu.</td></tr></table></div>
-    <p class="note">Noslodze ir novērtējums pēc AIS iegrimes: balasta iegrime pieņemta 45% no maksimālās, kravā 95% no DWT. DWT ar zīmi ~ ir novērtēts pēc kuģa garuma; precīzu var ierakstīt <code>data/butinge/vessels.json</code>. Kartes pamatne © OpenStreetMap, jūras zīmes © OpenSeaMap. Satelītu radara dati © Global Fishing Watch. Šaurumu dati: Dānijas Jūras administrācija.</p>
+    <p class="note">Noslodze ir novērtējums pēc AIS iegrimes: balasta iegrime pieņemta 45% no maksimālās, kravā 95% no DWT. DWT ar zīmi ~ ir novērtēts pēc kuģa garuma; precīzu var ierakstīt <code>data/butinge/vessels.json</code>. Kartes pamatne © OpenStreetMap, jūras zīmes © OpenSeaMap. Satelītu radara dati © Global Fishing Watch. Šaurumu dati: Dānijas Jūras administrācija. Karogi: flag-icons (MIT).</p>
   </section>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -197,7 +198,9 @@ const MID={};(function(){const t={AL:'201',AD:'202',AT:'203',BE:'205',BY:'206',B
   Object.entries(t).forEach(([cc,ms])=>ms.split(' ').forEach(m=>MID[m]=cc));})();
 let _dn=null;try{_dn=new Intl.DisplayNames(['lv'],{type:'region'});}catch(e){}
 function ccOf(mmsi){const m=String(mmsi||'');return m.length===9?MID[m.slice(0,3)]||null:null;}
-function emojiOf(cc){return cc?String.fromCodePoint(...[...cc].map(c=>0x1F1E6+c.charCodeAt(0)-65)):'';}
+// Karogs kā attēls (Windows datoros karogu emocijzīmes nerādās – tur redzami tikai burti)
+function emojiOf(cc){if(!cc||!/^[A-Z]{2}$/.test(cc))return '';const c=cc.toLowerCase();
+  return `<img class="flagimg" src="flags/${c}.svg" width="20" height="15" alt="${cc}" loading="lazy" onerror="this.replaceWith(document.createTextNode('${cc}'))">`;}
 function cname(cc){try{return _dn?_dn.of(cc):cc}catch(e){return cc}}
 // fl(mmsi) – karogs ar valsts nosaukumu; fl(mmsi,true) – tikai karogs
 function fl(mmsi,short){const cc=ccOf(mmsi);if(!cc)return short?'':'<span class="flag note">karogs nav zināms</span>';
