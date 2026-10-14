@@ -10,12 +10,16 @@ Neprasi viņam apstiprinājumu ikdienas lēmumiem – pieņem saprātīgāko lē
 - Esošās tēmas: Būtiņģes SPM boja un jēlnafta, tankkuģi/gāzes kuģi Baltijā (AIS), Krievijai piesaistītie/sankciju tankkuģi,
   LNG termināļi (ALSI), pazemes gāzes krātuves (AGSI), gāzesvadu plūsmas (ENTSOG), SAR satelītu radars (GFW), Dānijas šaurumi.
 
+## Aģenti (`.claude/agents/`)
+- **produkta-vaditajs** – izlemj, ko būvēt, un dod precīzu uzdevumu (datu avots, kas lapā, pieņemšanas kritēriji). Izsauc darba sākumā.
+- **dizaina-recenzents** – pārbauda gatavo darbu (izskats, telefons, godīgums, CLAUDE.md) un dod labojumu sarakstu. Izsauc pirms commit.
+Izpildītājs (galvenā sesija) seko vadītāja uzdevumam un izlabo visus recenzenta "obligātos labojumus".
+
 ## Darba kārtība katrā sesijā
 1. `git pull --rebase origin main`. Izlasi `ROADMAP.md` un `LOG.md` beigas.
-2. Paņem **pirmo neizdarīto** punktu no `ROADMAP.md` (vai turpini iesākto). Vienā sesijā – 1 punkts, labi pabeigts.
+2. Izsauc **produkta-vaditajs**, lai saņemtu nākamo uzdevumu (parasti pirmais neizdarītais `ROADMAP.md` punkts). Vienā sesijā – 1 punkts, labi pabeigts.
 3. Izveido: datu skriptu (`*.py`), darbplūsmu (`.github/workflows/*.yml`), lapas sadaļu un, ja der, kartes slāni.
-4. **Pārbaudi** (sk. zemāk). Tad palaid **recenzentu**: atsevišķu apakšaģentu (Agent rīks), kas nav redzējis darbu,
-   iedod tam šo failu, izmaiņu diff un ekrānuzņēmumu ceļus; tas atgriež sarakstu ar neatbilstībām. Izlabo tās.
+4. **Pārbaudi** (sk. zemāk). Tad izsauc **dizaina-recenzents** (iedod izmaiņoto failu sarakstu un ekrānuzņēmumu ceļus) un izlabo obligātos labojumus.
 5. Commit + push. Atzīmē punktu `ROADMAP.md` kā `[x]`, ieraksti `LOG.md`: datums, kas izdarīts, kas palika, problēmas.
 6. Ja punkts nav izdarāms (nav pieejas, vajag atslēgu), atzīmē `[!]` ar iemeslu un ņem nākamo.
 
