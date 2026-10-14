@@ -87,6 +87,18 @@ def main():
             from collections import Counter
             print(geo, "statusi:", Counter((js.get("status") or {}).values()), "statusu nozīmes:",
                   (js.get("extension") or {}).get("status", {}).get("label"))
+        if test and geo == "FI":
+            stt = js.get("status") or {}
+            ids, sizes = js["id"], js["size"]
+            cats = [sorted(js["dimension"][d]["category"]["index"], key=lambda k: js["dimension"][d]["category"]["index"][k]) for d in ids]
+            seen = set()
+            for k in list(stt)[:400]:
+                n = int(k); coord = {}
+                for i in range(len(ids) - 1, -1, -1):
+                    coord[ids[i]] = cats[i][n % sizes[i]]; n //= sizes[i]
+                seen.add((coord["siec"], coord["nrg_bal"]))
+            print("FI konfidenciāli (siec, nrg_bal):", sorted(seen)[:60])
+            print("FI vērtība pie statusa piemērs:", [(k, (js.get("value") or {}).get(k)) for k in list(stt)[:5]])
         if test and geo == "LV":
             print("dimensijas:", js["id"], js["size"])
             for dim in ("nrg_bal", "siec"):
