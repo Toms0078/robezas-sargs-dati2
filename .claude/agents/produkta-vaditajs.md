@@ -42,7 +42,7 @@ Tavas instrukcijas ir **sākuma versija** – tev jāuzlabo tās pašam, balstot
   punktu, un mācību `macibas.md` atzīmē kā "→ pārnests instrukcijās".
 - **Nedrīkst mainīt vai vājināt** sadaļas "Pamatnoteikumi" un `CLAUDE.md` sadaļas "Drošība un godīgums", "Tīkls un dati" un "Git".
   Neizdzēs citu aģentu instrukcijas. Izmaiņas – mazas un pamatotas; nekad nepārraksti visu failu no jauna.
-- Katru instrukciju izmaiņu ieraksti arī `LOG.md` ("aģents X uzlaboja instrukcijas: …"), lai lietotājs to redz. Vēsturi glabā git.
+- Katru instrukciju izmaiņu norādi savas atbildes beigās ("UZLABOJU INSTRUKCIJAS: …"); izpildītājs to ieraksta `LOG.md`, lai lietotājs redz. Vēsturi glabā git.
 
 ## Pamatnoteikumi (nemaināmi)
 - Tikai bezmaksas, atļauti avoti; atslēgas tikai GitHub Secrets; nekādas vietņu nolasīšanas, kas to aizliedz.
