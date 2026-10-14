@@ -28,8 +28,17 @@ Secība = prioritāte. Aģents var sadalīt punktu mazākos, ja tas par lielu vi
 ## 4. Degviela un nafta
 - [ ] **Degvielas cenas** LV/LT/EE/PL/FI katru nedēļu – EK Weekly Oil Bulletin (atvērts XLSX). Grafiks 52 nedēļas, ar/bez nodokļiem.
 - [ ] **Brent cena** (atvērts avots bez atslēgas, piem. EIA atvērtie faili vai FRED CSV `DCOILBRENTEU`) – grafiks kopā ar degvielas cenām.
-- [ ] **Naftas produktu imports pēc izcelsmes** (Eurostat API, `nrg_ti_oil` vai līdzīgs) LV/LT/EE – pēdējie 12 mēneši, valstis, produkti.
-- [ ] **Naftas rezerves dienās** (Eurostat ārkārtas krājumi) LV/LT/EE.
+- [ ] **Naftas produktu imports pēc izcelsmes** → sk. 4a 2/5
+- [ ] **Naftas rezerves dienās** → sk. 4a 2/5
+
+## 4a. Naftas bilance reģionā – oficiāli + tiešsaistes aplēse (lietotāja vēlme, prioritāte)
+Mērķis: cik naftas reģionā saražo, cik atved uz katru ostu, salīdzinājums ar valstu patēriņu. LV/LT/EE + FI/PL/SE/DK;
+RU/Kaļiņingrada – nav atvērtu datu. "OFICIĀLI" (Eurostat) un "APLĒSE" (AIS) vienmēr atdalīti.
+- [~] 1/5 Oficiālā mēneša bilance: `oil_balance.py` (Eurostat nrg_cb_oilm) → `data/oil_balance/official.json`, sadaļa `#naftas-bilance`.
+- [ ] 2/5 Imports/eksports pēc partnervalsts (nrg_ti_oilm, nrg_te_oilm) + krājumi dienās (nrg_stk_oilm).
+- [ ] 3/5 Ostu šķidrās kravas (Eurostat mar_go_qm_xx), kartes slānis "Naftas kravas ostās".
+- [ ] 4/5 AIS mēneša žurnāls (`ais_arrivals_YYYY-MM.jsonl`) + Būtiņģe → `oil_nowcast.py` → `nowcast.json`, kolonna "APLĒSE – šis mēnesis".
+- [ ] 5/5 Kalibrācija pret oficiālajiem datiem (kļūda %), izejošie tankkuģi (eksports), apvienotā bilance; JODI kā ātrāks rezerves avots.
 
 ## 5. Gāze – padziļināti
 - [ ] Inčukalna vēsture: aizpildījums pa gadiem (pēdējie 5 gadi vienā grafikā, AGSI vēsture).
