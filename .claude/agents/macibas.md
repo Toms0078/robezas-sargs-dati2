@@ -17,3 +17,7 @@ Lietotājs var šeit arī pats ierakstīt vēlmes – aģenti tās ievēro.
 - 2026-10-14 – Ostu ierašanās ≠ valsts patēriņš (Ventspils/Klaipēda/Muuga lielākoties tranzīts; LV degvielu daudz ved pa sauszemi no Mažeiķiem) – bilances lapā tas jāpasaka tieši.
 
 ## dizaina-recenzents
+- 2026-10-14 – Eurostat datos pārbaudīt ar "veselā saprāta" salīdzinājumu (piem. FI rūpnīcu izlaide 12 Mt, bet jēlnaftas imports 0) – konfidenciālās vērtības (statuss `c`) var parādīties kā 0 vai iztrūkt; skriptam jālasa `status` un tās jārāda kā "—"/"konfid." – citādi kopsummas un "uz iedz." ir maldinoši.
+- 2026-10-14 – JS kopsummās meklēt `||0` un `x?…:'—'` – pirmais pārvērš trūkstošu par 0, otrais īstu 0 par "—"; abi ir godīguma kļūdas.
+- 2026-10-14 – Telefona ekrānuzņēmumā SVG grafikam ar viewBox 600 un font-size 10 uzraksti kļūst ~5 px – prasīt lielāku fontu vai šaurāku viewBox mazā ekrānā. Skaitļi ar `toFixed()` dod punktu, nevis lv komatu.
+- 2026-10-14 – Datu skriptiem pārbaudīt, vai pie pilnīgas avota kļūmes tie nepārraksta labo JSON ar tukšu.

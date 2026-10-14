@@ -140,6 +140,21 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
     </div>
     <p class="note">Piegādes: Global Fishing Watch ostu apmeklējumi pēdējo 12 mēnešu laikā (kuģis stāvēja pie bojas vai FSRU). Izcelsme ir kuģa iepriekšējā osta (bez kanāliem un šaurumiem). <b>Apjomi ir aplēses</b> pēc kuģa izmēra: jēlnafta ≈ 95 % no DWT (DWT ≈ 1,85 × GT); LNG ≈ 95 % no tipiskā kravas tilpuma pēc kuģa garuma. Izkraušanas simulācija: Būtiņģē ~3 h pievienošana, tad ~4 200 t/h (bojas jauda 4 932 m³/h); LNG ~4 h sagatavošana, tad ~5 000 m³/h. Klaipēdas krātuves aizpildījums ir <b>faktiskais</b> no GIE ALSI (operatora dati par iepriekšējo gāzes dienu), līdz šodienai pagarināts ar faktisko izsūtīšanas ātrumu. Ja ALSI dati nav pieejami, rāda simulāciju: piegādes mīnus izsūtīšana tīklā (vidējā no gada piegādēm, pilnākā krātuvē izsūta vairāk, tukšākā mazāk; ~5 % paliek vienmēr). Ja kāda piegāde nav atpazīta, simulācija tajā brīdī rāda par zemu. Klaipēdā LNG kuģi tiek atpazīti pēc tā, ka pirms tam krāvušies LNG eksporta terminālī (Hammerfest, ASV termināļi u.c.).</p>
   </section>
+  <section class="panel" id="naftas-bilance"><h2>Naftas bilance: ražošana, imports, patēriņš</h2>
+    <p class="note">Oficiālā statistika (Eurostat, mēneša dati, kavējas ~3 mēnešus), tūkstošos tonnu. Jēlnafta un naftas produkti atsevišķi.
+      Krievijai un Kaļiņingradai atvērtu datu nav. <span class="pill" style="color:#4d7c0f">OFICIĀLI</span></p>
+    <div class="chips" id="obcc" role="group" aria-label="Valsts"></div>
+    <div class="kpis" id="obkpi" style="margin-top:8px"></div>
+    <h3 class="sub" id="obchart-t">Iekšzemes patēriņš un imports pa mēnešiem</h3>
+    <div class="chart" id="obchart" style="max-width:760px"></div>
+    <h3 class="sub">Bilance pa produktiem</h3>
+    <div class="tw"><table id="obtab"></table></div>
+    <h3 class="sub">Valstu salīdzinājums (pēdējie 12 mēneši)</h3>
+    <div class="tw"><table id="obcmp"></table></div>
+    <p class="note" id="obnote"></p>
+    <div class="live idle"><div class="hd"><b>Šī mēneša aplēse no AIS</b><span class="note">drīzumā</span></div>
+      <div class="note">Nākamajos posmos: cik tankkuģi šomēnes atveduši uz katru ostu (aplēse pēc kuģu izmēra un iegrimes), imports pēc izcelsmes valsts, ostu kravu statistika un rezerves dienās.</div></div>
+  </section>
   <section class="panel" id="kratuves"><h2>Pazemes gāzes krātuves</h2>
     <div class="note" id="ugssum">Ielādē…</div>
     <div id="incdays" class="live idle" style="margin-top:10px"></div>
@@ -584,6 +599,71 @@ async function loadInbound(){
   document.getElementById('inb').innerHTML=rows?'<tr><th>Osta</th><th>Kuģis</th><th>Tips</th><th>Pirmoreiz redzēts</th><th>Atlikušais ceļš</th><th>ETA (AIS)</th><th>Prognoze</th><th>Iegrime</th></tr>'+rows:'<tr><td class="note">Pagaidām neviens.</td></tr>';
 }
 
+
+// ---------- Naftas bilance (Eurostat nrg_cb_oilm) ----------
+let OB=null, obGeo=(()=>{try{return localStorage.getItem('obGeo')||'LV'}catch(e){return 'LV'}})();
+const OB_IMPCOL='#7c4a1e';
+const OB_NAME={LV:'Latvija',LT:'Lietuva',EE:'Igaunija',FI:'Somija',PL:'Polija',SE:'Zviedrija',DK:'Dānija',BALT:'Baltija kopā'};
+const OB_POP={LV:1.86,LT:2.89,EE:1.37,FI:5.62,PL:36.5,SE:10.6,DK:5.99}; // milj. iedz., aptuveni (Eurostat 2025)
+const obMon=m=>{const [y,mm]=m.split('-');return LV_MON[+mm-1]+' '+y;};
+function obSeries(geo,siec,bal){
+  if(geo==='BALT'){const a=['LV','LT','EE'].map(g=>obSeries(g,siec,bal));const ms=OB.countries.LV.months;
+    return {ms,v:ms.map(m=>{let t=0;for(const x of a){const j=x.ms.indexOf(m);const val=j>=0?x.v[j]:null;if(val==null)return null;t+=val;}return t;})};}
+  const c=OB.countries[geo]; if(!c)return {ms:[],v:[]};
+  return {ms:c.months,v:((c.data[siec]||{})[bal])||c.months.map(()=>null)};}
+const obLast=(x)=>{for(let i=x.v.length-1;i>=0;i--)if(x.v[i]!=null)return {m:x.ms[i],v:x.v[i],i};return null;};
+const obSum12=(x,endI)=>{if(endI<11)return null;let t=0;for(let i=endI-11;i<=endI;i++){if(x.v[i]==null)return null;t+=x.v[i];}return t;};
+const obSum=(...a)=>a.some(v=>v!=null)?a.reduce((t,v)=>t+(v||0),0):null;
+const ktn=v=>v==null?'—':Math.round(v).toLocaleString('lv-LV');
+function obInland(geo){const a=obSeries(geo,'O4600','GID_OBS');return a.v.some(v=>v!=null)?a:obSeries(geo,'O4600','GID_CAL');}
+function renderOB(){
+  if(!OB)return; if(obGeo!=='BALT'&&!OB.countries[obGeo])obGeo='LV'; const geo=obGeo;
+  document.getElementById('obcc').innerHTML=Object.keys(OB_NAME).filter(g=>g==='BALT'||OB.countries[g]).map(g=>`<button class="chip" aria-pressed="${g===geo}" data-g="${g}">${g==='BALT'?'':emojiOf(g)+' '}${OB_NAME[g]}</button>`).join('');
+  document.querySelectorAll('#obcc .chip').forEach(b=>b.onclick=()=>{obGeo=b.dataset.g;try{localStorage.setItem('obGeo',obGeo)}catch(e){};renderOB();});
+  const inl=obInland(geo), L=obLast(inl); if(!L){document.getElementById('obkpi').innerHTML='<p class="note">Nav datu.</p>';return;}
+  const at=(siec,bal)=>{const x=obSeries(geo,siec,bal);const j=x.ms.indexOf(L.m);return j>=0?x.v[j]:null;};
+  const sum=obSum;
+  const prod=sum(at('O4100_TOT','IPRD')), refo=at('O4600','TO_RPI_RO');
+  const imp=sum(at('O4100_TOT','IMP'),at('O4600','IMP')), exp=sum(at('O4100_TOT','EXP'),at('O4600','EXP'));
+  document.getElementById('obkpi').innerHTML=`<div class="kpi"><span>Periods</span>${obMon(L.m)}</div>
+    <div class="kpi"><span>Jēlnaftas ieguve</span>${ktn(prod)} kt</div><div class="kpi"><span>Rūpnīcu izlaide</span>${ktn(refo)} kt</div>
+    <div class="kpi"><span>Imports</span>${ktn(imp)} kt</div><div class="kpi"><span>Eksports</span>${ktn(exp)} kt</div>
+    <div class="kpi"><span>Iekšzemes patēriņš</span>${ktn(L.v)} kt</div>`;
+  // grafiks: patēriņš (stabiņi), produktu imports un eksports (līnijas), 24 mēn.
+  const n=Math.min(24,inl.ms.length), off=inl.ms.length-n, ms=inl.ms.slice(off);
+  const pick=x=>ms.map(m=>{const j=x.ms.indexOf(m);return j>=0?x.v[j]:null;});
+  const cons=pick(inl), impP=pick(obSeries(geo,'O4600','IMP')), expP=pick(obSeries(geo,'O4600','EXP'));
+  const raw=Math.max(1,...cons.filter(v=>v!=null),...impP.filter(v=>v!=null),...expP.filter(v=>v!=null));
+  const step=Math.pow(10,Math.floor(Math.log10(raw))), mx=Math.ceil(raw/step*2)/2*step;
+  const cw=document.getElementById('obchart').clientWidth||600, W=Math.max(340,Math.min(760,cw)), H=Math.round(W<500?200:180), P=44, bw=(W-P-6)/n, y=v=>8+(1-v/mx)*(H-8-20), x=i=>P+i*bw+bw/2;
+  const line=(arr,col)=>{const pts=arr.map((v,i)=>v==null?null:`${x(i).toFixed(1)},${y(v).toFixed(1)}`).filter(Boolean).join(' ');return `<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts}"/>`;};
+  const ticks=[0,.5,1].map(f=>`<line x1="${P}" x2="${W-6}" y1="${y(mx*f)}" y2="${y(mx*f)}" stroke="var(--line)"/><text x="${P-4}" y="${y(mx*f)+4}" text-anchor="end" font-size="12" fill="var(--muted)">${ktn(mx*f)}</text>`).join('');
+  document.getElementById('obchart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Naftas produktu patēriņš, imports un eksports pa mēnešiem">${ticks}
+    ${cons.map((v,i)=>v==null?'':`<rect x="${(P+i*bw+bw*.15).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw*.7).toFixed(1)}" height="${(H-20-y(v)).toFixed(1)}" fill="#c2410c" opacity=".8"><title>${obMon(ms[i])}: patēriņš ${ktn(v)} kt</title></rect>`).join('')}
+    ${line(impP,OB_IMPCOL)}${line(expP,'#64748b')}
+    ${ms.map((m,i)=>m.endsWith('-01')||i===0?`<text x="${x(i)}" y="${H-5}" font-size="12" text-anchor="middle" fill="var(--muted)">${m.slice(0,4)}</text>`:'').join('')}</svg>
+    <div class="legend"><span><i style="display:inline-block;width:10px;height:10px;background:#c2410c;margin-right:4px"></i>iekšzemes patēriņš (produkti)</span><span><i style="display:inline-block;width:14px;height:2px;background:#7c4a1e;margin-right:4px;vertical-align:middle"></i>produktu imports</span><span><i style="display:inline-block;width:14px;height:2px;background:#64748b;margin-right:4px;vertical-align:middle"></i>produktu eksports</span></div>`;
+  // tabula
+  const cols=[['O4100_TOT','Jēlnafta'],['O4600','Produkti kopā'],['O4671','Dīzelis'],['O4652','Benzīns'],['O4661','Aviodegviela'],['O4630','LPG']];
+  const rows=[['IPRD','Ieguve'],['TO_RPI_RO','Rūpnīcu izlaide'],['IMP','Imports'],['EXP','Eksports'],['STK_CHG','Krājumu izmaiņa'],['INTMARB','Starptautisko kuģu bunkurēšana'],['GID','Iekšzemes patēriņš (piegādes)']];
+  const cell=(siec,bal)=>{let x=obSeries(geo,siec,bal==='GID'?'GID_OBS':bal);if(bal==='GID'&&!x.v.some(v=>v!=null))x=obSeries(geo,siec,'GID_CAL');const j=x.ms.indexOf(L.m);const v=j>=0?x.v[j]:null;const s12=j>=0?obSum12(x,j):null;
+    return v==null&&s12==null?'<td>—</td>':`<td style="white-space:nowrap">${ktn(v)}<br><span class="note">${s12==null?'':'12 m.: '+ktn(s12)}</span></td>`;};
+  document.getElementById('obtab').innerHTML=`<tr><th>${obMon(L.m)}, kt</th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}</tr>`+
+    rows.map(r=>`<tr><td>${r[1]}</td>${cols.map(c=>cell(c[0],r[0])).join('')}</tr>`).join('');
+  // salīdzinājums
+  const cmp=Object.keys(OB_POP).filter(g=>OB.countries[g]).map(g=>{const a=obInland(g),l=obLast(a);const s12=l?obSum12(a,l.i):null;
+    const ip=obSeries(g,'O4600','IMP'),ep=obSeries(g,'O4600','EXP'),ic=obSeries(g,'O4100_TOT','IMP'),ro=obSeries(g,'O4600','TO_RPI_RO');
+    const S=x=>l?obSum12(x,x.ms.indexOf(l.m)):null;return {g,l,s12,imp:obSum(S(ip),S(ic)),exp:S(ep),ref:S(ro)};});
+  document.getElementById('obcmp').innerHTML='<tr><th>Valsts</th><th>Patēriņš, kt/gadā</th><th>t uz iedz.</th><th>Rūpnīcu izlaide, kt</th><th title="Bruto imports: jēlnaftu pēc pārstrādes var izvest produktu veidā">Bruto imports (jēlnafta + produkti), kt</th><th>Produktu eksports, kt</th><th>Līdz</th></tr>'+
+    cmp.map(c=>`<tr${c.g===geo?' style="font-weight:600"':''}><td>${emojiOf(c.g)} ${OB_NAME[c.g]}</td><td>${ktn(c.s12)}</td><td>${c.s12!=null?(c.s12/1000/OB_POP[c.g]).toLocaleString('lv-LV',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td><td>${ktn(c.ref)}</td><td>${ktn(c.imp)}</td><td>${ktn(c.exp)}</td><td class="note">${c.l?c.l.m:''}</td></tr>`).join('');
+  document.getElementById('obnote').innerHTML=(geo==='BALT'?'<b>Baltija kopā:</b> summā ieskaitīta arī tirdzniecība starp Baltijas valstīm (piem. Lietuvas eksports uz Latviju ir arī Latvijas imports) – tas nav reģiona imports no ārpuses. Mēneši ar datiem tikai daļai valstu netiek summēti.<br>':'')+`Avots: <a href="${OB.source_url}" target="_blank" rel="noopener">Eurostat nrg_cb_oilm</a>, atjaunots ${new Date(OB.updated).toLocaleDateString('lv-LV')} · kt = tūkstoši tonnu.
+    "Iekšzemes patēriņš" = iekšzemes bruto piegādes (gross inland deliveries) – ietver arī rūpniecību un enerģētiku, bez starptautiskās kuģu bunkurēšanas. Iedzīvotāju skaits aptuvens (Eurostat 2025). Gada summas rāda tikai, ja ir visi 12 mēneši; konfidenciālas vērtības rādītas kā "—".
+    Ostu tranzīts (piem. Ventspils, Muuga, Klaipēda) nav patēriņš – tas parādās kā imports un eksports. Lietuvas eksports lielā mērā ir ORLEN Mažeiķu rūpnīcas produkti, ko ved arī uz Latviju un Igauniju.`;
+}
+window.addEventListener('resize',()=>{clearTimeout(window._obr);window._obr=setTimeout(renderOB,300);});
+async function loadOB(){try{const r=await fetch('../data/oil_balance/official.json?t='+Date.now());if(!r.ok)throw 0;OB=await r.json();renderOB();}
+  catch(e){const k=document.getElementById('obkpi');if(k)k.innerHTML='<p class="note">Dati vēl nav savākti.</p>';}}
+
 // ---------- Gāzesvadi un plūsmas (ENTSOG) ----------
 // Trases ir shematiskas (aptuvenas), virziens = no pirmā punkta uz pēdējo, ja plūsma pozitīva
 const PIPES=[
@@ -972,7 +1052,7 @@ async function loadTerminals(){
 }
 setInterval(()=>{btLive();},1000); setInterval(()=>{lngLive();},60000);
 
-load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); loadUgs(); loadFlows(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals();loadUgs();loadFlows()},5*60*1000);
+load(); loadPorts(); loadVapi(); loadEnergy(); loadGates(); loadSar(); loadTerminals(); loadUgs(); loadFlows(); loadOB(); setInterval(()=>{load();loadPorts();loadVapi();loadEnergy();loadGates();loadSar();loadTerminals();loadUgs();loadFlows()},5*60*1000);
 </script>
 </body>
 </html>

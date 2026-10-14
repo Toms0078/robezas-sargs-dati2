@@ -48,7 +48,14 @@ def unpack(js):
         inv = sorted(idx, key=lambda k: idx[k]) if isinstance(idx, dict) else idx
         cats.append(inv)
     out = []
-    for k, v in js.get("value", {}).items():
+    status = js.get("status") or {}
+    vals = js.get("value", {})
+    if isinstance(vals, list):
+        vals = {str(i): v for i, v in enumerate(vals) if v is not None}
+    for k, v in vals.items():
+        st = status.get(k) if isinstance(status, dict) else None
+        if st and "c" in str(st):       # konfidenciāls – nav īstā vērtība
+            v = None
         k = int(k)
         coord = {}
         for i in range(len(ids) - 1, -1, -1):
@@ -76,6 +83,10 @@ def main():
         except Exception as e:
             print(geo, e)
             continue
+        if test:
+            from collections import Counter
+            print(geo, "statusi:", Counter((js.get("status") or {}).values()), "statusu nozīmes:",
+                  (js.get("extension") or {}).get("status", {}).get("label"))
         if test and geo == "LV":
             print("dimensijas:", js["id"], js["size"])
             for dim in ("nrg_bal", "siec"):
@@ -98,7 +109,12 @@ def main():
                 for b in list(cube[s])[:12]:
                     print("   ", s, b, [cube[s][b].get(m) for m in ms[-3:]])
         time.sleep(1)
-    (OUT / "official.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+    prev = OUT / "official.json"
+    old_n = len(json.loads(prev.read_text()).get("countries", {})) if prev.exists() else 0
+    if not out["countries"] or len(out["countries"]) < old_n:
+        print(f"Kļūda: saņemtas tikai {len(out['countries'])} valstis (bija {old_n}) – vecos datus nepārrakstu")
+        sys.exit(1)
+    prev.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     print("izmērs KB:", round((OUT / "official.json").stat().st_size / 1024))
 
 
