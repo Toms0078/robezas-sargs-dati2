@@ -49,9 +49,12 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .cargo{font-size:.88rem}.cargo b{font-weight:600}
 .sub{font:700 1.05rem var(--display);margin:14px 0 6px}
 .flag{white-space:nowrap}
+:root{--lbl:color-mix(in srgb,var(--panel) 55%,transparent)}
+.leaflet-tooltip.simtip,.leaflet-tooltip{background:color-mix(in srgb,var(--panel) 65%,transparent);color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,transparent);box-shadow:none}
+.leaflet-tooltip-top:before,.leaflet-tooltip-bottom:before,.leaflet-tooltip-left:before,.leaflet-tooltip-right:before{opacity:.5}
 .flagimg{display:inline-block;vertical-align:-2px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
-.chip{font:600 .82rem var(--body);padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.chip{font:600 .82rem var(--body);padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
 #layerchips .chip[aria-pressed="true"]::before{content:"✓ "}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -99,7 +102,7 @@ table{width:100%;border-collapse:collapse;font:.82rem var(--mono)}td,th{padding:
 .cbar>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cbar i{display:block;height:10px;border-radius:2px;background:var(--accent)}.lngc .cbar i{background:#0e7490}
 .chart svg{width:100%;height:auto;display:block}
-.btn{font:600 .82rem var(--body);padding:5px 12px;border-radius:4px;border:1px solid var(--ink);background:var(--panel);color:var(--ink);cursor:pointer}
+.btn{font:600 .82rem var(--body);padding:5px 12px;border-radius:4px;border:1px solid var(--ink);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);cursor:pointer}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 </head>
@@ -628,7 +631,7 @@ async function loadFlows(){
     const line=L.polyline(pts,{color:col,weight:Math.min(9,2.5+a/12),opacity:.95,className:'gflow'}).bindTooltip(txt,{sticky:true}).addTo(pipeLayer);
     const el=line.getElement(); if(el)el.style.animationDuration=Math.max(0.5,Math.min(4,4-a/25))+'s';
     const mid=pts[Math.floor(pts.length/2)];
-    L.marker(mid,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="gtip" style="width:max-content;transform:translate(-50%,-50%);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:3px">${Math.round(a)} GWh/d</div>`}),interactive:false}).addTo(pipeLayer);
+    L.marker(mid,{icon:L.divIcon({className:'',iconSize:[0,0],html:`<div class="gtip" style="width:max-content;transform:translate(-50%,-50%);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);border:1px solid ${col};border-radius:3px">${Math.round(a)} GWh/d</div>`}),interactive:false}).addTo(pipeLayer);
   });
 }
 
@@ -649,7 +652,7 @@ function ugsIcon(g){const has=g.pct!=null,w=Math.round(g.pct||0),big=g.cap>=5;
   return L.divIcon({className:'',iconSize:[0,0],html:`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(-8px,-20px)">
     <div style="flex:none;width:${big?14:10}px;height:${big?38:28}px;border:2px solid ${UGSCOL};border-radius:3px;background:var(--panel);position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.4)">
       <div style="position:absolute;left:0;right:0;bottom:0;height:${w}%;background:${UGSCOL}"></div></div>
-    <div style="font:700 ${big?.74:.66}rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${UGSCOL};border-radius:4px;padding:1px 5px;box-shadow:0 1px 3px rgba(0,0,0,.3)">${esc(g.short)} ${has?w+'%':'–'}</div></div>`});}
+    <div style="font:700 ${big?.74:.66}rem var(--mono);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);border:1px solid ${UGSCOL};border-radius:4px;padding:1px 5px">${esc(g.short)} ${has?w+'%':'–'}</div></div>`});}
 function ugsPopup(g){const bcm=x=>(x/10.55).toFixed(2), d30=g.series&&g.series.length>1?g.series[g.series.length-1][1]-g.series[0][1]:null;
   return `<b>${esc(g.name)}</b> · ${emojiOf(g.country)} ${CC_LV[g.country]||g.country}<br>`+
    (g.type?`Tips: ${esc(g.type)}<br>`:'')+`<span style="color:#64748b">${esc(g.company)}</span><br>`+
@@ -834,7 +837,7 @@ function btNextMap(){
   if(!BUOY)return; const n=nextBt(); if(!n)return;
   const dd=x=>x.toLocaleDateString('lv-LV',{day:'2-digit',month:'2-digit'});
   const t=!n.d?'Nafta: nākamā nav zināma':n.to&&n.to-n.d>864e5?`Nafta: nākamā ~${dd(n.d)}–${dd(n.to)}`:`Nafta: nākamā ~${dd(n.d)}${n.sure?' ('+esc(n.basis.split(':')[0])+')':''}`;
-  const icon=L.divIcon({className:'',iconSize:[0,0],html:`<div style="width:max-content;transform:translate(calc(-100% - 14px),-12px);font:700 .78rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #d61f69;border-radius:4px;padding:2px 6px;box-shadow:0 1px 3px rgba(0,0,0,.3)">${t}</div>`});
+  const icon=L.divIcon({className:'',iconSize:[0,0],html:`<div style="width:max-content;transform:translate(calc(-100% - 14px),-12px);font:700 .78rem var(--mono);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);border:1px solid #d61f69;border-radius:4px;padding:2px 6px">${t}</div>`});
   if(!btNextMarker)btNextMarker=L.marker(BUOY,{icon,interactive:false,zIndexOffset:400}).addTo(termLayer);else{btNextMarker.setLatLng(BUOY);btNextMarker.setIcon(icon);}
 }
 let lngMarker=null;
@@ -867,7 +870,7 @@ function lngMap(pct,cap,at){
   const html=`<div style="display:flex;align-items:center;gap:5px;width:max-content;transform:translate(18px,-34px)">
     <div style="flex:none;width:18px;height:52px;border:2px solid #0e7490;border-radius:4px;background:var(--panel);position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.4)">
       <div style="position:absolute;left:0;right:0;bottom:0;height:${p}%;background:#0e7490"></div></div>
-    <div style="font:700 .82rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid #0e7490;border-radius:4px;padding:2px 6px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3)">
+    <div style="font:700 .82rem var(--mono);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);border:1px solid #0e7490;border-radius:4px;padding:2px 6px;white-space:nowrap">
       LNG ~${pct==null?'–':p}%${at?' <span class="dot" style="margin:0 0 0 4px"></span>':''}${(()=>{const n=nextLng(pct);return n?'<br><span style="font-weight:500">nākamā '+(n.d?'~'+n.d.toLocaleDateString('lv-LV',{day:'2-digit',month:'2-digit'}):'nav zināma')+'</span>':''})()}</div></div>`;
   const icon=L.divIcon({className:'',iconSize:[0,0],html});
   const pop=`<b>Klaipēdas LNG krātuve (FSRU Independence)</b><br>Aizpildījums ~${pct==null?'–':p}% (${(lngModel()||{}).real?'ALSI fakts + aplēse':'simulācija'})<br>${nextTxt(nextLng(pct))}<br>~${pct==null?'–':nf(Math.round(pct/100*cap/1000))} tūkst. m³ LNG ≈ ~${pct==null?'–':(pct/100*cap*585/1e6).toFixed(0)} mlj. m³ gāzes${at?'<br><b>'+esc(at.name)+'</b> stāv pie FSRU: notiek pārkraušana':''}${(()=>{const f=lngFac('KLAIP');return f?'<hr style="border:0;border-top:1px solid #ddd">'+lngFacInfo(f):''})()}<br><a href="#terminali">Vairāk: piegādes un grafiks ↓</a>`;
@@ -940,7 +943,7 @@ function drawOtherLng(){
   LNG_TERMS.forEach(t=>{const f=t.key?lngFac(t.key):null, r=f&&f.latest, has=r&&r.dtmi_gwh&&r.inv_gwh!=null, p=has?Math.round(r.inv_gwh/r.dtmi_gwh*100):null, col=has?'#0e7490':(t.lpg?'#a16207':'#9ca3af');
     const html=`<div style="display:flex;align-items:center;gap:4px;width:max-content;transform:translate(14px,-22px)">
       <div style="flex:none;width:${has?14:10}px;height:${has?40:26}px;border:2px solid ${col};border-radius:3px;background:var(--panel);position:relative;overflow:hidden"><div style="position:absolute;left:0;right:0;bottom:0;height:${p||0}%;background:${col}"></div></div>
-      <div style="font:700 ${has?.74:.66}rem var(--mono);background:var(--panel);color:var(--ink);border:1px solid ${col};border-radius:4px;padding:1px 5px">${t.name} ${has?p+'%':t.lpg?'':'–'}</div></div>`;
+      <div style="font:700 ${has?.74:.66}rem var(--mono);background:var(--lbl);color:var(--ink);backdrop-filter:blur(1px);border:1px solid ${col};border-radius:4px;padding:1px 5px">${t.name} ${has?p+'%':t.lpg?'':'–'}</div></div>`;
     otherLngMarkers.push(L_marker(FSRU_POS[t.name]||t.pos,html,`<b>${t.name}</b><br>`+(t.nodata?esc(t.nodata):f&&has?lngFacInfo(f):(()=>{const v=FLOWS&&t.key==='HAMINA'?flowVal('HAMINA','entry'):null;
       return 'Krājumu datus terminālis ALSI nepublicē.'+(v!=null?`<br>Izsūtīts tīklā (ENTSOG): <b>${nf(v)} GWh/d</b> ≈ ${(v/10.55).toFixed(2)} mlj. m³ gāzes dienā`:'');})())));});
 }
