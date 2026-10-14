@@ -14,6 +14,7 @@ Neprasi viņam apstiprinājumu ikdienas lēmumiem – pieņem saprātīgāko lē
 - **produkta-vaditajs** – izlemj, ko būvēt, un dod precīzu uzdevumu (datu avots, kas lapā, pieņemšanas kritēriji). Izsauc darba sākumā.
 - **dizaina-recenzents** – pārbauda gatavo darbu (izskats, telefons, godīgums, CLAUDE.md) un dod labojumu sarakstu. Izsauc pirms commit.
 Izpildītājs (galvenā sesija) seko vadītāja uzdevumam un izlabo visus recenzenta "obligātos labojumus".
+Aģenti **paši uzlabo savas instrukcijas** pēc pieredzes (sk. `.claude/agents/macibas.md`); pamatnoteikumi nav maināmi.
 
 ## Darba kārtība katrā sesijā
 1. `git pull --rebase origin main`. Izlasi `ROADMAP.md` un `LOG.md` beigas.
