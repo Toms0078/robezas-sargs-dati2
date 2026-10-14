@@ -54,7 +54,7 @@ def unpack(js):
         vals = {str(i): v for i, v in enumerate(vals) if v is not None}
     for k, v in vals.items():
         st = status.get(k) if isinstance(status, dict) else None
-        if st and "c" in str(st):       # konfidenciāls – nav īstā vērtība
+        if st and "c" in str(st).lower():   # "|C" = konfidenciāls – nav īstā vērtība
             v = None
         k = int(k)
         coord = {}
