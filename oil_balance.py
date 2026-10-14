@@ -16,6 +16,12 @@ API = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/"
 OUT = Path(__file__).parent / "data" / "oil_balance"
 UA = "robezas-sargs (github.com/Toms0078/robezas-sargs-dati2)"
 GEOS = ["LV", "LT", "EE", "FI", "PL", "SE", "DK"]
+SIEC = {"O4100_TOT": "jēlnafta", "O4600": "naftas produkti kopā", "O4671": "dīzelis un gāzeļļa", "O46711": "autodīzelis",
+        "O4652": "benzīns", "O4661": "aviodegviela", "O4630": "LPG", "O4680": "mazuts"}
+BAL = {"IPRD": "ražošana (ieguve)", "IMP": "imports", "EXP": "eksports", "STK_CHG": "krājumu izmaiņa",
+       "INTMARB": "kuģu bunkurēšana", "INTAVI_E": "starptautiskā aviācija", "GID_OBS": "iekšzemes piegādes",
+       "GID_CAL": "iekšzemes piegādes (aprēķins)", "TO_RPI_RO": "naftas pārstrādes rūpnīcu izlaide",
+       "RI_OBS": "pārstrādei saņemts", "FC_TRA_ROAD_E": "autotransports"}
 
 
 def get(code, params):
@@ -63,7 +69,7 @@ def main():
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "source": "Eurostat nrg_cb_oilm (tūkst. t)",
            "source_url": "https://ec.europa.eu/eurostat/databrowser/view/nrg_cb_oilm/default/table",
-           "labels": {}, "countries": {}}
+           "labels": {"siec": SIEC, "nrg_bal": BAL}, "countries": {}}
     for geo in GEOS:
         try:
             js = get("nrg_cb_oilm", [("geo", geo), ("unit", "THS_T"), ("sinceTimePeriod", since)])
@@ -75,14 +81,13 @@ def main():
             for dim in ("nrg_bal", "siec"):
                 for c, l in labels(js, dim).items():
                     print(f"  {dim} {c}: {l}")
-        out["labels"].setdefault("nrg_bal", {}).update(labels(js, "nrg_bal"))
-        out["labels"].setdefault("siec", {}).update(labels(js, "siec"))
         cube = {}
         months = set()
         for c, v in unpack(js):
             m = c["time"]
             months.add(m)
-            cube.setdefault(c["siec"], {}).setdefault(c["nrg_bal"], {})[m] = v
+            if c["siec"] in SIEC and c["nrg_bal"] in BAL:
+                cube.setdefault(c["siec"], {}).setdefault(c["nrg_bal"], {})[m] = round(v, 1) if v is not None else None
         ms = sorted(months)
         out["countries"][geo] = {"months": ms, "data": {s: {b: [vals.get(m) for m in ms] for b, vals in bs.items()}
                                                         for s, bs in cube.items()}}
