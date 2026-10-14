@@ -623,10 +623,10 @@ function renderOB(){
   const inl=obInland(geo), L=obLast(inl); if(!L){document.getElementById('obkpi').innerHTML='<p class="note">Nav datu.</p>';return;}
   const at=(siec,bal)=>{const x=obSeries(geo,siec,bal);const j=x.ms.indexOf(L.m);return j>=0?x.v[j]:null;};
   const sum=obSum;
-  const prod=sum(at('O4100_TOT','IPRD')), refo=at('O4600','TO_RPI_RO');
+  const prod=sum(at('O4100_TOT','IPRD')), refo=at('O4100_TOT','RI_OBS');
   const imp=sum(at('O4100_TOT','IMP'),at('O4600','IMP')), exp=sum(at('O4100_TOT','EXP'),at('O4600','EXP'));
   document.getElementById('obkpi').innerHTML=`<div class="kpi"><span>Periods</span>${obMon(L.m)}</div>
-    <div class="kpi"><span>Jēlnaftas ieguve</span>${ktn(prod)} kt</div><div class="kpi"><span>Rūpnīcu izlaide</span>${ktn(refo)} kt</div>
+    <div class="kpi"><span>Jēlnaftas ieguve</span>${ktn(prod)} kt</div><div class="kpi"><span>Pārstrādāta jēlnafta</span>${ktn(refo)} kt</div>
     <div class="kpi"><span>Imports</span>${ktn(imp)} kt</div><div class="kpi"><span>Eksports</span>${ktn(exp)} kt</div>
     <div class="kpi"><span>Iekšzemes patēriņš</span>${ktn(L.v)} kt</div>`;
   // grafiks: patēriņš (stabiņi), produktu imports un eksports (līnijas), 24 mēn.
@@ -645,19 +645,19 @@ function renderOB(){
     <div class="legend"><span><i style="display:inline-block;width:10px;height:10px;background:#c2410c;margin-right:4px"></i>iekšzemes patēriņš (produkti)</span><span><i style="display:inline-block;width:14px;height:2px;background:#7c4a1e;margin-right:4px;vertical-align:middle"></i>produktu imports</span><span><i style="display:inline-block;width:14px;height:2px;background:#64748b;margin-right:4px;vertical-align:middle"></i>produktu eksports</span></div>`;
   // tabula
   const cols=[['O4100_TOT','Jēlnafta'],['O4600','Produkti kopā'],['O4671','Dīzelis'],['O4652','Benzīns'],['O4661','Aviodegviela'],['O4630','LPG']];
-  const rows=[['IPRD','Ieguve'],['TO_RPI_RO','Rūpnīcu izlaide'],['IMP','Imports'],['EXP','Eksports'],['STK_CHG','Krājumu izmaiņa'],['INTMARB','Starptautisko kuģu bunkurēšana'],['GID','Iekšzemes patēriņš (piegādes)']];
+  const rows=[['IPRD','Ieguve'],['RI_OBS','Pārstrādei saņemts'],['TO_RPI_RO','Rūpnīcu izlaide*'],['IMP','Imports'],['EXP','Eksports'],['STK_CHG','Krājumu izmaiņa'],['INTMARB','Starptautisko kuģu bunkurēšana'],['GID','Iekšzemes patēriņš (piegādes)']];
   const cell=(siec,bal)=>{let x=obSeries(geo,siec,bal==='GID'?'GID_OBS':bal);if(bal==='GID'&&!x.v.some(v=>v!=null))x=obSeries(geo,siec,'GID_CAL');const j=x.ms.indexOf(L.m);const v=j>=0?x.v[j]:null;const s12=j>=0?obSum12(x,j):null;
     return v==null&&s12==null?'<td>—</td>':`<td style="white-space:nowrap">${ktn(v)}<br><span class="note">${s12==null?'':'12 m.: '+ktn(s12)}</span></td>`;};
   document.getElementById('obtab').innerHTML=`<tr><th>${obMon(L.m)}, kt</th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}</tr>`+
     rows.map(r=>`<tr><td>${r[1]}</td>${cols.map(c=>cell(c[0],r[0])).join('')}</tr>`).join('');
   // salīdzinājums
   const cmp=Object.keys(OB_POP).filter(g=>OB.countries[g]).map(g=>{const a=obInland(g),l=obLast(a);const s12=l?obSum12(a,l.i):null;
-    const ip=obSeries(g,'O4600','IMP'),ep=obSeries(g,'O4600','EXP'),ic=obSeries(g,'O4100_TOT','IMP'),ro=obSeries(g,'O4600','TO_RPI_RO');
+    const ip=obSeries(g,'O4600','IMP'),ep=obSeries(g,'O4600','EXP'),ic=obSeries(g,'O4100_TOT','IMP'),ro=obSeries(g,'O4100_TOT','RI_OBS');
     const S=x=>l?obSum12(x,x.ms.indexOf(l.m)):null;const a1=S(ip),a2=S(ic);return {g,l,s12,imp:(a1==null||a2==null)?null:a1+a2,exp:S(ep),ref:S(ro)};});
-  document.getElementById('obcmp').innerHTML='<tr><th>Valsts</th><th>Patēriņš, kt/gadā</th><th>t uz iedz.</th><th>Rūpnīcu izlaide, kt</th><th title="Bruto imports: jēlnaftu pēc pārstrādes var izvest produktu veidā">Bruto imports (jēlnafta + produkti), kt</th><th>Produktu eksports, kt</th><th>Līdz</th></tr>'+
+  document.getElementById('obcmp').innerHTML='<tr><th>Valsts</th><th>Patēriņš, kt/gadā</th><th>t uz iedz.</th><th title="Naftas pārstrādes rūpnīcās saņemtā jēlnafta (pilnīgāks rādītājs nekā izlaide, kuras daļa ir konfidenciāla)">Pārstrādāta jēlnafta, kt</th><th title="Bruto imports: jēlnaftu pēc pārstrādes var izvest produktu veidā">Bruto imports (jēlnafta + produkti), kt</th><th>Produktu eksports, kt</th><th>Līdz</th></tr>'+
     cmp.map(c=>`<tr${c.g===geo?' style="font-weight:600"':''}><td style="white-space:nowrap">${emojiOf(c.g)} ${OB_NAME[c.g]}</td><td>${ktn(c.s12)}</td><td>${c.s12!=null?(c.s12/1000/OB_POP[c.g]).toLocaleString('lv-LV',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td><td>${ktn(c.ref)}</td><td>${ktn(c.imp)}</td><td>${ktn(c.exp)}</td><td class="note">${c.l?c.l.m:''}</td></tr>`).join('');
   document.getElementById('obnote').innerHTML=(geo==='BALT'?'<b>Baltija kopā:</b> summā ieskaitīta arī tirdzniecība starp Baltijas valstīm (piem. Lietuvas eksports uz Latviju ir arī Latvijas imports) – tas nav reģiona imports no ārpuses. Mēneši ar datiem tikai daļai valstu netiek summēti.<br>':'')+`Avots: <a href="${OB.source_url}" target="_blank" rel="noopener">Eurostat nrg_cb_oilm</a>, atjaunots ${new Date(OB.updated).toLocaleDateString('lv-LV')} · kt = tūkstoši tonnu.
-    "Iekšzemes patēriņš" = iekšzemes bruto piegādes (gross inland deliveries) – ietver arī rūpniecību un enerģētiku, bez starptautiskās kuģu bunkurēšanas. Iedzīvotāju skaits aptuvens (Eurostat 2025). Gada summas rāda tikai, ja ir visi 12 mēneši; konfidenciālas vērtības rādītas kā "—".
+    "Iekšzemes patēriņš" = iekšzemes bruto piegādes (gross inland deliveries) – ietver arī rūpniecību un enerģētiku, bez starptautiskās kuģu bunkurēšanas. Iedzīvotāju skaits aptuvens (Eurostat 2025). Gada summas rāda tikai, ja ir visi 12 mēneši; konfidenciālas vērtības rādītas kā "—". *Rūpnīcu izlaides kopsumma valstīs ar vienu rūpnīcu (piem. Lietuvā – ORLEN Mažeiķi) nav pilna, jo daļa produktu ir konfidenciāli – tāpēc ražošanas apjomu labāk rāda “pārstrādātā jēlnafta”.
     Ostu tranzīts (piem. Ventspils, Muuga, Klaipēda) nav patēriņš – tas parādās kā imports un eksports. Lietuvas eksports lielā mērā ir ORLEN Mažeiķu rūpnīcas produkti, ko ved arī uz Latviju un Igauniju.`;
 }
 window.addEventListener('resize',()=>{clearTimeout(window._obr);window._obr=setTimeout(renderOB,300);});

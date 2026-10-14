@@ -12,6 +12,7 @@ Lietotājs var šeit arī pats ierakstīt vēlmes – aģenti tās ievēro.
 - 2026-10-14 – GFW reģistrā LNG kuģiem bieži nav GT un tips ir "OTHER"; LNG kuģus labāk atpazīt pēc iepriekšējās ostas (LNG eksporta terminālis).
 
 ## produkta-vaditajs
+- 2026-10-14 – Eurostat kopsummas (piem. O4600 rūpnīcu izlaide) var neietvert konfidenciālās daļas – valstīm ar 1 rūpnīcu (LT) izmantot pilnīgu rādītāju (jēlnaftas RI_OBS) un pārbaudīt bilanci: ievade ≈ izlaide ≈ eksports + patēriņš. Lietotājs to pamanīja.
 - 2026-10-14 – Tiešs WebFetch uz `ec.europa.eu/eurostat/api` var palikt bez atļaujas; datu kopu dimensijas un pēdējo periodu ātri pārbauda caur DBnomics (`db.nomics.world/Eurostat/<kods>`), bet precīzos kodus (nrg_bal, siec, cargo) liek izdrukāt skripta `--test` režīmam – kodus no atmiņas nerakstīt kā faktu.
 - 2026-10-14 – `energy_inbound.json` laukā `arrived` glabājas tikai pēdējie ~60–80 ieraksti (~3 dienas) bez kravas aplēses – mēneša summām vajag atsevišķu uzkrājošu žurnālu.
 - 2026-10-14 – Ostu ierašanās ≠ valsts patēriņš (Ventspils/Klaipēda/Muuga lielākoties tranzīts; LV degvielu daudz ved pa sauszemi no Mažeiķiem) – bilances lapā tas jāpasaka tieši.
