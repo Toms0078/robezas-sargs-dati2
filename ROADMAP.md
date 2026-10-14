@@ -34,7 +34,7 @@ Secība = prioritāte. Aģents var sadalīt punktu mazākos, ja tas par lielu vi
 ## 4a. Naftas bilance reģionā – oficiāli + tiešsaistes aplēse (lietotāja vēlme, prioritāte)
 Mērķis: cik naftas reģionā saražo, cik atved uz katru ostu, salīdzinājums ar valstu patēriņu. LV/LT/EE + FI/PL/SE/DK;
 RU/Kaļiņingrada – nav atvērtu datu. "OFICIĀLI" (Eurostat) un "APLĒSE" (AIS) vienmēr atdalīti.
-- [~] 1/5 Oficiālā mēneša bilance: `oil_balance.py` (Eurostat nrg_cb_oilm) → `data/oil_balance/official.json`, sadaļa `#naftas-bilance`.
+- [x] 1/5 Oficiālā mēneša bilance: `oil_balance.py` (Eurostat nrg_cb_oilm) → `data/oil_balance/official.json`, sadaļa `#naftas-bilance`.
 - [ ] 2/5 Imports/eksports pēc partnervalsts (nrg_ti_oilm, nrg_te_oilm) + krājumi dienās (nrg_stk_oilm).
 - [ ] 3/5 Ostu šķidrās kravas (Eurostat mar_go_qm_xx), kartes slānis "Naftas kravas ostās".
 - [ ] 4/5 AIS mēneša žurnāls (`ais_arrivals_YYYY-MM.jsonl`) + Būtiņģe → `oil_nowcast.py` → `nowcast.json`, kolonna "APLĒSE – šis mēnesis".
