@@ -1,27 +1,33 @@
 {
- "updated": "2026-10-15T15:02:10Z",
+ "updated": "2026-10-15T15:17:09Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 7095,
+ "messages_heard": 7200,
  "diag": {
-  "static_msgs": 1639,
-  "ships_heard": 3775,
-  "within_60km": 30,
+  "static_msgs": 1671,
+  "ships_heard": 3766,
+  "within_60km": 38,
   "nearest": [
    {
-    "mmsi": 277339000,
-    "name": "OPTIMA SEAWAYS",
-    "km": 38.8,
-    "sog": 7.8
+    "mmsi": 277202730,
+    "name": "MORGANE",
+    "km": 38.1,
+    "sog": 5.5
+   },
+   {
+    "mmsi": 277533000,
+    "name": "A.BARAUSKAS",
+    "km": 39.2,
+    "sog": 0.1
    },
    {
     "mmsi": 277199130,
     "name": "021",
     "km": 39.2,
-    "sog": 0
+    "sog": 0.1
    },
    {
     "mmsi": 304707000,
@@ -33,13 +39,13 @@
     "mmsi": 275490000,
     "name": "ROBIN",
     "km": 40.5,
-    "sog": 0.8
+    "sog": 2.3
    },
    {
-    "mmsi": 277199900,
-    "name": "TILSTA-2",
-    "km": 40.7,
-    "sog": 0
+    "mmsi": 341333002,
+    "name": "FEGDA",
+    "km": 40.5,
+    "sog": 2.2
    },
    {
     "mmsi": 277202910,
@@ -48,20 +54,15 @@
     "sog": 0
    },
    {
-    "mmsi": 277203140,
-    "name": "ARAS",
-    "km": 40.9,
-    "sog": 0.3
-   },
-   {
-    "mmsi": 230941700,
-    "name": "MERI",
+    "mmsi": 277541000,
+    "name": "TAK-11",
     "km": 41.4,
-    "sog": 0
+    "sog": 0.1
    }
   ],
   "dest_like_butinge": [
-   "BRUNSBUTTEL"
+   "DEBUT",
+   "LTBOT>NOMON"
   ]
  },
  "ships": [
@@ -97,6 +98,39 @@
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "daļēji pilns",
    "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.6 m"
+  },
+  {
+   "mmsi": 538011354,
+   "first_seen": "2026-10-15T15:17:09Z",
+   "name": "MH HIGHLANDER",
+   "imo": 1023920,
+   "callsign": "V7A7003",
+   "ais_type": 80,
+   "length": 249,
+   "beam": 44,
+   "destination": "LT BOT",
+   "dest_match": true,
+   "eta": "18.10 04:30 UTC",
+   "draught": 12.4,
+   "static_time": "2026-10-15T15:17:09Z",
+   "lat": 57.27188,
+   "lon": 7.99599,
+   "sog": 13.4,
+   "cog": 72.8,
+   "nav_status": 0,
+   "pos_time": "2026-10-15T15:16:08Z",
+   "last_seen": "2026-10-15T15:17:09Z",
+   "dist_buoy_km": 802.07,
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 71,
+   "empty_pct": 29,
+   "cargo_t_est": 73700,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 12.4 m"
   }
  ]
 }
