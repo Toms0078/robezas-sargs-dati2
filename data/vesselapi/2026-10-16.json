@@ -1,0 +1,304 @@
+{
+ "updated": "2026-10-16T11:39:30Z",
+ "source": "VesselAPI (vesselapi.com)",
+ "checks": {
+  "riga_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-15T21:29:00Z",
+      "vessel": {
+       "name": "rix delta",
+       "imo": 9195767,
+       "mmsi": 636023222
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T14:37:00Z",
+      "vessel": {
+       "name": "moira",
+       "imo": 9185229,
+       "mmsi": 275031200
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T14:37:00Z",
+      "vessel": {
+       "name": "salerno",
+       "imo": 9189873,
+       "mmsi": 210617000
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-15T13:45:00Z",
+      "vessel": {
+       "name": "moira",
+       "imo": 9185229,
+       "mmsi": 275031200
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     }
+    ]
+   }
+  },
+  "ventspils_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-16T05:45:00Z",
+      "vessel": {
+       "name": "katja",
+       "imo": 9454838,
+       "mmsi": 304134000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-16T04:17:00Z",
+      "vessel": {
+       "name": "stena scandica",
+       "imo": 9329849,
+       "mmsi": 219029263
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T22:21:00Z",
+      "vessel": {
+       "name": "valday",
+       "imo": 9142576,
+       "mmsi": 305094000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T19:57:00Z",
+      "vessel": {
+       "name": "havelland",
+       "imo": 9499735,
+       "mmsi": 255805653
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T19:45:00Z",
+      "vessel": {
+       "name": "stena baltica",
+       "imo": 9329851,
+       "mmsi": 219029947
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-15T14:29:00Z",
+      "vessel": {
+       "name": "gt auriga",
+       "imo": 9041318,
+       "mmsi": 304010285
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-15T12:13:00Z",
+      "vessel": {
+       "name": "neptuns",
+       "mmsi": 275313000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     }
+    ]
+   }
+  },
+  "riga_inbound": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "vesselETAs": [
+     {
+      "mmsi": 230091950,
+      "imo": 9083885,
+      "vessel_name": "BALTIC AMELIE",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.6,
+      "eta": "2026-10-16T16:00:00Z",
+      "timestamp": "2026-10-15T19:40:10Z"
+     },
+     {
+      "mmsi": 244770997,
+      "imo": 9988102,
+      "vessel_name": "LONGEON",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.1,
+      "eta": "2026-10-16T21:00:00Z",
+      "timestamp": "2026-10-16T06:22:36Z"
+     },
+     {
+      "mmsi": 255915634,
+      "imo": 9973262,
+      "vessel_name": "LOLLAND",
+      "destination": "LV RIX",
+      "destination_port": "LVRIX",
+      "draught": 6.6,
+      "eta": "2026-10-17T00:00:00Z",
+      "timestamp": "2026-10-16T00:10:22Z"
+     },
+     {
+      "mmsi": 211870240,
+      "imo": 9250098,
+      "vessel_name": "NOVA",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 6.8,
+      "eta": "2026-10-17T01:00:00Z",
+      "timestamp": "2026-10-16T11:33:55Z"
+     },
+     {
+      "mmsi": 255802660,
+      "imo": 9247314,
+      "vessel_name": "ESTLAND",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.1,
+      "eta": "2026-10-17T01:00:00Z",
+      "timestamp": "2026-10-16T06:31:55Z"
+     },
+     {
+      "mmsi": 636024820,
+      "imo": 9926934,
+      "vessel_name": "GUADALUPE EXPLORER",
+      "destination": "USMAH - LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 9.9,
+      "eta": "2026-10-17T04:00:00Z",
+      "timestamp": "2026-10-16T11:35:46Z"
+     },
+     {
+      "mmsi": 304046000,
+      "imo": 9373503,
+      "vessel_name": "SPANACO LOYALTY",
+      "destination": "LV RIX",
+      "destination_port": "LVRIX",
+      "draught": 4.2,
+      "eta": "2026-10-17T06:00:00Z",
+      "timestamp": "2026-10-15T23:05:31Z"
+     },
+     {
+      "mmsi": 219849000,
+      "imo": 8802052,
+      "vessel_name": "CALORIUS",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.9,
+      "eta": "2026-10-17T16:00:00Z",
+      "timestamp": "2026-10-16T11:25:18Z"
+     },
+     {
+      "mmsi": 630001285,
+      "imo": 9960033,
+      "vessel_name": "XIN YONG CHANG 19",
+      "destination": "LV RIX",
+      "destination_port": "LVRIX",
+      "draught": 8,
+      "eta": "2026-10-18T03:30:00Z",
+      "timestamp": "2026-10-16T11:12:50Z"
+     },
+     {
+      "mmsi": 538004739,
+      "imo": 9618616,
+      "vessel_name": "GREENER",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 6.5,
+      "eta": "2026-10-18T11:00:00Z",
+      "timestamp": "2026-10-16T11:35:46Z"
+     },
+     {
+      "mmsi": 305465000,
+      "imo": 9130200,
+      "vessel_name": "KAJA",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.6,
+      "eta": "2026-10-18T17:00:00Z",
+      "timestamp": "2026-10-16T11:35:22Z"
+     }
+    ]
+   }
+  },
+  "butinge_area": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "vessels": []
+   }
+  }
+ }
+}
