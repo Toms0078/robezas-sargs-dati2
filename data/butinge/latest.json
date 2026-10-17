@@ -1,25 +1,31 @@
 {
- "updated": "2026-10-17T00:55:46Z",
+ "updated": "2026-10-17T01:10:46Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 6967,
+ "messages_heard": 7062,
  "diag": {
-  "static_msgs": 1630,
-  "ships_heard": 3512,
-  "within_60km": 39,
+  "static_msgs": 1649,
+  "ships_heard": 3562,
+  "within_60km": 38,
   "nearest": [
    {
-    "mmsi": 277533000,
-    "name": "A.BARAUSKAS",
-    "km": 39.2,
-    "sog": 0.1
+    "mmsi": 219034373,
+    "name": "TERN LAND",
+    "km": 38.1,
+    "sog": 0
    },
    {
     "mmsi": 277199130,
     "name": "021",
+    "km": 39.2,
+    "sog": 0.1
+   },
+   {
+    "mmsi": 277533000,
+    "name": "A.BARAUSKAS",
     "km": 39.2,
     "sog": 0
    },
@@ -30,21 +36,9 @@
     "sog": 0
    },
    {
-    "mmsi": 277542000,
-    "name": "KLASCO-3",
+    "mmsi": 258114000,
+    "name": "MISJE VERDE",
     "km": 40.1,
-    "sog": 0
-   },
-   {
-    "mmsi": 245618000,
-    "name": "RIO",
-    "km": 40.3,
-    "sog": 7.9
-   },
-   {
-    "mmsi": 277199900,
-    "name": "TILSTA-2",
-    "km": 40.7,
     "sog": 0
    },
    {
@@ -58,6 +52,12 @@
     "name": "NIDA",
     "km": 40.8,
     "sog": 0
+   },
+   {
+    "mmsi": 277541000,
+    "name": "TAK-11",
+    "km": 41.4,
+    "sog": 0.1
    }
   ],
   "dest_like_butinge": [
@@ -65,6 +65,39 @@
   ]
  },
  "ships": [
+  {
+   "mmsi": 219034373,
+   "first_seen": "2026-10-17T01:10:46Z",
+   "name": "TERN LAND",
+   "imo": 9988994,
+   "callsign": "OUVR2",
+   "ais_type": 80,
+   "length": 147,
+   "beam": 22,
+   "destination": "LTKLJ",
+   "dest_match": false,
+   "eta": "16.10 20:00 UTC",
+   "draught": 8.1,
+   "static_time": "2026-10-17T01:10:46Z",
+   "lat": 55.72766,
+   "lon": 21.08929,
+   "sog": 0,
+   "cog": 18.2,
+   "nav_status": 5,
+   "pos_time": "2026-10-17T01:08:34Z",
+   "last_seen": "2026-10-17T01:10:46Z",
+   "dist_buoy_km": 38.07,
+   "status": "gaida",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 91,
+   "empty_pct": 9,
+   "cargo_t_est": 10400,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (147 m), iegrime 8.1 m"
+  },
   {
    "mmsi": 538011354,
    "first_seen": "2026-10-15T15:17:09Z",
@@ -122,14 +155,14 @@
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m",
-   "lat": 58.50498,
-   "lon": 4.89784,
-   "sog": 10.8,
-   "cog": 133.2,
+   "lat": 58.46852,
+   "lon": 4.96865,
+   "sog": 10.7,
+   "cog": 134.5,
    "nav_status": 0,
-   "pos_time": "2026-10-17T00:52:31Z",
-   "last_seen": "2026-10-17T00:55:46Z",
-   "dist_buoy_km": 999.96
+   "pos_time": "2026-10-17T01:10:42Z",
+   "last_seen": "2026-10-17T01:10:46Z",
+   "dist_buoy_km": 995.27
   }
  ]
 }
