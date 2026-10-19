@@ -1,21 +1,21 @@
 {
- "updated": "2026-10-19T10:23:12Z",
+ "updated": "2026-10-19T10:38:12Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 6939,
+ "messages_heard": 7069,
  "diag": {
-  "static_msgs": 1551,
-  "ships_heard": 3694,
-  "within_60km": 31,
+  "static_msgs": 1565,
+  "ships_heard": 3767,
+  "within_60km": 35,
   "nearest": [
    {
-    "mmsi": 245618000,
-    "name": "RIO",
-    "km": 38.5,
-    "sog": 8.4
+    "mmsi": 212198000,
+    "name": "MARJATTA",
+    "km": 35.3,
+    "sog": 9
    },
    {
     "mmsi": 277552000,
@@ -24,10 +24,16 @@
     "sog": 0
    },
    {
-    "mmsi": 277542000,
-    "name": "KLASCO-3",
-    "km": 40.1,
+    "mmsi": 667002573,
+    "name": "YAMAN",
+    "km": 39.4,
     "sog": 0
+   },
+   {
+    "mmsi": 245618000,
+    "name": "RIO",
+    "km": 39.7,
+    "sog": 10.8
    },
    {
     "mmsi": 277385000,
@@ -42,27 +48,56 @@
     "sog": 0
    },
    {
+    "mmsi": 277199900,
+    "name": "TILSTA-2",
+    "km": 40.5,
+    "sog": 0
+   },
+   {
     "mmsi": 341333002,
     "name": "FEGDA",
     "km": 40.6,
     "sog": 0
-   },
-   {
-    "mmsi": 277199900,
-    "name": "TILSTA-2",
-    "km": 40.7,
-    "sog": 0.7
-   },
-   {
-    "mmsi": 277202910,
-    "name": "RIZDE",
-    "km": 40.8,
-    "sog": 0
    }
   ],
-  "dest_like_butinge": []
+  "dest_like_butinge": [
+   "BRUNSBUTTEL"
+  ]
  },
  "ships": [
+  {
+   "mmsi": 249987000,
+   "first_seen": "2026-10-16T23:10:46Z",
+   "name": "MARATHON TS",
+   "imo": 9737371,
+   "callsign": "9HA4464",
+   "ais_type": 80,
+   "length": 250,
+   "beam": 44,
+   "destination": "BUTINGE",
+   "dest_match": true,
+   "eta": "20.10 00:30 UTC",
+   "draught": 15,
+   "static_time": "2026-10-19T07:49:09Z",
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 100,
+   "empty_pct": 0,
+   "cargo_t_est": 104500,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m",
+   "lat": 55.46711,
+   "lon": 15.34878,
+   "sog": 12.2,
+   "cog": 68.4,
+   "nav_status": 0,
+   "pos_time": "2026-10-19T10:34:30Z",
+   "last_seen": "2026-10-19T10:38:12Z",
+   "dist_buoy_km": 356.97
+  },
   {
    "mmsi": 538011354,
    "first_seen": "2026-10-15T15:17:09Z",
@@ -95,39 +130,6 @@
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 12.4 m"
-  },
-  {
-   "mmsi": 249987000,
-   "first_seen": "2026-10-16T23:10:46Z",
-   "name": "MARATHON TS",
-   "imo": 9737371,
-   "callsign": "9HA4464",
-   "ais_type": 80,
-   "length": 250,
-   "beam": 44,
-   "destination": "BUTINGE",
-   "dest_match": true,
-   "eta": "20.10 00:30 UTC",
-   "draught": 15,
-   "static_time": "2026-10-19T07:49:09Z",
-   "status": "ceļā",
-   "dwt": 110000,
-   "dwt_source": "novērtēts",
-   "max_draught": 14.8,
-   "load_pct": 100,
-   "empty_pct": 0,
-   "cargo_t_est": 104500,
-   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
-   "cargo_state": "pilns",
-   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m",
-   "lat": 55.38563,
-   "lon": 14.92762,
-   "sog": 12.3,
-   "cog": 72.8,
-   "nav_status": 0,
-   "pos_time": "2026-10-19T09:19:40Z",
-   "last_seen": "2026-10-19T09:23:12Z",
-   "dist_buoy_km": 384.92
   }
  ]
 }
