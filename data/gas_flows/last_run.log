@@ -12,48 +12,25 @@ Robežpunkti: 789, atlasīti: 13
    LNG-00072 | Inkoo LNG (FI) | LNG Entry point
    PRD-00209 | Estonia Production Point | Aggregated production point - SysDev
    UGS-00029 | Incukalns (LV) | Storage point
-Traceback (most recent call last):
-  File "/home/runner/work/robezas-sargs-dati2/robezas-sargs-dati2/gas_flows.py", line 100, in <module>
-    main()
-  File "/home/runner/work/robezas-sargs-dati2/robezas-sargs-dati2/gas_flows.py", line 53, in main
-    res = get("/operationaldata", {"pointKey": key, "indicator": "Physical Flow", "periodType": "day",
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/robezas-sargs-dati2/robezas-sargs-dati2/gas_flows.py", line 29, in get
-    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=120) as r:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 215, in urlopen
-    return opener.open(url, data, timeout)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 515, in open
-    response = self._open(req, data)
-               ^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 532, in _open
-    result = self._call_chain(self.handle_open, protocol, protocol +
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 492, in _call_chain
-    result = func(*args)
-             ^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 1405, in https_open
-    return self.do_open(http.client.HTTPSConnection, req,
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/urllib/request.py", line 1361, in do_open
-    r = h.getresponse()
-        ^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/http/client.py", line 1478, in getresponse
-    response.begin()
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/http/client.py", line 343, in begin
-    version, status, reason = self._read_status()
-                              ^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/http/client.py", line 304, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/socket.py", line 720, in readinto
-    return self._sock.recv_into(b)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/ssl.py", line 1264, in recv_into
-    return self.read(nbytes, buffer)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/ssl.py", line 1116, in read
-    return self._sslobj.read(len, buffer)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TimeoutError: The read operation timed out
+ziema Estonia Final Consumers Point {'from': '2025-12-01', 'to': '2026-02-28', 'avg_gwh': 20.4, 'max_gwh': 31.2, 'total_gwh': 1839}
+ziema Latvia domestic consumption {'from': '2025-12-01', 'to': '2026-02-28', 'avg_gwh': 61.0, 'max_gwh': 99.0, 'total_gwh': 5488}
+Estonia Final Consumers Point            exit   Elering                        10-16: 6.5 GWh  10-17: 6.1 GWh  10-18: 7.8 GWh
+Latvia domestic consumption              exit   Conexus                        10-16: 18.7 GWh  10-17: 16.3 GWh  10-18: 16.7 GWh
+Kiemenai                                 entry  Amber Grid                     10-17: 13.9 GWh  10-18: 13.8 GWh  10-19: 4.0 GWh
+Kiemenai                                 exit   Amber Grid                     10-17: 0.0 GWh  10-18: 0.0 GWh  10-19: 0.0 GWh
+Kiemenai                                 entry  Conexus                        10-16: 0.0 GWh  10-17: 0.0 GWh  10-18: 0.0 GWh
+Kiemenai                                 exit   Conexus                        10-16: 9.1 GWh  10-17: 13.9 GWh  10-18: 13.8 GWh
+Kotlovka                                 entry  Amber Grid                     10-17: 70.5 GWh  10-18: 67.6 GWh  10-19: 20.0 GWh
+BALTICCONNECTOR                          exit   Elering                        10-16: 24.9 GWh  10-17: 24.9 GWh  10-18: 25.6 GWh
+BALTICCONNECTOR                          entry  Elering                        10-16: 0.0 GWh  10-17: 0.0 GWh  10-18: 0.0 GWh
+BALTICCONNECTOR                          entry  Gasgrid Finland                10-16: 24.8 GWh  10-17: 24.9 GWh  10-18: 26.8 GWh
+BALTICCONNECTOR                          exit   Gasgrid Finland                10-16: 0.0 GWh  10-17: 0.0 GWh  10-18: 0.0 GWh
+Santaka                                  entry  GAZ-SYSTEM                     10-17: 0.0 GWh  10-18: 0.0 GWh  10-19: 0.0 GWh
+Santaka                                  exit   GAZ-SYSTEM                     10-17: 13.2 GWh  10-18: 13.1 GWh  10-19: 4.4 GWh
+Santaka                                  entry  Amber Grid                     10-17: 13.2 GWh  10-18: 13.1 GWh  10-19: 3.8 GWh
+Santaka                                  exit   Amber Grid                     10-17: 0.0 GWh  10-18: 0.0 GWh  10-19: 0.0 GWh
+Hamina LNG                               entry  Gasgrid Finland                10-16: 0.5 GWh  10-17: 0.5 GWh  10-18: 0.4 GWh
+Klaipeda (LNG)                           entry  Amber Grid                     10-17: 28.0 GWh  10-18: 0.0 GWh  10-19: 8.2 GWh
+Inkoo LNG (FI)                           entry  Gasgrid Finland                10-17: 0.0 GWh  10-18: 0.0 GWh  10-19: 0.0 GWh
+Incukalns (LV)                           entry  Conexus                        10-16: 58.1 GWh  10-17: 59.9 GWh  10-18: 61.7 GWh
+Incukalns (LV)                           exit   Conexus                        10-16: 0.0 GWh  10-17: 0.0 GWh  10-18: 0.0 GWh
