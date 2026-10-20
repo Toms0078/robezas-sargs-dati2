@@ -1,21 +1,33 @@
 {
- "updated": "2026-10-20T14:14:38Z",
+ "updated": "2026-10-20T14:29:37Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 7295,
+ "messages_heard": 7403,
  "diag": {
-  "static_msgs": 1695,
-  "ships_heard": 3746,
-  "within_60km": 35,
+  "static_msgs": 1727,
+  "ships_heard": 3768,
+  "within_60km": 32,
   "nearest": [
+   {
+    "mmsi": 636019819,
+    "name": "FEDERAL OSAKA",
+    "km": 35.7,
+    "sog": 5.8
+   },
+   {
+    "mmsi": 261000205,
+    "name": "TARZAN",
+    "km": 36.9,
+    "sog": 7.7
+   },
    {
     "mmsi": 266476000,
     "name": "NEPTUNUS",
     "km": 38.5,
-    "sog": 1.9
+    "sog": 0.2
    },
    {
     "mmsi": 277425000,
@@ -24,10 +36,10 @@
     "sog": 0
    },
    {
-    "mmsi": 277201420,
-    "name": "TILSTA",
+    "mmsi": 209764000,
+    "name": "MARCO POLO",
     "km": 40.5,
-    "sog": 0
+    "sog": 8.2
    },
    {
     "mmsi": 341333002,
@@ -46,25 +58,44 @@
     "name": "NIDA",
     "km": 40.8,
     "sog": 0
-   },
-   {
-    "mmsi": 277540000,
-    "name": "TAK-10",
-    "km": 41.4,
-    "sog": 0
-   },
-   {
-    "mmsi": 277585000,
-    "name": "TAK-9",
-    "km": 41.5,
-    "sog": 0
    }
   ],
-  "dest_like_butinge": [
-   "BRUNSBUTTEL"
-  ]
+  "dest_like_butinge": []
  },
  "ships": [
+  {
+   "mmsi": 266476000,
+   "first_seen": "2026-10-20T14:29:37Z",
+   "name": "NEPTUNUS",
+   "imo": 9371658,
+   "callsign": "SBFE",
+   "ais_type": 89,
+   "length": 119,
+   "beam": 17,
+   "destination": "LTKLJ",
+   "dest_match": false,
+   "eta": "20.10 15:00 UTC",
+   "draught": 7.2,
+   "static_time": "2026-10-20T14:29:37Z",
+   "lat": 55.72471,
+   "lon": 21.09765,
+   "sog": 0.2,
+   "cog": 19.9,
+   "nav_status": 0,
+   "pos_time": "2026-10-20T14:28:52Z",
+   "last_seen": "2026-10-20T14:29:37Z",
+   "dist_buoy_km": 38.5,
+   "status": "gaida",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 72,
+   "empty_pct": 28,
+   "cargo_t_est": 8200,
+   "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
+   "cargo_state": "pilns",
+   "cargo_basis": "mazs tankkuģis (119 m), iegrime 7.2 m"
+  },
   {
    "mmsi": 249987000,
    "first_seen": "2026-10-16T23:10:46Z",
