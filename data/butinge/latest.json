@@ -1,16 +1,28 @@
 {
- "updated": "2026-10-21T10:12:31Z",
+ "updated": "2026-10-21T10:27:21Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 7240,
+ "messages_heard": 7283,
  "diag": {
-  "static_msgs": 1740,
-  "ships_heard": 3638,
-  "within_60km": 20,
+  "static_msgs": 1761,
+  "ships_heard": 3739,
+  "within_60km": 28,
   "nearest": [
+   {
+    "mmsi": 215903000,
+    "name": "AVENIR ASCENSION",
+    "km": 38.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 277533000,
+    "name": "A.BARAUSKAS",
+    "km": 39.2,
+    "sog": 0
+   },
    {
     "mmsi": 277425000,
     "name": "KLASCO2",
@@ -18,8 +30,8 @@
     "sog": 0
    },
    {
-    "mmsi": 277385000,
-    "name": "KLASCO1",
+    "mmsi": 277542000,
+    "name": "KLASCO-3",
     "km": 40.1,
     "sog": 0
    },
@@ -30,15 +42,9 @@
     "sog": 0
    },
    {
-    "mmsi": 275490000,
-    "name": "ROBIN",
-    "km": 40.7,
-    "sog": 0
-   },
-   {
-    "mmsi": 277347000,
-    "name": "NIDA",
-    "km": 40.8,
+    "mmsi": 277201420,
+    "name": "TILSTA",
+    "km": 40.5,
     "sog": 0
    },
    {
@@ -48,20 +54,14 @@
     "sog": 0
    },
    {
-    "mmsi": 257350980,
-    "name": "SALTVAER",
-    "km": 41.4,
-    "sog": 0
-   },
-   {
-    "mmsi": 277149000,
-    "name": "TAK 5",
-    "km": 41.5,
+    "mmsi": 277347000,
+    "name": "NIDA",
+    "km": 40.8,
     "sog": 0
    }
   ],
   "dest_like_butinge": [
-   "BRUNSBUTTEL"
+   "BUTINGE"
   ]
  },
  "ships": [
@@ -97,6 +97,39 @@
    "pos_time": "2026-10-19T10:34:30Z",
    "last_seen": "2026-10-19T10:38:12Z",
    "dist_buoy_km": 356.97
+  },
+  {
+   "mmsi": 538007463,
+   "first_seen": "2026-10-21T10:27:21Z",
+   "name": "FRONT POLARIS",
+   "imo": 9791004,
+   "callsign": "V7OZ7",
+   "ais_type": 80,
+   "length": 251,
+   "beam": 44,
+   "destination": "BUTINGE",
+   "dest_match": true,
+   "eta": "23.10 09:00 UTC",
+   "draught": 14.9,
+   "static_time": "2026-10-21T10:27:21Z",
+   "lat": 57.79451,
+   "lon": 10.78937,
+   "sog": 10,
+   "cog": 108.6,
+   "nav_status": 4,
+   "pos_time": "2026-10-21T10:25:56Z",
+   "last_seen": "2026-10-21T10:27:21Z",
+   "dist_buoy_km": 645.66,
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 100,
+   "empty_pct": 0,
+   "cargo_t_est": 104500,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.9 m"
   }
  ]
 }
