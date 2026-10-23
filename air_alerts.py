@@ -119,7 +119,9 @@ def call_gemini(text, key, test=False):
             parts = (((j.get("candidates") or [{}])[0].get("content") or {}).get("parts") or [])
             out = "".join(p.get("text", "") for p in parts)
             usage = j.get("usageMetadata", {})
-            log(f"  modelis {m}: {usage.get('promptTokenCount')} + {usage.get('candidatesTokenCount')} tokeni")
+            gm = ((j.get("candidates") or [{}])[0].get("groundingMetadata") or {})
+            qs = gm.get("webSearchQueries") or []
+            log(f"  modelis {m}: {usage.get('promptTokenCount')} + {usage.get('candidatesTokenCount')} tokeni, meklējumi: {len(qs)} {qs[:6]}, avoti: {len(gm.get('groundingChunks') or [])}")
             if test:
                 log("---- atbilde ----"); log(out[:6000]); log("-----------------")
             return out, m
