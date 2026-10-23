@@ -130,10 +130,46 @@ def save_cache():
     keep = {k: v for k, v in _cache.items() if now - v.get("t", 0) < 2 * 86400}
     json.dump(keep, open(CACHE, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 
+TRACE_N = [0, 0]  # mēģināti, izdevušies
+
+def trace(hex_):
+    """Lidojuma ceļš no adsb.lol (tie paši atvērtie ADS-B dati, ko rāda globe.adsb.lol karte): tikai pašreizējais lidojums, ≤ 80 punkti."""
+    h = hex_.lower()
+    TRACE_N[0] += 1
+    j = None
+    for kind in ("full", "recent"):
+        try:
+            r = requests.get(f"https://globe.adsb.lol/data/traces/{h[-2:]}/trace_{kind}_{h}.json", timeout=20,
+                             headers=dict(UA, Referer="https://globe.adsb.lol/"))
+            if r.status_code == 200:
+                j = r.json(); break
+            if TRACE_N[0] <= 2: log(f"  trase {h} {kind}: HTTP {r.status_code}")
+        except Exception as e:
+            if TRACE_N[0] <= 2: log(f"  trase {h} {kind}: {str(e)[:80]}")
+    if not j or not j.get("trace"): return None
+    base = float(j.get("timestamp") or 0)
+    pts, last_t = [], None
+    for q in j["trace"]:
+        if len(q) < 3 or q[1] is None: continue
+        t = base + float(q[0]); flags = q[6] if len(q) > 6 and isinstance(q[6], int) else 0
+        if q[3] == "ground" or (last_t and t - last_t > 1800) or (flags & 2):
+            pts = []  # jauns lidojums sākas
+            if q[3] == "ground": last_t = t; continue
+        pts.append((t, round(q[1], 3), round(q[2], 3))); last_t = t
+    if len(pts) < 2: return None
+    step = max(1, len(pts) // 80)
+    pts = pts[::step] + ([pts[-1]] if (len(pts) - 1) % step else [])
+    TRACE_N[1] += 1
+    return [[la, lo, dt.datetime.fromtimestamp(t, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")] for t, la, lo in pts]
+
+
 def thin(arr, t_now):
     """Pārbaudes ik 10 min. Glabā: pēdējās 6 h visas; 6–24 h viena stundā (ar sarakstu trasēm); 1–7 dienas viena stundā tikai skaitļi."""
     out, hours = [], set()
-    for x in arr:  # jaunākā pirmā
+    for i, x in enumerate(arr):  # jaunākā pirmā; trases glabā tikai jaunākajā pārbaudē
+        if i > 0:
+            for k in ("list", "ruList"):
+                for it in x.get(k) or []: it.pop("trace", None)
         try: t = dt.datetime.fromisoformat(str(x.get("checkedAt")).replace("Z", "+00:00"))
         except Exception: continue
         age = (t_now - t).total_seconds() / 3600
@@ -176,6 +212,8 @@ def main():
         if item["callsign"]:
             fr, to = route(item["callsign"], (a["lat"], a["lon"]), a.get("track"))
             if fr: item["from"], item["to"] = fr, to
+        tr = trace(item["hex"])
+        if tr: item["trace"] = tr
         if c == "ru":
             ru.append(item)
         else:
@@ -200,7 +238,7 @@ def main():
     arr = thin([doc] + [x for x in arr if x.get("_id") != doc["_id"]], t_now)
     json.dump(arr, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     save_cache()
-    log(note + f" Maršruti: {sum(1 for x in lst + ru if x.get('from'))}/{len(lst) + len(ru)}, jauni vaicājumi {_new[0]}.")
+    log(note + f" Maršruti: {sum(1 for x in lst + ru if x.get('from'))}/{len(lst) + len(ru)}, jauni vaicājumi {_new[0]}. Trases: {TRACE_N[1]}/{TRACE_N[0]}.")
     for x in lst: log(f"  {x['cat']:6} {x['callsign']:9} {x['type']:5} {x['note']}")
     open(LOG, "w", encoding="utf-8").write("\n".join(log_lines) + "\n")
 
