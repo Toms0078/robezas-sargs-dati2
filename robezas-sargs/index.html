@@ -1312,6 +1312,7 @@ html { scroll-behavior: smooth; }
   }
 
   const filt = { tanker: true, nato: true, other: true, ru: true };
+  let airPicks = [];
   let showRoutes = true, winH = 24, selHex = null, lastAir = null, focus = false, zs = 1;
   let region = "north";
   try { const r = localStorage.getItem("rs_region"); if (r === "baltic" || r === "north") region = r; } catch (e) {}
@@ -1421,7 +1422,7 @@ html { scroll-behavior: smooth; }
       e.preventDefault();
       zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0025)));
     }, { passive: false });
-    svg.addEventListener("dblclick", (e) => { if (e.target.closest(".evhit, .evlab, .hit")) return; e.preventDefault(); zoomAt(e.clientX, e.clientY, e.shiftKey ? 1 / 2 : 2); });
+    svg.addEventListener("dblclick", (e) => { if (e.target.closest(".evhit, .evlab, .hit") || (layer === "air" && airFind(e))) return; e.preventDefault(); zoomAt(e.clientX, e.clientY, e.shiftKey ? 1 / 2 : 2); });
     const two = () => { const [a, b] = [...pts.values()]; return [Math.hypot(a.x - b.x, a.y - b.y), [(a.x + b.x) / 2, (a.y + b.y) / 2]]; };
     // Touch screens: handled with Touch Events (more reliable than pointer events inside phone app web views and iframes).
     // One finger pans, two fingers pinch-zoom, double tap zooms in. Pointer events below then serve only mouse and pen.
@@ -1499,6 +1500,7 @@ html { scroll-behavior: smooth; }
     ["gesturestart", "gesturechange"].forEach((t) => svg.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
     svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up); svg.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") up(e); });
     svg.addEventListener("click", (e) => { if (dragged) { e.stopPropagation(); e.preventDefault(); dragged = false; } }, true);
+    svg.addEventListener("click", airTap);
     svg.addEventListener("click", (e) => { if (layer === "events" && evSel != null && !e.target.closest(".evhit, .evlab, .evpin")) { evSel = null; drawOverlay(); } });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && layer === "events" && evSel != null) { evSel = null; drawOverlay(); } });
   })();
@@ -1580,6 +1582,7 @@ html { scroll-behavior: smooth; }
         tl.textContent = pre + [ap.code, ap.city].filter(Boolean).join(" "); g.append(tl);
       });
     }
+    airPicks = [];
     shown.forEach((x) => {
       const [cx, cy] = proj(x.lon, x.lat); if (!inView(cx, cy)) return;
       const col = CATCOL[x.cat];
@@ -1597,9 +1600,11 @@ html { scroll-behavior: smooth; }
       if (!dim && (x.cat !== "nato" && x.cat !== "ru" || shown.length <= 12 || keyOf(x) === selHex)) { const lb = mk("text", { x: cx + S(14), y: cy - S(12), class: "plabel", style: `font-size:${T(17)}px;stroke-width:${S(5)}px` }); lb.textContent = (x.callsign || x.type || "").trim(); g.append(lb); }
       const hit = mk("circle", { cx, cy, r: S(44), fill: "transparent", class: "hit", tabindex: 0, role: "button", "aria-label": (x.callsign || x.type || "lidmašīna") + ", " + CATNAME[x.cat] });
       const pick = () => { if (focus && keyOf(x) !== selHex) { selHex = keyOf(x); renderAir(lastAir); return; } selHex = keyOf(x) === selHex ? null : keyOf(x); focus = false; renderAir(lastAir); if (selHex) $("acInfo").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
-      hit.addEventListener("click", pick);
+      hit.style.pointerEvents = "none";  // pieskārienu apstrādā airTap(): tuvākā lidmašīna vai tās aste
       hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
       g.append(hit);
+      const tpts = (keyOf(x) === selHex && selTr ? selTr : (trails[keyOf(x)] || [])).map((p) => proj(p.lon, p.lat));
+      airPicks.push({ dim, pick, dot: [cx, cy], line: (showRoutes || keyOf(x) === selHex) ? tpts : [] });
     });
     renderAcInfo(cur, trails);
     const rl = Array.isArray(a.ruList) ? a.ruList : [];
@@ -1628,6 +1633,23 @@ html { scroll-behavior: smooth; }
       tb.append(tr);
     });
   }
+  // Pieskāriens kartē: izvēlas tuvāko lidmašīnu — pēc punkta vai pēc astes (lidojuma ceļa) līnijas, ekrāna pikseļos.
+  function airFind(e) {
+    if (layer !== "air" || !airPicks.length || e.target.closest(".evhit, .evlab, .evcard, button, a")) return null;
+    const svg = $("dots").ownerSVGElement, m = svg.getScreenCTM(); if (!m) return null;
+    const sc = (p) => [m.a * p[0] + m.c * p[1] + m.e, m.b * p[0] + m.d * p[1] + m.f];
+    const X = e.clientX, Y = e.clientY;
+    const dSeg = (a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy; let t = L ? ((X - a[0]) * dx + (Y - a[1]) * dy) / L : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(X - a[0] - t * dx, Y - a[1] - t * dy); };
+    let best = null, bd = 1e9;
+    airPicks.forEach((c) => {
+      const p = sc(c.dot); let d = Math.hypot(p[0] - X, p[1] - Y) - 6;  // punktam neliela priekšroka pret asti
+      const L = c.line.map(sc); for (let i = 1; i < L.length; i++) d = Math.min(d, dSeg(L[i - 1], L[i]));
+      if (c.dim) d += 12;
+      if (d < bd) { bd = d; best = c; }
+    });
+    return best && bd <= 26 ? best : null;
+  }
+  function airTap(e) { const c = airFind(e); if (c) { e.stopPropagation(); c.pick(); } }
   function routeTxt(x) { const f = x.from, t = x.to; if (!f && !t) return ""; const n = (a) => a ? [a.city, a.code ? "(" + a.code + ")" : ""].filter(Boolean).join(" ") : "?"; return n(f) + " → " + n(t); }
   function renderAcInfo(cur, trails) {
     const body = $("acBody"), empty = $("acEmpty");
