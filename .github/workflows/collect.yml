@@ -49,6 +49,9 @@ jobs:
         if: steps.pick.outputs.what != 'advisories'
         run: python parse_lists.py
 
+      - name: Publicē Robežas sarga lapai (data/rs)
+        run: python export_db.py && python to_events.py && python publish_rs.py
+
       - name: Saglabā izmaiņas repozitorijā
         run: |
           git config user.name "robezas-sargs-bot"
