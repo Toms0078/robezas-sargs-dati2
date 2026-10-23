@@ -62,6 +62,24 @@ def ask(search_prompt, merge_prompt, key):
     return A.extract_json(txt), m, doms
 
 
+_alive = {}
+def alive(u):
+    """Gemini dažkārt izdomā ticamu saiti uz īstu vietni — pārbauda, vai raksts eksistē (404/410/nav vietnes = izdomāts)."""
+    if u in _alive: return _alive[u]
+    import requests
+    ok = True
+    try:
+        r = requests.get(u, timeout=20, allow_redirects=True, stream=True,
+                         headers={"User-Agent": "Mozilla/5.0 (robezas-sargs link check)"})
+        ok = r.status_code not in (404, 410); r.close()
+    except requests.exceptions.ConnectionError:
+        ok = False
+    except Exception:
+        ok = True
+    _alive[u] = ok
+    return ok
+
+
 def urls_of(o, acc):
     if isinstance(o, dict):
         if o.get("url"): acc.add(str(o["url"]))
@@ -100,7 +118,7 @@ PARTS = [
 PL, FI), droni, Krievijas/Baltkrievijas karaspēka pārvietošana, mācības pie robežām, robežas incidenti, kritiskās infrastruktūras incidenti
 (kabeļi, cauruļvadi), oficiāli paziņojumi (NBS, VDD, AM, Lietuvas/Igaunijas iestādes), vēstniecības, Ziemeļvalstis un Gotlande.
 Meklē vairākās valodās (latviski, lietuviski, igauniski, poliski, krieviski, angliski).
-"sections": saglabā tās pašas sadaļas (key, title); katrā 2–5 jaunākie "items" (date, source, text, url) un īss "summary", "level".
+"sections": TIEŠI tās pašas 5 sadaļas ar tiem pašiem key (air, russia, osint, official, nordic) un title; katrā 2–5 jaunākie "items" (date, source, text, url) un īss "summary", "level".
 "events": līdz 15 kartes notikumiem (date, kind: airspace|border|drone|exercise|infra|military|statement, lat, lon, approx true ja vieta aptuvena,
 level, short ≤ 25 zīmes, title, source, url; dronu/gaisa telpas notikumiem arī origin: russia|belarus|ukraine|unknown, originConf, originNote).
 Vecākus par 7 dienām notikumus izmet. "headline": 1 teikums (sāc ar "Rīta pārskats:" vai "Vakara pārskats:"). "summary": 2–4 teikumi.
@@ -173,10 +191,14 @@ def main():
         if not doms or not isinstance(j, dict) or not all(k in j for k in keys):
             A.log(f"{name}: nav derīgas atbildes ar meklēšanu ({'avoti ' + str(len(doms)) if doms else 'nemeklēja'}); paturu iepriekšējo")
             continue
-        ok = lambda u: str(u) in prev_urls or (lambda h: bool(h) and any(h == d or h.endswith("." + d) or d.endswith("." + h) for d in doms))(host(u))
+        ok = lambda u: str(u) in prev_urls or ((lambda h: bool(h) and any(h == d or h.endswith("." + d) or d.endswith("." + h) for d in doms))(host(u)) and alive(str(u)))
         stat = {"drop": 0}
         j = scrub({k: j[k] for k in keys}, ok, stat)
         fix_levels(j)
+        if "sections" in j:  # sadaļas paliek tās pašas (lapa tās rāda pēc key); trūkstošās — no iepriekšējā
+            got = {x.get("key"): x for x in j["sections"] if isinstance(x, dict)}
+            j["sections"] = [dict(got[x["key"]], key=x["key"], title=x.get("title")) if x.get("key") in got and got[x["key"]].get("items") else x
+                             for x in prev.get("sections") or []]
         if "level" in j and j["level"] not in LEVELS: j["level"] = prev.get("level", "yellow")
         rep.update(j)
         used.append(m)

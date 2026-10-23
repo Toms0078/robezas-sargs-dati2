@@ -144,7 +144,8 @@ Atbildi TIKAI ar JSON: ```json {{"updates": [{{"key": "esošā maršruta key", "
         A.log(f"transit: Gemini nemeklēja (0 avotu) — nekas netiek mainīts"); return
     def okurl(u):
         h = re.sub(r"^www\.", "", re.sub(r"^https?://([^/]+).*", r"\1", str(u or "")).lower())
-        return bool(h) and any(h == d or h.endswith("." + d) or d.endswith("." + h) for d in doms)
+        import gemini_report as G
+        return bool(h) and any(h == d or h.endswith("." + d) or d.endswith("." + h) for d in doms) and G.alive(str(u))
     keys = {r["key"]: r for r in doc["routes"]}
     nu = 0
     for u in j.get("updates") or []:
