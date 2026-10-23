@@ -195,6 +195,13 @@ def merge(old, new, t_now):
     ru = [a for a in res if a.get("cc") == "RU"][:MAX_RU]
     return ours + ru
 
+def diagnose(key):
+    """Is the quota problem only with Google Search grounding, or with the model itself?"""
+    for m in MODELS[:2]:
+        r = requests.post(API.format(m=m), params={"key": key}, timeout=60,
+                          json={"contents": [{"role": "user", "parts": [{"text": "Atbildi ar vienu vārdu: labi"}]}]})
+        log(f"  diagnostika bez meklēšanas {m}: HTTP {r.status_code} {r.text[:200].replace(chr(10), ' ')}")
+
 def main():
     test = "--test" in sys.argv
     t_now = now()
@@ -223,6 +230,8 @@ def main():
         items = [c for c in (clean(a, region, t_now) for a in (j.get("alerts") or [])) if c]
         log(f"{region}: {len(items)} derīgi ieraksti ({model})")
         found += items; ok.append(region)
+    if not ok and test:
+        diagnose(key)
     alerts = merge(old, found, t_now)
     act = [a for a in alerts if a["status"] == "active"]
     ours_act = [a for a in act if a["cc"] != "RU"]
