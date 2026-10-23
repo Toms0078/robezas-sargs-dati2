@@ -172,6 +172,8 @@ def main():
             for a in j.get("alerts") or []:
                 region = "ru" if str(a.get("cc", "")).upper() == "RU" else "ours"
                 c = A.clean(a, region, t_now)
+                if c and c["url"] not in {n["url"] for n in new[:40]}:
+                    A.log(f"  izmests (saite nav no ziņu saraksta): {c['url'][:80]}"); c = None
                 if c: c["via"] = "gemini-fast"; got.append(c)
             A.log(f"Gemini: {len(got)} derīgi ieraksti")
             before = json.dumps(doc.get("alerts"), sort_keys=True)
