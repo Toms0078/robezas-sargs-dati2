@@ -79,7 +79,7 @@ Ja paziņots tikai rajonam — liec visu apgabalu."""
         codes = "Kodi (tikai šie): " + ", ".join(k for k in CODES if k.startswith("RU-"))
     cc_set = "LV|EE|LT|PL|FI" if region == "ours" else "RU"
     return f"""Tu esi datu vācējs Latvijas drošības informācijas lapai. Tagad ir {riga} pēc Rīgas laika ({iso(t_now)} UTC).
-Atrodi ar Google meklēšanu trauksmes, kas bija AKTĪVAS pēdējo 6 stundu laikā vai SĀKĀS pēdējās 24 stundās:
+OBLIGĀTI izmanto Google meklēšanu (vairākus vaicājumus) un atrodi trauksmes, kas bija AKTĪVAS pēdējo 6 stundu laikā vai SĀKĀS pēdējās 24 stundās:
 {scope}
 
 Iepriekš zināmās aktīvās trauksmes (pārbaudi, vai tās beigušās): {prev}
@@ -124,7 +124,11 @@ def call_gemini(text, key, test=False):
             log(f"  modelis {m}: {usage.get('promptTokenCount')} + {usage.get('candidatesTokenCount')} tokeni, meklējumi: {len(qs)} {qs[:6]}, avoti: {len(gm.get('groundingChunks') or [])}")
             if test:
                 log("---- atbilde ----"); log(out[:6000]); log("-----------------")
-            return out, m
+            doms = set()
+            for c in gm.get("groundingChunks") or []:
+                t = ((c.get("web") or {}).get("title") or "").lower().strip()
+                if t: doms.add(t.removeprefix("www."))
+            return out, m, len(qs), doms
         log(f"  {last_err}")
     raise RuntimeError(last_err or "Gemini nav atbildējis")
 
@@ -235,13 +239,24 @@ def main():
     for region in ("ours", "ru"):
         prev = [a for a in old if a.get("status") == "active" and ((a.get("cc") == "RU") == (region == "ru"))]
         try:
-            txt, model = call_gemini(prompt(region, prev, t_now), key, test)
+            txt, model, nq, doms = call_gemini(prompt(region, prev, t_now), key, test)
         except Exception as e:
             log(f"{region}: kļūda — {e}"); continue
         j = extract_json(txt)
         if j is None:
             log(f"{region}: atbildē nav derīga JSON"); continue
         items = [c for c in (clean(a, region, t_now) for a in (j.get("alerts") or [])) if c]
+        # Without real Google results the model may invent entries — keep only items whose link domain was among the sources.
+        if not doms:
+            if items: log(f"{region}: Gemini nemeklēja (0 avotu) — {len(items)} ieraksti izmesti")
+            items = []
+        else:
+            okd = []
+            for c in items:
+                host = re.sub(r"^www\.", "", re.sub(r"^https?://([^/]+).*", r"\1", c["url"]).lower())
+                if any(host == d or host.endswith("." + d) or d.endswith("." + host) for d in doms): okd.append(c)
+                else: log(f"  izmests (saite nav starp Gemini avotiem {sorted(doms)[:8]}): {c['url'][:80]}")
+            items = okd
         log(f"{region}: {len(items)} derīgi ieraksti ({model})")
         found += items; ok.append(region)
     if not ok and test:
