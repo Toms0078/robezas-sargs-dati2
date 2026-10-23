@@ -1,9 +1,27 @@
 {
- "updatedAt": "2026-10-23T17:17:45Z",
- "checkedAt": "2026-10-23T17:17:45Z",
- "note": "Mūsu reģionā aktīvu trauksmju nav.",
+ "updatedAt": "2026-10-23T17:30:55Z",
+ "checkedAt": "2026-10-23T17:30:55Z",
+ "note": "Aktīvas trauksmes mūsu reģionā: 1; Krievijā: 1.",
  "source": "GitHub Actions + Gemini",
  "alerts": [
+  {
+   "id": "pl-2026-10-23-1600",
+   "cc": "PL",
+   "kind": "warning",
+   "level": "red",
+   "status": "active",
+   "start": "2026-10-23T14:00:00Z",
+   "end": null,
+   "areas": [
+    "PL-lubelskie"
+   ],
+   "channel": "sms",
+   "title": "Polijā izsludināts RCB brīdinājums par gaisa telpas aktivitāti",
+   "text": "Iedzīvotājiem Lubļinas vojevodistē izsūtīts RCB brīdinājums saistībā ar Krievijas uzbrukumu Ukrainai un Polijas gaisa spēku darbību.",
+   "source": "RMF24",
+   "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNVkFfb3F4NW5XWkZQNE1kOGt1aWVOX0d3c1l1QjRPNGFKSWdldFd4TU45YlZ2T2dudmJjQXMxZUQ4TW9XQ2FmQ1hSM3VuU0FFZUk3MWFraXJ2b1VPdGtoMTQ5VHJxMDlRWHJOTTh3Z2RtemFHMmh0WXBHdlA2MTM5eEZLeDhzRGhnRHVQcVhWVkpQUDNUWlVlTy1Ja2VaeGFiVXpmMWJSVzMwd2lzRWtiUmtLVVM?oc=5",
+   "via": "gemini-fast"
+  },
   {
    "areas": [
     "PL-lubelskie-bilgorajski",
@@ -285,6 +303,25 @@
    "status": "ended",
    "title": "Kauņas apriņķa iedzīvotāji brīdināti par iespējamu gaisa apdraudējumu (līmenis avotā nav precizēts, atcelts ap 7:50).",
    "url": "https://www.lrt.lt/naujienos/lietuvoje/2/3071190/oro-pavojus-atsauktas-kol-kas-neaisku-ar-galimas-dronas-neutralizuotas-ar-isskrido"
+  },
+  {
+   "id": "ru-2026-10-23-1257",
+   "cc": "RU",
+   "kind": "air",
+   "level": "red",
+   "status": "active",
+   "start": "2026-10-23T12:57:00Z",
+   "end": null,
+   "areas": [
+    "RU-moskva"
+   ],
+   "channel": "official",
+   "title": "Maskavas lidostās izsludināts gaisa trauksmes režīms",
+   "text": "Maskavas lidostās pārtraukta darbība un uzsākta pasažieru evakuācija gaisa trauksmes dēļ.",
+   "source": "Meduza",
+   "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOdGx5aWJuMnphWDFqMHpJVXhyUVdRbFNUeEJNbFkydGFyakFhTzMxZE8xWGJlbk9wUlktWWhEVVg2N2N2NW5SSFpESjFGbzJIai1uSVFYemRQMmxFS2k1VVhZM3MxQ1Noa3RKejFRRjlKdUFKZ0cxYkpyT2QwMW11TG9HWGJodmt4NzRtZFFCVHFEeGNXOVl3dmNsYU56V0YxLUlMMm1FaUVtZ2FnQzlxR21UVWdVU3I5cmVNU05MeFhfLWdRX3ZWZUR4RFJRYTIwTnfSAdIBQVVfeXFMTnRseWlibjJ6YVgxajB6SVV4clFXUWxTVHhCTWxZMnRhcmpBYU8zMWRPMVhiZW5PcFJZLVloRFVYNjdjdjVuUkhaREoxRm8ySGotbklRWHpkUDJsRUtpNVVYWTNzMUNTaGt0SnoxUUY5SnVBSmdHMWJKck9kMDFtdUxvR1hiaHZreDc0bWRRQlRxRHhjVzlZd3ZjbGFOeldGMS1JTDJtRWlFbWdhZ0M5cUdtVFVnVVNyOXJlTVNOTHhYXy1nUV92VmVEeERSUWEyME53?oc=5",
+   "via": "gemini-fast"
   }
- ]
+ ],
+ "fastCheckedAt": "2026-10-23T17:30:55Z"
 }
