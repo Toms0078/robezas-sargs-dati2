@@ -134,7 +134,7 @@ Atbildi TIKAI ar JSON: ```json {{"updates": [{{"key": "esošā maršruta key", "
 "date": "DD.MM.YYYY"}}], "events": [{{"date": "DD.MM.YY", "level": "green|yellow|red", "text": "1 teikums latviski", "source": "izdevums", "url": "saite"}}],
 "headline": "1 teikums par svarīgāko (vai tukšs, ja nav jaunumu)"}} ```"""
     base = list(A.MODELS)
-    for first in [None, "gemini-3.5-flash-lite", "gemini-3.5-flash"]:  # ja modelis nemeklē, mēģina citu
+    for first in ["gemini-3.5-flash", "gemini-3.5-flash-lite"]:  # ja modelis nemeklē, mēģina citu
         A.MODELS[:] = ([first] if first else []) + [x for x in base if x != first]
         txt, m, nq, doms = A.call_gemini(prompt, key())
         if doms: break
