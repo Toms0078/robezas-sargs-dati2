@@ -1,35 +1,16 @@
-2026-10-23T07:25:08Z gaisa trauksmju pārbaude
-  gemini-3.1-flash-lite: HTTP 429 — {
-  "error": {
-    "code": 429,
-    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
-    "status": "RESOURCE_EXHAUSTED",
-    "details": [
-      {
-        "@type": "type.googleapis.com/google.rpc.Help",
-        "links": [
-          {
-            "description": "Learn more about Gemini API quotas",
-            "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
-          }
-        ]
-      }
-    ]
-  }
-}
-
-  modelis gemini-3.1-flash-lite: 2068 + 554 tokeni
+2026-10-23T07:26:33Z gaisa trauksmju pārbaude
+  modelis gemini-3.1-flash-lite: 2107 + 554 tokeni, meklējumi: 0 [], avoti: 0
 ---- atbilde ----
 ```json
-{"alerts": [{"id": "pl-2026-10-23-0400", "cc": "PL", "kind": "air", "level": "red", "status": "active", "start": "2026-10-23T02:00:00Z", "end": null, "areas": ["PL-podkarpackie-debicki", "PL-podkarpackie-ropczycko-sedziszowski", "PL-podkarpackie-rzeszow", "PL-podkarpackie-rzeszowski", "PL-podkarpackie-lancucki", "PL-podkarpackie-przeworski", "PL-podkarpackie-jaroslawski", "PL-podkarpackie-lubaczowski", "PL-podkarpackie-jasielski", "PL-podkarpackie-strzyzowski", "PL-podkarpackie-brzozowski", "PL-podkarpackie-przemysl", "PL-podkarpackie-przemyski", "PL-podkarpackie-sanocki", "PL-podkarpackie-leski", "PL-podkarpackie-krosno", "PL-podkarpackie-krosnienski", "PL-podkarpackie-bieszczadzki", "PL-lubelskie-hrubieszowski", "PL-lubelskie-zamosc", "PL-lubelskie-zamojski", "PL-lubelskie-tomaszowski", "PL-lubelskie-bilgorajski", "PL-lubelskie-wlodawski", "PL-lubelskie-leczynski", "PL-lubelskie-swidnicki", "PL-lubelskie-chelm", "PL-lubelskie-chelmski", "PL-lubelskie-krasnostawski"], "channel": "cb", "title": "Alert RCB par Krievijas gaisa uzbrukumu Ukrainai un drošības pasākumiem Polijas gaisa telpā", "text": "UWAGA! Rosyjski atak powietrzny na terenie Ukrainy. Sytuacja jest monitorowana. W przestrzeni RP operuje polskie lotnictwo. Oczekuj dalszych komunikatów.", "source": "Rządowe Centrum Bezpieczeństwa", "url": "https://www.gov.pl/web/rcb"}]}
+{"alerts": [{"id": "pl-2026-10-23-0400", "cc": "PL", "kind": "air", "level": "red", "status": "active", "start": "2026-10-23T02:00:00Z", "end": null, "areas": ["PL-lubelskie-bilgorajski", "PL-lubelskie-chelm", "PL-lubelskie-chelmski", "PL-lubelskie-hrubieszowski", "PL-lubelskie-krasnostawski", "PL-lubelskie-leczynski", "PL-lubelskie-swidnicki", "PL-lubelskie-tomaszowski", "PL-lubelskie-wlodawski", "PL-lubelskie-zamojski", "PL-lubelskie-zamosc", "PL-podkarpackie-bieszczadzki", "PL-podkarpackie-brzozowski", "PL-podkarpackie-debicki", "PL-podkarpackie-jaroslawski", "PL-podkarpackie-jasielski", "PL-podkarpackie-krosnienski", "PL-podkarpackie-krosno", "PL-podkarpackie-lancucki", "PL-podkarpackie-leski", "PL-podkarpackie-lubaczowski", "PL-podkarpackie-przemyski", "PL-podkarpackie-przemysl", "PL-podkarpackie-przeworski", "PL-podkarpackie-ropczycko-sedziszowski", "PL-podkarpackie-rzeszow", "PL-podkarpackie-rzeszowski", "PL-podkarpackie-sanocki", "PL-podkarpackie-strzyzowski"], "channel": "cb", "title": "Alert RCB par Krievijas gaisa uzbrukumu Ukrainai un drošības pasākumiem Polijas gaisa telpā", "text": "UWAGA! Rosyjski atak powietrzny na terenie Ukrainy. Sytuacja jest monitorowana. W przestrzeni RP operuje polskie lotnictwo. Oczekuj dalszych komunikatów.", "source": "Rządowe Centrum Bezpieczeństwa", "url": "https://www.gov.pl/web/rcb"}]}
 ```
 -----------------
 ours: 1 derīgi ieraksti (gemini-3.1-flash-lite)
-  modelis gemini-3.1-flash-lite: 865 + 10 tokeni
+  modelis gemini-3.1-flash-lite: 865 + 445 tokeni, meklējumi: 0 [], avoti: 0
 ---- atbilde ----
 ```json
-{"alerts": []}
+{"alerts": [{"id": "ru-novgorod-2026-10-23", "cc": "RU", "kind": "warning", "level": "yellow", "status": "ended", "start": "2026-10-23T00:00:00Z", "end": "2026-10-23T09:20:00Z", "areas": ["RU-novgorod"], "channel": "official", "title": "Novgorodas apgabalā atcelts bezpilota lidaparātu briesmu režīms", "text": "Iedzīvotājiem tika ieteikts nepietuvoties atlūzām un ziņot par tām pa tālruni 112.", "source": "Interfax", "url": "https://www.interfax.ru/russia/884928"}, {"id": "ru-nizhny-2026-10-23", "cc": "RU", "kind": "warning", "level": "yellow", "status": "ended", "start": "2026-10-23T00:00:00Z", "end": "2026-10-23T06:20:00Z", "areas": ["RU-nizhny"], "channel": "official", "title": "Ņižņijnovgorodas apgabalā atcelts bezpilota lidaparātu briesmu režīms", "text": "Režīma laikā tika slēgta satiksme uz atsevišķiem autoceļu posmiem; iedzīvotājiem ieteikts ievērot drošības pasākumus.", "source": "Interfax", "url": "https://www.interfax.ru/russia/884928"}]}
 ```
 -----------------
-ru: 0 derīgi ieraksti (gemini-3.1-flash-lite)
+ru: 2 derīgi ieraksti (gemini-3.1-flash-lite)
 Aktīvas trauksmes mūsu reģionā: 1.
