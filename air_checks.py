@@ -89,6 +89,22 @@ def route(cs, pos, trk):
     f = lambda a: {"code": a.get("iata_code"), "city": CITY.get(a.get("municipality"), a.get("municipality")), "lat": a.get("latitude"), "lon": a.get("longitude")}
     return f(o), f(d)
 
+def thin(arr, t_now):
+    """Pārbaudes ik 10 min. Glabā: pēdējās 6 h visas; 6–24 h viena stundā (ar sarakstu trasēm); 1–7 dienas viena stundā tikai skaitļi."""
+    out, hours = [], set()
+    for x in arr:  # jaunākā pirmā
+        try: t = dt.datetime.fromisoformat(str(x.get("checkedAt")).replace("Z", "+00:00"))
+        except Exception: continue
+        age = (t_now - t).total_seconds() / 3600
+        if age > 24 * 7: continue
+        if age <= 6: out.append(x); continue
+        h = t.strftime("%Y%m%d%H")
+        if h in hours: continue
+        hours.add(h)
+        out.append(x if age <= 24 else {k: v for k, v in x.items() if k not in ("list", "ruList")})
+    return out
+
+
 def main():
     t_now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
     log(f"{t_now.isoformat()} lidmašīnu pārbaude")
@@ -139,8 +155,8 @@ def main():
         arr = []
     from zoneinfo import ZoneInfo
     doc["_id"] = t_now.astimezone(ZoneInfo("Europe/Riga")).strftime("%Y-%m-%d-%H%M")
-    arr = [doc] + [x for x in arr if x.get("_id") != doc["_id"]]
-    json.dump(arr[:KEEP], open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+    arr = thin([doc] + [x for x in arr if x.get("_id") != doc["_id"]], t_now)
+    json.dump(arr, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     log(note)
     for x in lst: log(f"  {x['cat']:6} {x['callsign']:9} {x['type']:5} {x['note']}")
     open(LOG, "w", encoding="utf-8").write("\n".join(log_lines) + "\n")

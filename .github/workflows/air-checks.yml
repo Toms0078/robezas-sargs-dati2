@@ -2,7 +2,7 @@ name: Lidmašīnas (ADS-B)
 
 on:
   schedule:
-    - cron: "12 * * * *"   # ik stundu
+    - cron: "2,12,22,32,42,52 * * * *"   # ik 10 min (GitHub var kavēties)
   workflow_dispatch:
 
 permissions:
