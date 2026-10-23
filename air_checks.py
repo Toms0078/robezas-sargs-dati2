@@ -75,8 +75,22 @@ def bearing(a, b):
     y = math.sin(lo2 - lo1) * math.cos(la2); x = math.cos(la1) * math.sin(la2) - math.sin(la1) * math.cos(la2) * math.cos(lo2 - lo1)
     return (math.degrees(math.atan2(y, x)) + 360) % 360
 
-CITY = {"Moscow": "Maskava", "Saint Petersburg": "Sanktpēterburga", "St Petersburg": "Sanktpēterburga", "Kaliningrad": "Kaļiņingrada",
+CITY = {"Moscow": "Maskava", "Saint Petersburg": "Sanktpēterburga", "St Petersburg": "Sanktpēterburga", "St. Petersburg": "Sanktpēterburga", "Sankt-Peterburg": "Sanktpēterburga", "Kaliningrad": "Kaļiņingrada",
         "Minsk": "Minska", "Murmansk": "Murmanska", "Sochi": "Soči", "Kazan": "Kazaņa", "Yekaterinburg": "Jekaterinburga"}
+
+def off_route_km(p, a, b):
+    """Attālums (km) no punkta p līdz lielā loka nogrieznim a–b."""
+    R = 6371.0
+    def dist(x, y):
+        la1, lo1, la2, lo2 = map(math.radians, (x[0], x[1], y[0], y[1]))
+        h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2
+        return 2 * R * math.asin(min(1, math.sqrt(h)))
+    dab, dap, dpb = dist(a, b), dist(a, p), dist(p, b)
+    if dab < 1: return dap
+    xt = abs(math.asin(max(-1, min(1, math.sin(dap / R) * math.sin(math.radians(bearing(a, p) - bearing(a, b))))))) * R
+    if dap + dpb > dab + 2 * max(xt, 1) + 600:  # punkts aiz nogriežņa galiem
+        return min(dap, dpb)
+    return xt
 
 CACHE = os.path.join(HERE, "data", "rs", "routes_cache.json")
 _cache, _new = None, [0]
@@ -104,6 +118,9 @@ def route(cs, pos, trk):
     if trk is not None and d.get("lat") is not None:
         diff = abs((bearing(pos, (d["lat"], d["lon"])) - trk + 180) % 360 - 180)
         if diff > 100: return None, None  # novecojis ieraksts maršrutu datubāzē
+    o = c["o"]
+    if None not in (o.get("lat"), d.get("lat")) and off_route_km(pos, (o["lat"], o["lon"]), (d["lat"], d["lon"])) > 350:
+        return None, None  # lidmašīna nav ne tuvu šim maršrutam — izsaukuma zīme izmantota citam reisam
     return c["o"], d
 
 def save_cache():
