@@ -110,7 +110,9 @@ def call_gemini(text, key, test=False):
             if r.status_code == 404:
                 last_err = f"{m}: nav pieejams (404)"; break
             if r.status_code in (429, 500, 503):
-                last_err = f"{m}: HTTP {r.status_code}"; time.sleep(20); continue
+                last_err = f"{m}: HTTP {r.status_code}"
+                if attempt == 0: log(f"  {m}: HTTP {r.status_code} — {r.text[:700]}")
+                time.sleep(20); continue
             if r.status_code != 200:
                 last_err = f"{m}: HTTP {r.status_code} {r.text[:300]}"; break
             j = r.json()
