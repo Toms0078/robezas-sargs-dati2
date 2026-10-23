@@ -1,0 +1,50 @@
+name: Gaisa trauksmes – ātrā pārbaude
+
+on:
+  schedule:
+    - cron: "4,14,24,34,44,54 * * * *"   # ik ~10 min (GitHub cron var kavēties)
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Testa režīms: logā jaunās ziņas un Gemini atbilde (yes/no)"
+        default: "no"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: air-alerts          # kopā ar stundas pārbaudi, lai nerakstītu vienlaikus
+  cancel-in-progress: false
+
+jobs:
+  fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install requests beautifulsoup4 lxml
+
+      - name: Pārbauda ziņu plūsmas
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_API || secrets.GEMINI_KEY || secrets.GOOGLE_API_KEY || vars.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: |
+          if [ "${{ inputs.test }}" = "yes" ]; then python air_alerts_fast.py --test; else python air_alerts_fast.py; fi
+
+      - name: Saglabā izmaiņas repozitorijā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/airalerts
+          if git diff --cached --quiet; then
+            echo "Nav izmaiņu"
+          else
+            git commit -m "Gaisa trauksmes (ātrā): $(date -u +%Y-%m-%dT%H:%MZ)"
+            for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+          fi

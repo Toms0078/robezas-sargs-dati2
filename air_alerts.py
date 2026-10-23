@@ -174,6 +174,18 @@ def same(a, b):
     if not ta or not tb or abs((ta - tb).total_seconds()) > 1800: return False
     return bool(set(a.get("areas") or []) & set(b.get("areas") or []))
 
+PL_VOIV = ("kujawsko-pomorskie", "warminsko-mazurskie", "dolnoslaskie", "lodzkie", "lubelskie", "lubuskie", "malopolskie",
+           "mazowieckie", "opolskie", "podkarpackie", "podlaskie", "pomorskie", "slaskie", "swietokrzyskie", "wielkopolskie",
+           "zachodniopomorskie")
+
+def tidy_areas(areas):
+    """If the precise Polish counties of a voivodeship are known, drop the whole-voivodeship code."""
+    a = set(areas)
+    for v in PL_VOIV:
+        if f"PL-{v}" in a and any(x.startswith(f"PL-{v}-") for x in a):
+            a.discard(f"PL-{v}")
+    return sorted(a)
+
 def merge(old, new, t_now):
     res = [dict(x) for x in old]
     for n in new:
@@ -182,7 +194,7 @@ def merge(old, new, t_now):
             for k, v in n.items():
                 if v not in (None, "", []) and k != "id": hit[k] = v
             if n["status"] == "ended": hit["status"], hit["end"] = "ended", n.get("end") or hit.get("end")
-            hit["areas"] = sorted(set(hit.get("areas") or []) | set(n["areas"]))
+            hit["areas"] = tidy_areas(set(hit.get("areas") or []) | set(n["areas"]))
         else:
             res.append(n)
     for a in res:  # stale actives
