@@ -212,8 +212,7 @@ def main():
         if item["callsign"]:
             fr, to = route(item["callsign"], (a["lat"], a["lon"]), a.get("track"))
             if fr: item["from"], item["to"] = fr, to
-        tr = trace(item["hex"])
-        if tr: item["trace"] = tr
+        # trace(): globe.adsb.lol trašu faili automātiskiem pieprasījumiem atbild 403 — neizmanto (ievērojam vietnes ierobežojumu)
         if c == "ru":
             ru.append(item)
         else:
