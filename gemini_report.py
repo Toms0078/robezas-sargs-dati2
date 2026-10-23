@@ -38,17 +38,28 @@ def host(u):
     return re.sub(r"^www\.", "", re.sub(r"^https?://([^/]+).*", r"\1", str(u or "")).lower())
 
 
-def ask(prompt, key):
+def search(prompt, key):
+    """1. solis: Gemini ar Google meklēšanu atrod faktus (īss vaicājums bez JSON — tā modelis drošāk meklē)."""
     base = list(A.MODELS)
     try:
         for first in MODEL_ORDER:
             A.MODELS[:] = [first] + [x for x in base if x != first]
             txt, m, nq, doms = A.call_gemini(prompt, key)
             if doms:
-                return A.extract_json(txt), m, doms
-        return None, m, set()
+                return txt, m, doms
+        return "", m, set()
     finally:
         A.MODELS[:] = base
+
+
+def ask(search_prompt, merge_prompt, key):
+    """2. solis: bez meklēšanas apvieno atrastos faktus ar iepriekšējo variantu JSON formā."""
+    facts, m, doms = search(search_prompt, key)
+    if not doms:
+        return None, m, doms
+    import air_alerts_fast as F
+    txt, m2 = F.call_plain(merge_prompt.replace("<<FAKTI>>", facts[:30000]), key)
+    return A.extract_json(txt), m, doms
 
 
 def urls_of(o, acc):
@@ -149,11 +160,14 @@ def main():
     used = []
     for name, keys, task in PARTS:
         part_prev = {k: prev.get(k) for k in keys}
-        prompt = (f"Tagad {riga.strftime('%d.%m.%Y %H:%M')} (Rīgas laiks). Tu gatavo {kind.lower()} pārskatu Latvijas iedzīvotājam "
-                  f"\"Vai palikt Latvijā?\" — daļa: {name}.\nOBLIGĀTI izmanto Google meklēšanu (vairākus vaicājumus).\n{task}\n\n{RULES}\n\n"
-                  f"Iepriekšējais variants ({prev.get('generatedAt')}):\n```json\n{json.dumps(part_prev, ensure_ascii=False)}\n```")
+        when = riga.strftime('%d.%m.%Y %H:%M')
+        sp = (f"Tagad {when} (Rīgas laiks). Izmanto Google meklēšanu un atrodi jaunākās ziņas (pēdējās 24–48 h). {task}\n"
+              f"Atbildi ar faktu sarakstu latviski: katram faktam datums, īss apraksts, izdevums un pilna raksta saite (URL). Neizdomā neko.")
+        mp = (f"Tagad {when} (Rīgas laiks). Tu gatavo {kind.lower()} pārskatu Latvijas iedzīvotājam \"Vai palikt Latvijā?\" — daļa: {name}.\n"
+              f"Uzdevums: {task}\n\nSvaigi fakti no Google meklēšanas (izmanto tikai tos un iepriekšējo variantu):\n<<FAKTI>>\n\n{RULES}\n\n"
+              f"Iepriekšējais variants ({prev.get('generatedAt')}):\n```json\n{json.dumps(part_prev, ensure_ascii=False)}\n```")
         try:
-            j, m, doms = ask(prompt, key)
+            j, m, doms = ask(sp, mp, key)
         except Exception as e:
             A.log(f"{name}: kļūda — {e}; paturu iepriekšējo"); continue
         if not doms or not isinstance(j, dict) or not all(k in j for k in keys):
