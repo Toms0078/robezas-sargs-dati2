@@ -200,6 +200,7 @@ def main():
     key = os.environ.get("GEMINI_API_KEY", "").strip()
     log(f"{iso(t_now)} gaisa trauksmju pārbaude")
     if not key:
+        log(f"  (secret GEMINI_API_KEY redzams: {os.environ.get('HAS_SECRET')}, variable: {os.environ.get('HAS_VAR')})")
         log("GEMINI_API_KEY nav iestatīts — neko nedaru. Pievieno to GitHub → Settings → Secrets and variables → Actions.")
         open(LOG, "w", encoding="utf-8").write("\n".join(log_lines) + "\n"); return
     try:
