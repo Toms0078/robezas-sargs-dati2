@@ -24,3 +24,7 @@ gaisa trauksmes Latvijā, Igaunijā, Lietuvā, Polijā, Somijā un Krievijas apg
 Skripts `air_alerts.py` pārbauda katru ierakstu (teritoriju kodi no `data/airalerts/codes.json`, laiks, avota saite).
 Rezultāts: `data/airalerts/current.json`, logs `data/airalerts/last_run.log`. Vajag GitHub Secret `GEMINI_API_KEY`
 (bezmaksas atslēga: https://aistudio.google.com/apikey). Modeli var mainīt ar repozitorija mainīgo `GEMINI_MODEL`.
+
+Ātrā pārbaude `air_alerts_fast.py` (darbplūsma "Gaisa trauksmes – ātrā pārbaude", ik ~10 min) nolasa ziņu plūsmas
+(Google News 7 valodās, ERR, LSM, LRT) un Gemini izsauc tikai tad, kad parādās jaunas ziņas ar trauksmju atslēgvārdiem
+(bez Google meklēšanas — gandrīz bez izmaksām). Lapa: `trauksmes/index.html` → https://toms0078.github.io/robezas-sargs-dati2/trauksmes/

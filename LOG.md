@@ -20,3 +20,8 @@ kas palika, problēmas, recenzenta piezīmes.
 - 2026-10-23 08:45 – Gaisa trauksmes pārceltas uz GitHub Actions + Gemini (lai netērētu Claude limitus): `air_alerts.py`, darbplūsma
   `air-alerts.yml` (ik stundu :23), `data/airalerts/` (codes.json – 575 teritoriju kodi: LV novadi, EE apriņķi, LT pašvaldības, PL vojevodistes
   un apriņķi, FI reģioni, 37 Krievijas apgabali). Claude artefakts tikai pārkopē `current.json`. Gaida `GEMINI_API_KEY`.
+- 2026-10-23 10:40 – Gaisa trauksmes: Gemini atslēga (`GEMINI_API`) un norēķini darbojas. Atklāts: Flash-Lite reizēm nemeklē un izdomā
+  ierakstus → stundas pārbaude tagad saglabā tikai ierakstus, kuru saites domēns ir starp Gemini meklēšanas avotiem; izņemti 2 izdomāti RU ieraksti.
+  Pievienota ātrā pārbaude ik 10 min (`air_alerts_fast.py`, ziņu plūsmas → Gemini bez meklēšanas, saitei jābūt no plūsmas) un atsevišķa lapa
+  `trauksmes/` (SVG karte: LV novadi, EE apriņķi, LT pašvaldības, PL vojevodistes+apriņķi, FI reģioni, 37 RU apgabali; pirkstu žesti; automātiska
+  atjaunošana ik 2 min). Pārbaudīts headless 1250/400 px, bez kļūdām.

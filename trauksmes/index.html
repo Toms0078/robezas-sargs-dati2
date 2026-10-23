@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gaisa trauksmes</title>
+<meta name="description" content="Gaisa trauksmes Latvijā, Igaunijā, Lietuvā, Polijā, Somijā un Krievijas apgabalos kartē, pa novadiem un apriņķiem.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef3f6; --panel:#fff; --ink:#14232f; --muted:#5a6b78; --line:#cfdbe3; --lbl:rgba(255,255,255,.82);
+  --sea:#dbe8ef; --land:#f7fafc; --ours:#eef4f8; --east:#f3e6e6; --border:#9fb3c2; --admin:#c5d3dd;
+  --red:#b91c1c; --red-fill:rgba(220,38,38,.42); --past:#b45309; --past-fill:rgba(217,119,6,.16); --ru:#7f1d1d;
+  --display:"Saira Condensed","Arial Narrow",sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0b141c; --panel:#111e29; --ink:#e3ecf2; --muted:#93a6b4; --line:#243645; --lbl:rgba(11,20,28,.78);
+  --sea:#0c1821; --land:#15222d; --ours:#1a2a37; --east:#2a1b1f; --border:#3a4f62; --admin:#2c3e4e;
+  --red:#ff6a5c; --red-fill:rgba(255,106,92,.45); --past:#f0b13e; --past-fill:rgba(240,177,62,.16); --ru:#ff8a7a; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:1200px;margin:0 auto;padding:16px 16px 40px;display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:6px 14px;border-bottom:2px solid var(--ink);padding-bottom:8px}
+h1{font:700 2.1rem/1 var(--display);margin:0}
+h1 small{display:block;font:400 .78rem var(--mono);color:var(--muted);margin-top:6px}
+#upd{font:.8rem var(--mono);color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.note{font-size:.86rem;color:var(--muted);margin:0}
+.bar{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid var(--red);background:var(--red-fill)}
+.bar .dot{width:12px;height:12px;border-radius:50%;background:var(--red);animation:ring 1.6s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(220,38,38,.55)}70%{box-shadow:0 0 0 12px rgba(220,38,38,0)}100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}}
+.bar b{font:700 1.15rem var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--red)}
+.bar .w{grid-column:2;font-size:.92rem}.bar .m{grid-column:2;font:.78rem var(--mono);color:var(--muted)}
+.ok{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-weight:600}
+.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
+.chip{font:600 .82rem var(--body);color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--ink);background:var(--bg);border-color:var(--muted)}
+.mapwrap{position:relative}
+#map{width:100%;height:auto;display:block;background:var(--sea);border-radius:8px;border:1px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media (pointer:fine){#map{cursor:grab}}
+#map .land{stroke:var(--border);stroke-width:1;vector-effect:non-scaling-stroke;fill:var(--land)}
+#map .ours{fill:var(--ours)} #map .east{fill:var(--east)}
+#map .adm{fill:none;stroke:var(--admin);stroke-width:1;vector-effect:non-scaling-stroke;pointer-events:none}
+#map .act{fill:var(--red-fill);stroke:var(--red);stroke-width:2;vector-effect:non-scaling-stroke;cursor:pointer;animation:pulse 1.8s ease-in-out infinite}
+#map .past{fill:var(--past-fill);stroke:var(--past);stroke-width:1.5;stroke-dasharray:5 4;vector-effect:non-scaling-stroke;cursor:pointer}
+#map .sel{stroke:var(--ink);stroke-width:3;stroke-dasharray:none}
+#map .dim{opacity:.3}
+@keyframes pulse{50%{fill-opacity:.55}}
+@media (prefers-reduced-motion:reduce){#map .act,.bar .dot{animation:none}}
+#map .lab{font:600 calc(15px*var(--z,1)) var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--lbl);stroke-width:calc(4px*var(--z,1));pointer-events:none}
+#map .cl{font:700 calc(20px*var(--z,1)) var(--display);letter-spacing:.14em;text-transform:uppercase;fill:var(--muted);opacity:.7;pointer-events:none}
+.zoom{position:absolute;top:10px;right:10px;display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.zoom button{width:40px;height:40px;border:0;background:var(--panel);color:var(--ink);font:700 20px/1 var(--body);cursor:pointer;touch-action:manipulation}
+.hint{font-size:.8rem;color:var(--muted);margin:8px 0 0}
+.list{display:grid}
+.it{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;padding:9px 6px;border-top:1px solid var(--line);cursor:pointer;border-radius:6px}
+.it:first-child{border-top:0}.it:hover,.it.on{background:var(--bg)}
+.it i{width:10px;height:10px;border-radius:50%;margin-top:6px}
+.it .t{font-weight:600}.it .s{grid-column:2;font-size:.82rem;color:var(--muted)}
+.it .d{grid-column:2;font-size:.86rem;display:grid;gap:4px}
+.it a{color:inherit}
+.head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:8px;background:var(--bg);font-size:.88rem;margin-bottom:6px}
+footer{font-size:.82rem;color:var(--muted);display:grid;gap:6px}
+footer p{margin:0}
+a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Gaisa trauksmes<small>Latvija · Igaunija · Lietuva · Polija · Somija · Krievijas apgabali</small></h1>
+    <span id="upd">Ielādē…</span>
+  </header>
+  <div id="banner"></div>
+  <div class="grid">
+    <section class="panel" aria-label="Karte">
+      <div class="chips" id="win" role="group" aria-label="Laiks"></div>
+      <div class="mapwrap">
+        <svg id="map" role="img" aria-label="Gaisa trauksmju karte"></svg>
+        <div class="zoom"><button id="zi" aria-label="Pietuvināt">+</button><button id="zo" aria-label="Attālināt">−</button><button id="zr" aria-label="Visa karte">⤢</button></div>
+      </div>
+      <p class="hint">Velc ar vienu pirkstu, pietuvini ar diviem (datorā — peles ritenītis). Pieskaries teritorijai vai trauksmei sarakstā.</p>
+    </section>
+    <section class="panel" aria-label="Saraksts">
+      <div class="head" id="sum"></div>
+      <div class="list" id="list"></div>
+    </section>
+  </div>
+  <footer>
+    <p><b>Ātrākais brīdinājums vienmēr ir šūnu apraide tavā telefonā</b> un “112 Latvija” lietotne — šī lapa var kavēties ~10–30 min.</p>
+    <p>Dati: oficiālo paziņojumu un ziņu (LSM, NBS, ERR, LRT, RCB, Yle, Krievijas reģionālie mediji) automātisks apkopojums ar Google Gemini; katram ierakstam ir avota saite. Pārbaude ik ~10 min (ziņu plūsmas) un ik stundu (meklēšana). Krievijas apgabalos “беспилотная/ракетная опасность” režīmi ir gandrīz katru dienu.</p>
+    <p>Robežas sargs · <a href="https://github.com/Toms0078/robezas-sargs-dati2">dati un kods</a></p>
+  </footer>
+</div>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  const mk = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+  const CN = { LV: "Latvija", EE: "Igaunija", LT: "Lietuva", PL: "Polija", FI: "Somija", RU: "Krievija" };
+  const CNL = { LV: "Latvijā", EE: "Igaunijā", LT: "Lietuvā", PL: "Polijā", FI: "Somijā", RU: "Krievijā" };
+  const KIND = { air: "Gaisa telpas apdraudējums", missile: "Raķešu apdraudējums", debris: "Iespējamas atlūzas", warning: "Brīdinājums" };
+  const WINS = [["act", "Tikai aktīvās"], ["24", "24 h"], ["72", "3 d"], ["168", "7 d"], ["ru", "Krievijas apgabali"]];
+  let G = null, P = null, AREA = {}, data = null, win = "24", showRu = true, sel = null;
+  try { win = localStorage.getItem("ta_win") || win; showRu = localStorage.getItem("ta_ru") !== "0"; } catch (e) {}
+
+  // ---- time helpers
+  const T = (s) => { const d = new Date(s); return s && !isNaN(d) ? d : null; };
+  const fmt = (s) => { const d = T(s); return d ? d.toLocaleString("lv-LV", { timeZone: "Europe/Riga", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).replace(",", "") : ""; };
+  const ago = (s) => { const d = T(s); if (!d) return ""; const m = Math.round((Date.now() - d) / 60000); return m < 60 ? m + " min" : Math.round(m / 60) + " h"; };
+  const cc = (a) => a.cc || String((a.areas || [""])[0]).slice(0, 2);
+  const ours = (a) => cc(a) !== "RU";
+  const active = (a) => a.status === "active";
+  const name = (k) => (AREA[k] ? AREA[k].n : (CN[k] ? "visa " + CN[k] : k));
+  const short = (k) => name(k).replace(/ novads$/, " nov.");
+  const when = (a) => { const s = fmt(a.start); if (active(a)) return "aktīva kopš " + (s || "?"); const e = fmt(a.end); if (!e) return (s || "?") + " · beigusies"; return s + "–" + (s.slice(0, 5) === e.slice(0, 5) ? e.slice(-5) : e); };
+  const areasTxt = (a, max) => { const n = (a.areas || []).map(short); return max && n.length > max ? n.slice(0, max).join(", ") + " un vēl " + (n.length - max) : n.join(", "); };
+
+  // ---- map projection, view
+  const proj = (lon, lat) => [(lon - P.LON0) * P.K * P.sx, (P.LAT1 - lat) * P.sx];
+  const BASE = () => [-440, -905, 1580, 1580 * P.H / P.W];
+  let vb = null;
+  const world = () => { const [x0, y0] = proj(4, 72.5), [x1, y1] = proj(50, 46.5); return [x0, y0, x1, y1]; };
+  function setVB(v) {
+    const W = world(), b = BASE();
+    let w = Math.min(Math.max(v[2], 60), (W[2] - W[0])), h = w * b[3] / b[2];
+    let cx = v[0] + v[2] / 2, cy = v[1] + v[3] / 2;
+    cx = Math.min(Math.max(cx, W[0] + w / 2), W[2] - w / 2); cy = Math.min(Math.max(cy, W[1] + h / 2), W[3] - h / 2);
+    vb = [cx - w / 2, cy - h / 2, w, h];
+    const svg = $("map"); svg.setAttribute("viewBox", vb.map((x) => x.toFixed(1)).join(" "));
+    svg.style.setProperty("--z", String(vb[2] / P.W));
+  }
+  function zoomAt(px, py, f) { const nw = vb[2] / f; setVB([px - (px - vb[0]) / f, py - (py - vb[1]) / f, nw, nw * vb[3] / vb[2]]); }
+  function svgPt(x, y) { const r = $("map").getBoundingClientRect(); return [vb[0] + (x - r.left) / r.width * vb[2], vb[1] + (y - r.top) / r.height * vb[3]]; }
+  function pan(dx, dy) { const r = $("map").getBoundingClientRect(); if (!r.width) return; setVB([vb[0] - dx / r.width * vb[2], vb[1] - dy / r.height * vb[3], vb[2], vb[3]]); }
+  let redrawT = null; const later = () => { clearTimeout(redrawT); redrawT = setTimeout(draw, 120); };
+
+  function bindGestures() {
+    const svg = $("map"); let drag = false, last = null, pinch = null, moved = 0, tap = 0, tapXY = null;
+    $("zi").onclick = () => { zoomAt(vb[0] + vb[2] / 2, vb[1] + vb[3] / 2, 1.6); draw(); };
+    $("zo").onclick = () => { zoomAt(vb[0] + vb[2] / 2, vb[1] + vb[3] / 2, 1 / 1.6); draw(); };
+    $("zr").onclick = () => { setVB(BASE()); draw(); };
+    svg.addEventListener("wheel", (e) => { e.preventDefault(); const [x, y] = svgPt(e.clientX, e.clientY); zoomAt(x, y, Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0025))); later(); }, { passive: false });
+    const mid = (t) => [(t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2];
+    const dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    const reset = (e) => { const t = e.touches; if (t.length >= 2) { pinch = { d: dist(t), m: mid(t) }; last = null; } else if (t.length === 1) { pinch = null; last = [t[0].clientX, t[0].clientY]; } else { pinch = last = null; } };
+    svg.addEventListener("touchstart", (e) => { if (e.touches.length === 1) moved = 0; if (e.touches.length >= 2) { e.preventDefault(); drag = true; } reset(e); }, { passive: false });
+    svg.addEventListener("touchmove", (e) => {
+      e.preventDefault(); const t = e.touches;
+      if (t.length >= 2 && pinch) { const d = dist(t), m = mid(t); const [x, y] = svgPt(m[0], m[1]); if (pinch.d > 0) zoomAt(x, y, d / pinch.d); pan(m[0] - pinch.m[0], m[1] - pinch.m[1]); pinch = { d, m }; drag = true; return; }
+      if (t.length === 1 && last) { const dx = t[0].clientX - last[0], dy = t[0].clientY - last[1]; last = [t[0].clientX, t[0].clientY]; moved += Math.abs(dx) + Math.abs(dy); if (moved > 6) { drag = true; pan(dx, dy); } }
+    }, { passive: false });
+    const end = (e) => {
+      const was = drag; reset(e); if (e.touches.length) return;
+      if (was) { later(); setTimeout(() => { drag = false; }, 350); return; }
+      const c = e.changedTouches && e.changedTouches[0]; if (!c) return; const now = Date.now();
+      if (now - tap < 320 && tapXY && Math.hypot(c.clientX - tapXY[0], c.clientY - tapXY[1]) < 30) { e.preventDefault(); tap = 0; const [x, y] = svgPt(c.clientX, c.clientY); zoomAt(x, y, 2); draw(); }
+      else { tap = now; tapXY = [c.clientX, c.clientY]; }
+    };
+    svg.addEventListener("touchend", end, { passive: false }); svg.addEventListener("touchcancel", end, { passive: false });
+    let md = null;
+    svg.addEventListener("mousedown", (e) => { if (e.button === 0) { md = [e.clientX, e.clientY]; moved = 0; } });
+    window.addEventListener("mousemove", (e) => { if (!md) return; const dx = e.clientX - md[0], dy = e.clientY - md[1]; md = [e.clientX, e.clientY]; moved += Math.abs(dx) + Math.abs(dy); if (moved > 6) { drag = true; pan(dx, dy); } });
+    window.addEventListener("mouseup", () => { if (md && drag) { later(); setTimeout(() => { drag = false; }, 0); } md = null; });
+    svg.addEventListener("click", (e) => { if (drag) { e.stopPropagation(); e.preventDefault(); } }, true);
+    svg.addEventListener("dblclick", (e) => { const [x, y] = svgPt(e.clientX, e.clientY); zoomAt(x, y, e.shiftKey ? 0.5 : 2); draw(); });
+  }
+
+  // ---- data
+  function shown() {
+    const all = (data && data.alerts || []).map((a, i) => Object.assign({ _i: i }, a)).filter((a) => Array.isArray(a.areas) && a.areas.length);
+    const lim = win === "act" ? 0 : (win === "ru" ? 168 : Number(win)) * 36e5, now = Date.now();
+    return all.filter((a) => (showRu || ours(a)) && (active(a) || (lim && now - (T(a.end || a.start) || 0) <= lim)))
+      .sort((a, b) => (ours(b) - ours(a)) || (active(b) - active(a)) || String(b.start || "").localeCompare(String(a.start || "")));
+  }
+  function pts(a) { return (a.areas || []).map((k) => AREA[k] ? [AREA[k].x, AREA[k].y] : null).filter(Boolean); }
+  function focus(list) {
+    const p = list.flatMap(pts); if (!p.length) return;
+    const xs = p.map((q) => q[0]), ys = p.map((q) => q[1]);
+    const span = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys), 90) * 2.4;
+    const b = BASE(), w = Math.min(span, b[2]), h = w * b[3] / b[2];
+    setVB([(Math.min(...xs) + Math.max(...xs)) / 2 - w / 2, (Math.min(...ys) + Math.max(...ys)) / 2 - h / 2, w, h]);
+  }
+
+  // ---- render
+  function drawBase() {
+    const svg = $("map"); svg.replaceChildren();
+    const g = mk("g", {}); const cls = { EST: "ours", LVA: "ours", LTU: "ours", POL: "ours", FIN: "ours", RUS: "east", BLR: "east" };
+    for (const k in G.base) g.append(mk("path", { d: G.base[k], class: "land " + (cls[k] || "") }));
+    svg.append(g, mk("g", { id: "adm" }), mk("g", { id: "al" }), mk("g", { id: "labs" }));
+    const cl = mk("g", { id: "cls" });
+    [["Igaunija", 25.6, 58.75], ["Latvija", 25.2, 56.85], ["Lietuva", 24.0, 55.35], ["Polija", 19.2, 52.1], ["Baltkrievija", 28.0, 53.4], ["Krievija", 31.5, 57.6], ["Somija", 26.5, 63.6], ["Zviedrija", 15.2, 62.6], ["Kaļiņingrada", 20.9, 54.95]].forEach(([t, lo, la]) => { const [x, y] = proj(lo, la); const e = mk("text", { x, y, "text-anchor": "middle", class: "cl" }); e.textContent = t; cl.append(e); });
+    svg.append(cl);
+  }
+  function draw() {
+    if (!G) return;
+    const Z = vb[2] / P.W, fine = Z < 0.55;
+    const adm = $("adm"); adm.replaceChildren();
+    G.areas.forEach((a) => { if (a.p && !fine) return; adm.append(mk("path", { d: a.d, class: "adm" })); });
+    const al = $("al"), labs = $("labs"); al.replaceChildren(); labs.replaceChildren();
+    const list = shown(); const sa = list.find((a) => a._i === sel) || null; if (!sa) sel = null;
+    const placed = [];
+    const lab = (x, y, t) => { if (placed.some(([px, py]) => Math.abs(px - x) < 70 * Z && Math.abs(py - y) < 20 * Z)) return; placed.push([x, y]); const e = mk("text", { x, y: y + 5 * Z, "text-anchor": "middle", class: "lab" }); e.textContent = t; labs.append(e); };
+    list.slice().reverse().sort((a, b) => (active(a) - active(b)) || ((a._i === sel) - (b._i === sel))).forEach((a) => {
+      const g = mk("g", { class: sa && a._i !== sel ? "dim" : "" }); al.append(g);
+      (a.areas || []).forEach((k) => {
+        const A = AREA[k]; if (!A) return;
+        const p = mk("path", { d: A.d, class: (active(a) ? "act" : "past") + (a._i === sel ? " sel" : "") });
+        const t = mk("title", {}); t.textContent = A.n + " · " + when(a); p.append(t);
+        p.addEventListener("click", () => { sel = sel === a._i ? null : a._i; render(); });
+        g.append(p);
+        if (active(a) || a._i === sel) lab(A.x, A.y, short(k));
+      });
+    });
+  }
+  function renderList() {
+    const list = shown(), L = $("list"); L.replaceChildren();
+    const nA = list.filter((a) => active(a) && ours(a)).length, nR = list.filter((a) => active(a) && !ours(a)).length;
+    const s = $("sum"); s.replaceChildren(el("span", null, (nA ? nA + (nA === 1 ? " aktīva trauksme" : " aktīvas trauksmes") : "Mūsu reģionā aktīvu trauksmju nav") + (nR ? " · Krievijā " + nR : "")), el("span", "note", data && data.checkedAt ? "pārbaudīts " + fmt(data.checkedAt) : ""));
+    if (!list.length) L.append(el("p", "note", win === "act" ? "Šobrīd aktīvu trauksmju nav." : "Izvēlētajā laikā trauksmju nav bijis."));
+    list.forEach((a) => {
+      const d = el("div", "it" + (a._i === sel ? " on" : "")); d.tabIndex = 0;
+      const i = el("i"); i.style.background = active(a) ? "var(--red)" : "var(--past)";
+      d.append(i, el("div", "t", (ours(a) ? "" : "Krievija · ") + (a.title || KIND[a.kind] || "Trauksme")));
+      d.append(el("div", "s", [when(a), areasTxt(a, 5)].filter(Boolean).join(" · ")));
+      if (a._i === sel) {
+        const x = el("div", "d");
+        if (a.text) x.append(el("div", null, a.text));
+        x.append(el("div", "s", [CN[cc(a)], KIND[a.kind], areasTxt(a)].filter(Boolean).join(" · ")));
+        if (a.url) { const l = el("a", null, (a.source || "Avots") + " ↗"); l.href = a.url; l.target = "_blank"; l.rel = "noopener"; x.append(l); }
+        d.append(x);
+      }
+      const go = () => { if (sel === a._i) sel = null; else { sel = a._i; focus([a]); } render(); };
+      d.addEventListener("click", go); d.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+      L.append(d);
+    });
+  }
+  function renderBanner() {
+    const act = (data && data.alerts || []).filter((a) => active(a) && ours(a)), B = $("banner"); B.replaceChildren();
+    if (!act.length) { B.append(el("div", "ok", "Mūsu reģionā (LV, EE, LT, PL, FI) aktīvu gaisa trauksmju nav.")); return; }
+    const by = {}; act.forEach((a) => { (by[cc(a)] = by[cc(a)] || []).push(areasTxt(a, 6)); });
+    const order = Object.keys(by).sort((x, y) => (y === "LV") - (x === "LV"));
+    const b = el("div", "bar"); b.append(el("span", "dot"), el("b", null, by.LV ? "Gaisa trauksme Latvijā" : "Gaisa trauksme reģionā"));
+    b.append(el("div", "w", order.map((c) => CNL[c] + ": " + by[c].join("; ")).join(" · ")));
+    const top = act.find((a) => cc(a) === "LV") || act[0];
+    b.append(el("div", "m", "Kopš " + fmt(top.start) + (top.source ? " · " + top.source : "")));
+    B.append(b);
+  }
+  function renderWin() {
+    const box = $("win"); box.replaceChildren();
+    WINS.forEach(([k, t]) => {
+      const b = el("button", "chip", t); b.type = "button";
+      const on = k === "ru" ? showRu : win === k; b.setAttribute("aria-pressed", String(on));
+      b.onclick = () => { if (k === "ru") showRu = !showRu; else win = k; sel = null; try { localStorage.setItem("ta_win", win); localStorage.setItem("ta_ru", showRu ? "1" : "0"); } catch (e) {} render(); };
+      box.append(b);
+    });
+  }
+  function render() { renderWin(); renderBanner(); renderList(); draw(); $("upd").textContent = data && data.checkedAt ? "Pārbaudīts " + fmt(data.checkedAt) + " (pirms " + ago(data.checkedAt) + ")" : "Nav datu"; }
+
+  let first = true;
+  async function load() {
+    try {
+      const r = await fetch("../data/airalerts/current.json?t=" + Date.now(), { cache: "no-store" });
+      data = await r.json();
+    } catch (e) { $("upd").textContent = "Neizdevās ielādēt datus — mēģināšu vēlreiz"; return; }
+    if (first) { first = false; const act = (data.alerts || []).filter((a) => active(a) && ours(a)); if (act.length) focus(act); }
+    render();
+  }
+  async function start() {
+    const r = await fetch("geo.json"); G = await r.json(); P = G.proj; G.areas.forEach((a) => { AREA[a.k] = a; });
+    setVB(BASE()); drawBase(); bindGestures(); await load();
+    setInterval(load, 120000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+  }
+  start();
+})();
+</script>
+</body>
+</html>
