@@ -32,9 +32,9 @@ jobs:
 
       - name: Meklē trauksmes
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_KEY || secrets.GOOGLE_API_KEY || vars.GEMINI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_API || secrets.GEMINI_KEY || secrets.GOOGLE_API_KEY || vars.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-          HAS_SECRET: ${{ secrets.GEMINI_API_KEY != '' }}
+          HAS_SECRET: ${{ secrets.GEMINI_API_KEY != '' || secrets.GEMINI_API != '' }}
           HAS_VAR: ${{ vars.GEMINI_API_KEY != '' }}
         run: |
           if [ "${{ inputs.test }}" = "yes" ]; then python air_alerts.py --test; else python air_alerts.py; fi
