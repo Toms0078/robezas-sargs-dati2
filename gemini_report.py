@@ -85,7 +85,7 @@ def fix_levels(o):
 
 PARTS = [
     ("ziņas", ["headline", "level", "summary", "sections", "events", "sources"],
-     """Atrodi drošības jaunumus pēdējās ~24 h (kopš iepriekšējā pārskata) Latvijai un kaimiņiem: gaisa telpas incidenti un brīdinājumi (LV, LT, EE,
+     """Vispirms meklē (vairākus vaicājumus ar šodienas un vakardienas datumu), tad atrodi drošības jaunumus pēdējās ~24 h (kopš iepriekšējā pārskata) Latvijai un kaimiņiem: gaisa telpas incidenti un brīdinājumi (LV, LT, EE,
 PL, FI), droni, Krievijas/Baltkrievijas karaspēka pārvietošana, mācības pie robežām, robežas incidenti, kritiskās infrastruktūras incidenti
 (kabeļi, cauruļvadi), oficiāli paziņojumi (NBS, VDD, AM, Lietuvas/Igaunijas iestādes), vēstniecības, Ziemeļvalstis un Gotlande.
 Meklē vairākās valodās (latviski, lietuviski, igauniski, poliski, krieviski, angliski).
@@ -94,18 +94,42 @@ Meklē vairākās valodās (latviski, lietuviski, igauniski, poliski, krieviski,
 level, short ≤ 25 zīmes, title, source, url; dronu/gaisa telpas notikumiem arī origin: russia|belarus|ukraine|unknown, originConf, originNote).
 Vecākus par 7 dienām notikumus izmet. "headline": 1 teikums (sāc ar "Rīta pārskats:" vai "Vakara pārskats:"). "summary": 2–4 teikumi.
 "level": kopējais. "sources": 5–10 svarīgākās saites (title, url)."""),
-    ("vadītāji, ceļošana, drošība", ["leaders", "travel", "safety"],
-     """Atjauno: "leaders.people" — tie paši cilvēki (Baltijas, Polijas, Somijas, Zviedrijas, Norvēģijas valsts vadītāji): vai viņi ir savā valstī
+    ("valstu vadītāji", ["leaders"],
+     """Vispirms meklē katra cilvēka vārdu ar šodienas/vakardienas datumu (piem. "Rinkēvičs vizīte", "Nausėda", "Michal", "Stubb", "Orpo",
+"Kristersson", "Støre", aizsardzības ministri, bruņoto spēku komandieri). Atjauno "leaders.people" — tie paši cilvēki: vai viņi ir savā valstī
 (status: home|likely_home|abroad|unknown, where — kur, ja ārzemēs), pēdējā publiskā aktivitāte (text, date, source, url).
-"travel.rows" — ASV (travel.state.gov) un Kanādas (travel.gc.ca) ceļošanas brīdinājumu līmeņi šīm 7 valstīm (level, label latviski, date, url).
-"safety" — "stage" (1 = Ikdiena … 5), "text" (2–3 teikumi: vai dzīvot Latvijā joprojām ir droši un kāpēc), "signals" (3–6 svarīgākie signāli ar saitēm).
-Nemaini posmu bez skaidra iemesla no ziņām."""),
+Ja par kādu jaunu ziņu neatradi — atstāj iepriekšējo ierakstu."""),
+    ("drošības posms", ["safety"],
+     """Vispirms meklē: "Latvija drošība šodien", "NBS paziņojums", "VDD brīdinājums", "Baltic security news today", "Russia NATO Baltic".
+Atjauno "safety": "stage" (1 = Ikdiena … 5), "text" (2–3 teikumi: vai dzīvot Latvijā joprojām ir droši un kāpēc), "signals" (3–6 svarīgākie
+signāli ar saitēm: oficiāli paziņojumi, ceļošanas brīdinājumi, vēstniecību rīcība). Nemaini posmu bez skaidra iemesla no ziņām."""),
     ("infrastruktūra", ["infra"],
-     """Atjauno "infra.indicators" (tie paši key: power, gas, fuel, cables, money, meds, food, comms, border, exits): katram value, level, text,
+     """Vispirms meklē: "Nord Pool Latvia price", "degvielas cenas Latvijā", "Inčukalns gāze", "Baltic subsea cable", "robežpāreja Latvija".
+Atjauno "infra.indicators" (tie paši key: power, gas, fuel, cables, money, meds, food, comms, border, exits): katram value, level, text,
 date, source, url, un "countries" (c, level, value) — elektrības biržas cena (Nord Pool), gāzes apgāde, degvielas cenas un pieejamība,
 zemūdens kabeļu/cauruļvadu stāvoklis, maksājumi/bankas, zāles, pārtika, sakari, robežpārejas, izbraukšanas iespējas (lidojumi, prāmji).
 "infra.level" un "infra.summary" (1–2 teikumi)."""),
 ]
+
+
+LBL = {1: "Parasta piesardzība", 2: "Paaugstināta piesardzība", 3: "Pārdomāt braucienu", 4: "Nebraukt"}
+
+
+def travel_from_advisories(rep, prev, riga):
+    """ASV un Kanādas līmeņi no data/rs/diplomacy/advisories.json (fetch.py, bez AI)."""
+    adv = {r.get("c"): r for r in (load(RS / "diplomacy" / "advisories.json", {}) or {}).get("rows") or []}
+    rows = ((prev.get("travel") or {}).get("rows")) or []
+    if not adv or not rows: return
+    today, ch = riga.strftime("%d.%m.%Y"), 0
+    for r in rows:
+        a = adv.get(r.get("c"))
+        if not a: continue
+        for k in ("us", "ca"):
+            lv = a.get(k)
+            if isinstance(lv, int) and isinstance(r.get(k), dict) and str(r[k].get("level")) != str(lv):
+                r[k].update(level=lv, label=LBL.get(lv, str(lv)), date=today); ch += 1
+    rep["travel"] = {"rows": rows, "updatedAt": A.iso(A.now()), "source": "travel.state.gov, travel.gc.ca (pārbauda GitHub Actions)"}
+    A.log(f"ceļošanas brīdinājumi: no advisories.json, izmaiņas {ch}")
 
 
 def main():
@@ -146,6 +170,7 @@ def main():
     if not used:
         A.log("neviena daļa netika atjaunota — jaunu pārskatu nesaglabāju")
         LOGF.write_text("\n".join(A.log_lines) + "\n", encoding="utf-8"); return
+    travel_from_advisories(rep, prev, riga)
     ac = load(RS / "airchecks.json", [])
     if ac:
         rep["aircraft"] = {k: v for k, v in ac[0].items() if k != "_id"}
