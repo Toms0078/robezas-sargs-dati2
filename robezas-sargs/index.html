@@ -1504,6 +1504,19 @@ html { scroll-behavior: smooth; }
     svg.addEventListener("click", (e) => { if (layer === "events" && evSel != null && !e.target.closest(".evhit, .evlab, .evpin")) { evSel = null; drawOverlay(); } });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && layer === "events" && evSel != null) { evSel = null; drawOverlay(); } });
   })();
+  // Aste tiek sadalīta, ja starp pārbaudēm ir > 25 min vai mainījies reisa numurs: taisna līnija starp tālu punktiem nerāda īsto ceļu
+  // (piem. Krievijas reisi Kaļiņingrada–Pēterburga lido pār jūru, bet taisne starp punktiem 1 h attālumā šķērsotu Baltiju).
+  function splitTrail(tr) {
+    const out = []; let cur = [];
+    tr.forEach((p, i) => {
+      const q = tr[i - 1];
+      const gap = q && p.t && q.t ? (new Date(p.t) - new Date(q.t)) / 60000 : 0;
+      if (q && (gap > 25 || ((p.callsign || "").trim() && (q.callsign || "").trim() && p.callsign.trim() !== q.callsign.trim()))) { if (cur.length) out.push(cur); cur = []; }
+      cur.push(p);
+    });
+    if (cur.length) out.push(cur);
+    return out;
+  }
   function tracePts(x, tr) {
     // Optional dense track saved by the aircraft check (x.trace: [[lat, lon, iso?], ...]); otherwise the check-to-check trail.
     const t = Array.isArray(x.trace) ? x.trace.filter((q) => Array.isArray(q) && typeof q[0] === "number" && typeof q[1] === "number").map((q) => ({ lat: q[0], lon: q[1], t: q[2] || null })) : [];
@@ -1546,7 +1559,7 @@ html { scroll-behavior: smooth; }
     const g = $("dots"); g.replaceChildren();
     const selX = cur.find((c) => keyOf(c) === selHex);
     if (!selX) focus = false;
-    const selTr = selX ? tracePts(selX, trails[keyOf(selX)] || [selX]) : null;
+    const selTr = selX ? splitTrail(tracePts(selX, trails[keyOf(selX)] || [selX])).pop() : null;  // tikai pašreizējais lidojums
     const ends = selX ? [selX.from, selX.to].filter((q) => q && typeof q.lat === "number" && typeof q.lon === "number") : [];
     if (layer === "air") setView(focus && selTr ? selTr.concat(ends).map((p) => proj(p.lon, p.lat)) : null);
     const S = (v) => v * vz();
@@ -1559,16 +1572,18 @@ html { scroll-behavior: smooth; }
       const tr = isSel ? selTr : (trails[keyOf(x)] || []); if (tr.length < 2) return;
       const pts = tr.map((p) => proj(p.lon, p.lat));
       const col = CATCOL[x.cat];
-      g.append(mk("polyline", { points: pts.map((p) => p.join(",")).join(" "), class: "trail", stroke: col, "stroke-width": focus ? 4 : 3, "vector-effect": "non-scaling-stroke", "stroke-dasharray": x.cat === "ru" ? S(8) + " " + S(6) : "none" }));
+      splitTrail(tr).forEach((seg) => { if (seg.length < 2) return;
+        g.append(mk("polyline", { points: seg.map((p) => proj(p.lon, p.lat).join(",")).join(" "), class: "trail", stroke: col, "stroke-width": focus ? 4 : 3, "vector-effect": "non-scaling-stroke", "stroke-dasharray": x.cat === "ru" ? S(8) + " " + S(6) : "none" })); });
       const dense = pts.length > 12;
       pts.slice(1, -1).forEach(([px, py], i) => {
         g.append(mk("circle", { cx: px, cy: py, r: S(dense ? 2.5 : 4), fill: col, "fill-opacity": .7 }));
         const tp = tr[i + 1];
         if (focus && !dense && tp && tp.t) { const tl = mk("text", { x: px + S(10), y: py - S(8), class: "ptlabel", style: `font-size:${T(16)}px;stroke-width:${S(4)}px` }); tl.textContent = fmtTime(tp.t).split(" ").pop(); g.append(tl); }
       });
-      const [sx0, sy0] = pts[0];
+      const cur0 = splitTrail(tr).pop(); if (cur0.length < 2) return;  // sākuma zīme tikai pašreizējam lidojumam
+      const [sx0, sy0] = proj(cur0[0].lon, cur0[0].lat);
       g.append(mk("rect", { x: sx0 - S(7), y: sy0 - S(7), width: S(14), height: S(14), class: "startmk", stroke: col, "vector-effect": "non-scaling-stroke" }));
-      if (isSel && tr[0].t) { const tl = mk("text", { x: sx0 + S(12), y: sy0 + S(20), class: "tlabel", style: `font-size:${T(15)}px;stroke-width:${S(4)}px` }); tl.textContent = "sākums " + fmtTime(tr[0].t).split(" ").pop(); g.append(tl); }
+      if (isSel && cur0[0].t) { const tl = mk("text", { x: sx0 + S(12), y: sy0 + S(20), class: "tlabel", style: `font-size:${T(15)}px;stroke-width:${S(4)}px` }); tl.textContent = "sākums " + fmtTime(cur0[0].t).split(" ").pop(); g.append(tl); }
     });
     if (focus && selX && ends.length) {
       const col = CATCOL[selX.cat];
@@ -1603,8 +1618,8 @@ html { scroll-behavior: smooth; }
       hit.style.pointerEvents = "none";  // pieskārienu apstrādā airTap(): tuvākā lidmašīna vai tās aste
       hit.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
       g.append(hit);
-      const tpts = (keyOf(x) === selHex && selTr ? selTr : (trails[keyOf(x)] || [])).map((p) => proj(p.lon, p.lat));
-      airPicks.push({ dim, pick, dot: [cx, cy], line: (showRoutes || keyOf(x) === selHex) ? tpts : [] });
+      const segs = splitTrail(keyOf(x) === selHex && selTr ? selTr : (trails[keyOf(x)] || [])).map((sg) => sg.map((p) => proj(p.lon, p.lat)));
+      airPicks.push({ dim, pick, dot: [cx, cy], lines: (showRoutes || keyOf(x) === selHex) ? segs : [] });
     });
     renderAcInfo(cur, trails);
     const rl = Array.isArray(a.ruList) ? a.ruList : [];
@@ -1643,7 +1658,7 @@ html { scroll-behavior: smooth; }
     let best = null, bd = 1e9;
     airPicks.forEach((c) => {
       const p = sc(c.dot); let d = Math.hypot(p[0] - X, p[1] - Y) - 6;  // punktam neliela priekšroka pret asti
-      const L = c.line.map(sc); for (let i = 1; i < L.length; i++) d = Math.min(d, dSeg(L[i - 1], L[i]));
+      c.lines.forEach((ln) => { const L = ln.map(sc); for (let i = 1; i < L.length; i++) d = Math.min(d, dSeg(L[i - 1], L[i])); });
       if (c.dim) d += 12;
       if (d < bd) { bd = d; best = c; }
     });
@@ -1656,7 +1671,7 @@ html { scroll-behavior: smooth; }
     const x = cur.find((c) => keyOf(c) === selHex);
     if (!x) { body.hidden = true; empty.hidden = false; return; }
     empty.hidden = true; body.hidden = false; body.replaceChildren();
-    const tr = tracePts(x, trails[keyOf(x)] || [x]);
+    const tr = splitTrail(tracePts(x, trails[keyOf(x)] || [x])).pop();
     const first = tr[0], last = tr[tr.length - 1];
     const rn = (k) => (REGIONS.find((r) => r.key === k) || {}).name || "";
     const head = el("div", "achead"); head.append(el("span", "acname", (x.callsign || "—").trim()), el("span", "chip", CATNAME[x.cat]));
