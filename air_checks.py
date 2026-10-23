@@ -42,6 +42,7 @@ def get(url):
         try:
             r = requests.get(url, headers=UA, timeout=40)
             if r.status_code == 200: return r.json()
+            if r.status_code == 404: return None
             log(f"  {url}: HTTP {r.status_code}")
         except Exception as e:
             log(f"  {url}: {str(e)[:100]}")
