@@ -1,0 +1,34 @@
+name: Lidmašīnas (ADS-B)
+
+on:
+  schedule:
+    - cron: "12 * * * *"   # ik stundu
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: air-checks
+  cancel-in-progress: false
+
+jobs:
+  air:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python air_checks.py
+      - name: Saglabā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rs/airchecks.json data/rs/airchecks.log
+          if git diff --cached --quiet; then echo "Nav izmaiņu"; else
+            git commit -m "Lidmašīnas: $(date -u +%Y-%m-%dT%H:%MZ)"
+            for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+          fi
