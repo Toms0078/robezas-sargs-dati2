@@ -25,3 +25,13 @@ kas palika, problēmas, recenzenta piezīmes.
   Pievienota ātrā pārbaude ik 10 min (`air_alerts_fast.py`, ziņu plūsmas → Gemini bez meklēšanas, saitei jābūt no plūsmas) un atsevišķa lapa
   `trauksmes/` (SVG karte: LV novadi, EE apriņķi, LT pašvaldības, PL vojevodistes+apriņķi, FI reģioni, 37 RU apgabali; pirkstu žesti; automātiska
   atjaunošana ik 2 min). Pārbaudīts headless 1250/400 px, bez kļūdām.
+
+## 2026-10-23 — Robežas sargs pārcelts uz GitHub
+- Lapa: `robezas-sargs/index.html` (https://toms0078.github.io/robezas-sargs-dati2/robezas-sargs/), dati `data/rs/`.
+- Lidmašīnas: `air_checks.py` + `air-checks.yml` (ik stundu :12, adsb.lol, bez AI).
+- Vēstniecības, brīdinājumi, ĀTI: `publish_rs.py` darbplūsmā `collect.yml` (bez AI).
+- Vēstniecību un investīciju ziņas: `gemini_rs.py dip inv` (2× dienā), tranzīts `gemini_rs.py transit` (1× dienā, gemini-3.5-flash ar meklēšanu) — `rs-gemini.yml`.
+- Galvenais pārskats: `gemini_report.py` + `rs-report.yml` (~07:37 un ~19:37). 4 daļas; katrā vispirms Gemini meklē, tad apvieno ar iepriekšējo;
+  saitēm jābūt no meklēšanas domēniem un tām jāatveras (404 = izmet); sadaļas fiksētas (air, russia, osint, official, nordic);
+  ceļošanas brīdinājumi no advisories.json; ja daļa neizdodas, paliek iepriekšējā.
+- Palika: spēku (forces) un vēstniecību east/side nedēļas atjaunošana vēl ir statiska; push paziņojumi nāk tikai no Claude uzdevuma.
