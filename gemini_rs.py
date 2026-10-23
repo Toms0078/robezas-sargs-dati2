@@ -133,7 +133,12 @@ Atbildi TIKAI ar JSON: ```json {{"updates": [{{"key": "esošā maršruta key", "
 "value": "īss skaitlis vai stāvoklis", "trend": "up|down|flat|", "text": "1–2 teikumi latviski", "source": "izdevums", "url": "raksta saite",
 "date": "DD.MM.YYYY"}}], "events": [{{"date": "DD.MM.YY", "level": "green|yellow|red", "text": "1 teikums latviski", "source": "izdevums", "url": "saite"}}],
 "headline": "1 teikums par svarīgāko (vai tukšs, ja nav jaunumu)"}} ```"""
-    txt, m, nq, doms = A.call_gemini(prompt, key())
+    base = list(A.MODELS)
+    for first in [None, "gemini-3.5-flash-lite", "gemini-3.5-flash"]:  # ja modelis nemeklē, mēģina citu
+        A.MODELS[:] = ([first] if first else []) + [x for x in base if x != first]
+        txt, m, nq, doms = A.call_gemini(prompt, key())
+        if doms: break
+    A.MODELS[:] = base
     j = A.extract_json(txt) or {}
     if not doms:
         A.log(f"transit: Gemini nemeklēja (0 avotu) — nekas netiek mainīts"); return
