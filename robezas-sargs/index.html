@@ -1654,7 +1654,7 @@ html { scroll-behavior: smooth; }
     row("Tagad virs", rn(last.region) || "—");
     row("Pirmoreiz redzēta", tr.length > 1 ? fmtTime(first.t) + " · virs " + rn(first.region) : "Tikai šajā pārbaudē");
     if (tr.length < 2) body.append(el("p", "note", "Lidojuma ceļš kartē veidojas no secīgām pārbaudēm (ik pēc ~10 min). Šī lidmašīna redzēta tikai vienā pārbaudē, tāpēc līnijas vēl nav."));
-    row("Pārbaudēs redzēta", tr.length + " reizi" + (tr.length === 1 ? "" : "s") + " pēdējās " + winH + " h");
+    row("Pārbaudēs redzēta", tr.length + (tr.length % 10 === 1 && tr.length % 100 !== 11 ? " reizi" : " reizes") + " pēdējās " + winH + " h");
     body.append(dl);
     const btns = el("div", "acbtns");
     const zb = el("button", null, focus ? "Visa karte" : "Rādīt maršrutu kartē"); zb.type = "button";
