@@ -121,7 +121,8 @@ def route(cs, pos, trk):
     o = c["o"]
     if None not in (o.get("lat"), d.get("lat")) and off_route_km(pos, (o["lat"], o["lon"]), (d["lat"], d["lon"])) > 350:
         return None, None  # lidmašīna nav ne tuvu šim maršrutam — izsaukuma zīme izmantota citam reisam
-    return c["o"], d
+    lv = lambda a: dict(a, city=CITY.get(a.get("city"), a.get("city")))
+    return lv(c["o"]), lv(d)
 
 def save_cache():
     if _cache is None: return
