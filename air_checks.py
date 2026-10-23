@@ -42,7 +42,7 @@ def get(url):
         try:
             r = requests.get(url, headers=UA, timeout=40)
             if r.status_code == 200: return r.json()
-            if r.status_code == 404: return None
+            if r.status_code == 404: return None  # nav ieraksta
             log(f"  {url}: HTTP {r.status_code}")
         except Exception as e:
             log(f"  {url}: {str(e)[:100]}")
@@ -78,16 +78,39 @@ def bearing(a, b):
 CITY = {"Moscow": "Maskava", "Saint Petersburg": "Sanktpēterburga", "St Petersburg": "Sanktpēterburga", "Kaliningrad": "Kaļiņingrada",
         "Minsk": "Minska", "Murmansk": "Murmanska", "Sochi": "Soči", "Kazan": "Kazaņa", "Yekaterinburg": "Jekaterinburga"}
 
+CACHE = os.path.join(HERE, "data", "rs", "routes_cache.json")
+_cache, _new = None, [0]
+
 def route(cs, pos, trk):
-    j = get(f"https://api.adsbdb.com/v0/callsign/{cs}")
-    fr = (((j or {}).get("response") or {}).get("flightroute") or {})
-    o, d = fr.get("origin") or {}, fr.get("destination") or {}
-    if not o or not d: return None, None
-    if trk is not None and d.get("latitude") is not None:
-        diff = abs((bearing(pos, (d["latitude"], d["longitude"])) - trk + 180) % 360 - 180)
-        if diff > 100: return None, None  # stale route database entry
-    f = lambda a: {"code": a.get("iata_code"), "city": CITY.get(a.get("municipality"), a.get("municipality")), "lat": a.get("latitude"), "lon": a.get("longitude")}
-    return f(o), f(d)
+    """Plānotais maršruts pēc izsaukuma zīmes (adsbdb.com). Kešs 24 h, lai nepārslogotu avotu (pārbaude ik 10 min)."""
+    global _cache
+    if _cache is None:
+        try: _cache = json.load(open(CACHE, encoding="utf-8"))
+        except Exception: _cache = {}
+    now = time.time()
+    c = _cache.get(cs)
+    if not c or now - c.get("t", 0) > (86400 if c.get("o") else 43200):
+        if _new[0] >= 60: return None, None
+        _new[0] += 1
+        j = get(f"https://api.adsbdb.com/v0/callsign/{cs}")
+        fr = (((j or {}).get("response") or {}).get("flightroute") or {}) if isinstance((j or {}).get("response"), dict) else {}
+        o, d = fr.get("origin") or {}, fr.get("destination") or {}
+        f = lambda a: {"code": a.get("iata_code") or a.get("icao_code"), "city": CITY.get(a.get("municipality"), a.get("municipality")),
+                       "lat": a.get("latitude"), "lon": a.get("longitude")}
+        c = {"t": now, "o": f(o), "d": f(d)} if o and d else {"t": now}
+        _cache[cs] = c
+    if not c.get("o"): return None, None
+    d = c["d"]
+    if trk is not None and d.get("lat") is not None:
+        diff = abs((bearing(pos, (d["lat"], d["lon"])) - trk + 180) % 360 - 180)
+        if diff > 100: return None, None  # novecojis ieraksts maršrutu datubāzē
+    return c["o"], d
+
+def save_cache():
+    if _cache is None: return
+    now = time.time()
+    keep = {k: v for k, v in _cache.items() if now - v.get("t", 0) < 2 * 86400}
+    json.dump(keep, open(CACHE, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 
 def thin(arr, t_now):
     """Pārbaudes ik 10 min. Glabā: pēdējās 6 h visas; 6–24 h viena stundā (ar sarakstu trasēm); 1–7 dienas viena stundā tikai skaitļi."""
@@ -131,10 +154,11 @@ def main():
         alt = a.get("alt_baro"); alt = alt if isinstance(alt, (int, float)) else None
         item = {"hex": a["hex"].lower(), "callsign": (a.get("flight") or "").strip(), "type": a.get("t") or "", "altFt": alt,
                 "lat": round(a["lat"], 4), "lon": round(a["lon"], 4), "track": a.get("track")}
+        if a.get("r"): item["reg"] = a["r"]
+        if item["callsign"]:
+            fr, to = route(item["callsign"], (a["lat"], a["lon"]), a.get("track"))
+            if fr: item["from"], item["to"] = fr, to
         if c == "ru":
-            if item["callsign"]:
-                fr, to = route(item["callsign"], (a["lat"], a["lon"]), a.get("track"))
-                if fr: item["from"], item["to"] = fr, to
             ru.append(item)
         else:
             t = (a.get("t") or "").upper()
@@ -157,7 +181,8 @@ def main():
     doc["_id"] = t_now.astimezone(ZoneInfo("Europe/Riga")).strftime("%Y-%m-%d-%H%M")
     arr = thin([doc] + [x for x in arr if x.get("_id") != doc["_id"]], t_now)
     json.dump(arr, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-    log(note)
+    save_cache()
+    log(note + f" Maršruti: {sum(1 for x in lst + ru if x.get('from'))}/{len(lst) + len(ru)}, jauni vaicājumi {_new[0]}.")
     for x in lst: log(f"  {x['cat']:6} {x['callsign']:9} {x['type']:5} {x['note']}")
     open(LOG, "w", encoding="utf-8").write("\n".join(log_lines) + "\n")
 

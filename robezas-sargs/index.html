@@ -1645,12 +1645,15 @@ html { scroll-behavior: smooth; }
     const dl = el("dl");
     const row = (k, v) => { dl.append(el("dt", null, k), el("dd", null, v)); };
     row("Tips", x.type || "—");
-    if (x.from || x.to) row("Maršruts", routeTxt(x));
+    const reg = x.reg || ((String(x.note || "").match(/reģ\. ([^,;)]+)/) || [])[1] || "");
+    row("Reģ. nr.", reg || "—");
+    if (x.hex) row("ICAO kods", String(x.hex).toUpperCase());
+    row("Maršruts", (x.from || x.to) ? routeTxt(x) + " (plānotais, adsbdb.com)" : (x.cat === "ru" ? "Nav zināms" : "Nav publicēts (militārās lidmašīnas maršrutu parasti nepublicē) — kartē redzams lidojuma ceļš no pārbaudēm"));
     row("Augstums", x.altFt != null && x.altFt !== "" ? Number(x.altFt).toLocaleString("lv-LV") + " ft (~" + Math.round(Number(x.altFt) * 0.3048 / 100) / 10 + " km)" : "—");
     row("Virziens", typeof x.track === "number" ? Math.round(x.track) + "° · lido " + compass(x.track) : "—");
     row("Tagad virs", rn(last.region) || "—");
     row("Pirmoreiz redzēta", tr.length > 1 ? fmtTime(first.t) + " · virs " + rn(first.region) : "Tikai šajā pārbaudē");
-    if (tr.length < 2) body.append(el("p", "note", "Maršruts kartē veidojas no secīgām pārbaudēm (ik pēc 2 h). Šī lidmašīna redzēta tikai vienā pārbaudē, tāpēc līnijas vēl nav."));
+    if (tr.length < 2) body.append(el("p", "note", "Lidojuma ceļš kartē veidojas no secīgām pārbaudēm (ik pēc ~10 min). Šī lidmašīna redzēta tikai vienā pārbaudē, tāpēc līnijas vēl nav."));
     row("Pārbaudēs redzēta", tr.length + " reizi" + (tr.length === 1 ? "" : "s") + " pēdējās " + winH + " h");
     body.append(dl);
     const btns = el("div", "acbtns");
