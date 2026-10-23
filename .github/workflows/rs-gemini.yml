@@ -1,0 +1,49 @@
+name: Robežas sargs – ziņas (Gemini)
+
+on:
+  schedule:
+    - cron: "26 5,17 * * *"   # vēstniecību un investīciju ziņas 2× dienā (~08:26 un ~20:26 Rīgā)
+    - cron: "41 3 * * *"      # tranzīts reizi dienā (~06:41)
+  workflow_dispatch:
+    inputs:
+      parts:
+        description: "Ko darīt: dip inv transit"
+        default: "dip inv"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rs-gemini
+  cancel-in-progress: false
+
+jobs:
+  gemini:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4 lxml
+      - name: Izvēlas daļas
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "parts=${{ inputs.parts }}" >> "$GITHUB_OUTPUT";
+          elif [ "${{ github.event.schedule }}" = "41 3 * * *" ]; then echo "parts=transit" >> "$GITHUB_OUTPUT";
+          else echo "parts=dip inv" >> "$GITHUB_OUTPUT"; fi
+      - name: Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_API }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: python export_db.py && python gemini_rs.py ${{ steps.pick.outputs.parts }}
+      - name: Saglabā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rs
+          if git diff --cached --quiet; then echo "Nav izmaiņu"; else
+            git commit -m "Robežas sargs (Gemini): ${{ steps.pick.outputs.parts }} $(date -u +%Y-%m-%dT%H:%MZ)"
+            for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+          fi
