@@ -1,4 +1,4 @@
-"""Militāro lidmašīnu blīvi maršruti Robežas sargam (adsb.lol /v2/mil) — bez AI.
+"""Militāro (un Krievijas/Baltkrievijas) lidmašīnu blīvi maršruti Robežas sargam (adsb.lol /v2/mil) — bez AI.
 
 Viena palaišana klausās `seconds` sekundes (noklusēti 540) un ik ~30 s nolasa adsb.lol militāro lidmašīnu sarakstu
 (viens pieprasījums uz visu pasauli), saglabā pozīcijas mūsu apgabalā un uztur data/rs/miltracks.json:
@@ -15,6 +15,16 @@ OUT = os.path.join(HERE, "data", "rs", "miltracks.json")
 BBOX = (47.0, 71.5, 4.0, 42.0)  # tas pats apgabals, ko air_checks.py
 KEEP_S = 12 * 3600
 UA = {"User-Agent": "robezas-sargs (+https://github.com/Toms0078/robezas-sargs-dati2)"}
+# Krievijas/Baltkrievijas lidmašīnas (arī civilās) — apgabali, kur tās lido mūsu tuvumā: Kaļiņingradas koridors pār Baltijas jūru,
+# Somu līcis/Pēterburga, Pleskava–Baltkrievija gar mūsu robežu. Vaicā ik ~60 s (katru otro ciklu).
+RU_POINTS = [(56.0, 20.0, 250), (59.5, 27.5, 200), (55.5, 29.5, 220)]
+import re
+RU_CIV_CS = re.compile(r"^(AFL|SDM|PBD|AUL|SBI|SVR|UTA|RSY|NWS|KAR|SYL|BRU)\d", re.I)
+def is_ru(a):
+    reg = (a.get("r") or "").upper()
+    try: v = int(a.get("hex", ""), 16)
+    except Exception: v = -1
+    return reg.startswith(("RA-", "EW-")) or 0x140000 <= v <= 0x15FFFF or 0x510000 <= v <= 0x5103FF or bool(RU_CIV_CS.match((a.get("flight") or "").strip()))
 
 def km(a, b):
     R, t = 6371, math.pi / 180
@@ -53,6 +63,14 @@ def main():
             j = r.json() if r.status_code == 200 else None
         except Exception as e:
             print("kļūda:", str(e)[:100]); j = None
+        if j and polls % 2 == 1:
+            for la0, lo0, r0 in RU_POINTS:
+                try:
+                    rr = requests.get(f"https://api.adsb.lol/v2/point/{la0}/{lo0}/{r0}", headers=UA, timeout=25)
+                    jj = rr.json() if rr.status_code == 200 else None
+                except Exception: jj = None
+                if jj: j.setdefault("ac", []).extend(a for a in (jj.get("ac") or []) if is_ru(a))
+                time.sleep(1)
         if j:
             ok += 1
             now = int(j.get("now", time.time() * 1000) / 1000) if j.get("now", 0) > 1e11 else int(time.time())
@@ -70,7 +88,7 @@ def main():
     for h in list(tracks):
         tracks[h]["p"] = [p for p in tracks[h]["p"] if p[2] >= cut]
         if not tracks[h]["p"]: del tracks[h]
-    data = {"updatedAt": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"), "tracks": tracks}
+    data = {"updatedAt": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "tracks": tracks}
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(data, open(OUT, "w", encoding="utf-8"), separators=(",", ":"))
     npts = sum(len(t["p"]) for t in tracks.values())

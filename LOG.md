@@ -49,3 +49,5 @@ kas palika, problēmas, recenzenta piezīmes.
   pagriezieni saglabāti). `air_checks.py` jaunākajai pārbaudei pievieno `trace` (≤151 punkts; vecākajām pārbaudēm noņem),
   ko Robežas sarga lapa zīmē kā pilnu maršrutu. Zviedrijas GLF4/S102 ar SVF izsaukumu vai reģ. 102002/102003 tagad apzīmē kā
   S 102B Korpen (signālu izlūkošana).
+- 2026-10-26: `mil_tracks.py` seko arī **Krievijas/Baltkrievijas** lidmašīnām (arī civilajām): ik ~60 s 3 apgabali (Kaļiņingradas
+  koridors pār Baltijas jūru, Somu līcis/Pēterburga, Pleskava–Baltkrievija); `air_checks.py` pievieno `trace` arī `ruList` ierakstiem.

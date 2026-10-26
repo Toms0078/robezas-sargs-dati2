@@ -230,7 +230,7 @@ def main():
     try: mt = json.load(open(os.path.join(HERE, "data", "rs", "miltracks.json"), encoding="utf-8")).get("tracks") or {}
     except Exception: mt = {}
     iso = lambda s_: dt.datetime.fromtimestamp(s_, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    for x in lst:
+    for x in lst + ru:
         tr = (mt.get(x["hex"]) or {}).get("p") or []
         if len(tr) < 2: continue
         if len(tr) > 150: st = len(tr) / 150; tr = [tr[int(i * st)] for i in range(150)] + [tr[-1]]
@@ -249,7 +249,7 @@ def main():
     doc["_id"] = t_now.astimezone(ZoneInfo("Europe/Riga")).strftime("%Y-%m-%d-%H%M")
     arr = thin([doc] + [x for x in arr if x.get("_id") != doc["_id"]], t_now)
     for old_doc in arr[1:]:
-        for it in old_doc.get("list") or []: it.pop("trace", None)
+        for it in (old_doc.get("list") or []) + (old_doc.get("ruList") or []): it.pop("trace", None)
     json.dump(arr, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     save_cache()
     log(note + f" Maršruti: {sum(1 for x in lst + ru if x.get('from'))}/{len(lst) + len(ru)}, jauni vaicājumi {_new[0]}. Trases: {TRACE_N[1]}/{TRACE_N[0]}.")
