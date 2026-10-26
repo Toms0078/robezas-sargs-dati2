@@ -55,3 +55,8 @@ kas palika, problēmas, recenzenta piezīmes.
   `air_checks.py` palaiž arī `mil-tracks.yml` cilpa ik ~10 min. Lapa lidmašīnas kartītē rāda pozīcijas vecumu.
 - 2026-10-26: `mil-tracks.yml` cikls saīsināts uz ~4 min (pārbaude un maršruti saglabājas ik ~5 min). GitHub Pages lapa
   `robezas-sargs/` tos lasa ik 3 min; claude.ai artifakts — ik stundu (ieplānotu uzdevumu minimums).
+- 2026-10-26: **Robežas sargs 2 GitHub Pages versijā** — `robezas-sargs2/index.html` (karte centrā, maršruti, lidmašīnu foto,
+  izmaiņas, datu svaigums, signālu slānis). Tā pati lapa kā claude.ai artefakts, bet `window.claude.use("db")` aizstāts ar
+  JSON lasīšanu no `../data/rs/` ik 3 min (`photos/X` → `typephotos/X.json`, `doc().get()` atbalstīts). Pārbaudīts headless
+  1250/400 px, bez pageerror. `air_checks.py`: AWACS/izlūki (E3TF, RC-135, P-8, GLF4/S102 u.c.) ar militāru karodziņu vai
+  NATO izsaukumu vairs netiek klasificēti kā tankeri.

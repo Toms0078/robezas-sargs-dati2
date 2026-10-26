@@ -56,6 +56,8 @@ def classify(a):
         return "other"
     if is_ru or RU_CIV_CS.match(cs):
         return "other" if t in RU_MIL_T else "ru"
+    if t in ("E3TF", "E3CF", "E7WT", "R135", "RC35", "P8", "Q4", "GLHK", "GLF4", "S102") and (mil or NATO_CS.match(cs) or TANKER_CS.match(cs)):
+        return "nato"  # AWACS/izlūki nav tankeri, pat ja izsaukums ir "NATOxx"
     if t in TANKER_T - {"A400"} or (TANKER_CS.match(cs) and (mil or t in TANKER_T or t.startswith("A33"))) or (t.startswith("A33") and mil):
         return "tanker"
     if mil or NATO_CS.match(cs) and (t in MIL_T or not t) or t in MIL_T and mil:
