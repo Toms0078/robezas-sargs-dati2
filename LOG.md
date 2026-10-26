@@ -35,3 +35,9 @@ kas palika, problēmas, recenzenta piezīmes.
   saitēm jābūt no meklēšanas domēniem un tām jāatveras (404 = izmet); sadaļas fiksētas (air, russia, osint, official, nordic);
   ceļošanas brīdinājumi no advisories.json; ja daļa neizdodas, paliek iepriekšējā.
 - Palika: spēku (forces) un vēstniecību east/side nedēļas atjaunošana vēl ir statiska; push paziņojumi nāk tikai no Claude uzdevuma.
+
+## 2026-10-26 — Lidmašīnu tipu foto
+- `type_photos.py` + `type-photos.yml` (ik 6 h :47): tipiem no `data/rs/airchecks.json` atrod angļu Wikipedia raksta galveno attēlu
+  Wikimedia Commons, pārbauda licenci (CC/PD), samazina līdz ~520 px JPEG ≤60 KB un saglabā `data/rs/typephotos/<TIPS>.json`
+  ({img: data URI, name, author, license, file}). Robežas sarga lapa foto rāda lidmašīnas kartītē, neizejot no rīka; Claude stundas
+  uzdevums tos pārkopē artifact datubāzē (kolekcija `photos`). Nekartētie tipi → `typephotos/_missing.json` (papildini `TYPES`).

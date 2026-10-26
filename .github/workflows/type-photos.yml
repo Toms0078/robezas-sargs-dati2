@@ -1,0 +1,39 @@
+name: Lidmašīnu tipu foto (Wikimedia Commons)
+
+on:
+  schedule:
+    - cron: "47 */6 * * *"   # ik 6 h — jauni tipi parādās reti
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Tikai pārbaude (--test), bez saglabāšanas"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: type-photos
+  cancel-in-progress: false
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests pillow
+      - run: python type_photos.py --max 25 ${{ github.event.inputs.test == 'true' && '--test' || '' }}
+      - name: Saglabā
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rs/typephotos data/rs/typephotos.log
+          if git diff --cached --quiet; then echo "Nav izmaiņu"; else
+            git commit -m "Tipu foto: $(date -u +%Y-%m-%dT%H:%MZ)"
+            for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+          fi
