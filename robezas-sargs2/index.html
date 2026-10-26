@@ -472,6 +472,8 @@ details.more > summary .muted { font-size: 13px; }
 .tcell { white-space: nowrap; } .tthumb { width: 54px; height: 34px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; border: 1px solid var(--line); }
 .acphoto img { max-height: 280px; }
 .posold { color: var(--warn); }
+#map .trhit { cursor: pointer; pointer-events: stroke; }
+#map .trail { pointer-events: none; }
 </style>
 
 <header class="bar">
@@ -1650,6 +1652,7 @@ details.more > summary .muted { font-size: 13px; }
     const T = (v) => S(v) * (focus ? 1.5 : 1);
     $("clabels").querySelectorAll("text").forEach((t) => { t.style.fontSize = S(22) + "px"; });
     const inView = (cx, cy) => { if (focus) return true; const v = VB[region]; return !(cx < v[0] - 20 || cy < v[1] - 20 || cx > v[0] + v[2] + 20 || cy > v[1] + v[3] + 20); };
+    const trHits = [];
     if (showRoutes || focus) shown.forEach((x) => {
       const isSel = keyOf(x) === selHex;
       if (focus && !isSel) return;
@@ -1665,8 +1668,19 @@ details.more > summary .muted { font-size: 13px; }
       });
       const [sx0, sy0] = pts[0];
       g.append(mk("rect", { x: sx0 - S(7), y: sy0 - S(7), width: S(14), height: S(14), class: "startmk", stroke: col, "vector-effect": "non-scaling-stroke" }));
+      if (!isSel) {
+        const lab = (x.callsign || x.type || "lidmašīna").trim() + ", " + CATNAME[x.cat];
+        const pickTr = () => { selHex = keyOf(x); focus = false; renderAir(lastAir); $("acInfo").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
+        const lh = mk("polyline", { points: pts.map((p) => p.join(",")).join(" "), class: "trhit", fill: "none", stroke: "transparent", "stroke-width": 22, "vector-effect": "non-scaling-stroke", "stroke-linecap": "round", "stroke-linejoin": "round" });
+        const st = mk("title", {}); st.textContent = lab + " — maršruts"; lh.append(st);
+        lh.addEventListener("click", pickTr); trHits.push(lh);
+        const sh = mk("circle", { cx: sx0, cy: sy0, r: S(26), fill: "transparent", class: "hit", tabindex: 0, role: "button", "aria-label": lab + " — maršruta sākums" });
+        sh.addEventListener("click", pickTr); sh.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pickTr(); } });
+        trHits.push(sh);
+      }
       if (isSel && tr[0].t) { const tl = mk("text", { x: sx0 + S(12), y: sy0 + S(20), class: "tlabel", style: `font-size:${T(15)}px;stroke-width:${S(4)}px` }); tl.textContent = "sākums " + fmtTime(tr[0].t).split(" ").pop(); g.append(tl); }
     });
+    trHits.forEach((h) => g.append(h));
     if (focus && selX && ends.length) {
       const col = CATCOL[selX.cat];
       const fp = proj(selTr[0].lon, selTr[0].lat), lp = proj(selTr[selTr.length - 1].lon, selTr[selTr.length - 1].lat);
