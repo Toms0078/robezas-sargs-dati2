@@ -41,3 +41,6 @@ kas palika, problēmas, recenzenta piezīmes.
   Wikimedia Commons, pārbauda licenci (CC/PD), samazina līdz ~520 px JPEG ≤60 KB un saglabā `data/rs/typephotos/<TIPS>.json`
   ({img: data URI, name, author, license, file}). Robežas sarga lapa foto rāda lidmašīnas kartītē, neizejot no rīka; Claude stundas
   uzdevums tos pārkopē artifact datubāzē (kolekcija `photos`). Nekartētie tipi → `typephotos/_missing.json` (papildini `TYPES`).
+- 2026-10-26 (papildinājums): `type_photos.py` meklē arī **konkrētās militārās lidmašīnas** foto Commons pēc reģistrācijas
+  (faila nosaukumā jābūt reģ. numuram + aviācijas vārdam vai tipa nosaukumam, licence CC/PD) → `typephotos/R_<REĢ>.json` ar lauku `reg`.
+  Lapa vispirms rāda konkrētās lidmašīnas foto, citādi tipa foto. Neatrastos reģ. atkārtoti meklē pēc 30 dienām.

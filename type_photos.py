@@ -6,6 +6,7 @@ samazina līdz ~520 px JPEG un saglabā data/rs/typephotos/<TIPS>.json:
   {"img": "data:image/jpeg;base64,...", "name", "author", "license", "file", "fetchedAt"}
 Lapa nedrīkst ielādēt ārējus attēlus (CSP), tāpēc attēls ir iebūvēts kā data URI.
 Hourly Claude uzdevums "Baltijas debesis" (3b. solis) pārkopē jaunos failus artifact datubāzē (kolekcija "photos").
+Konkrētām militārajām lidmašīnām meklē arī foto pēc reģistrācijas → typephotos/R_<REĢ>.json (lauks "reg").
 Lieto: python type_photos.py [--test] [--max N]
 """
 import base64, datetime as dt, html, io, json, os, re, sys, time
@@ -110,6 +111,32 @@ def to_data_uri(url):
         if buf.tell() <= 60_000: break
     return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
 
+REG_WORDS = re.compile(r"aircraft|air ?force|airport|airshow|air base|flygvapnet|luftwaffe|ilmavoimat|\braf\b|usaf|nato|tanker|mrtt|\bab\b|lotnictwo|karinės|gaisa spēki", re.I)
+
+def safe_id(reg):
+    return "R_" + re.sub(r"[^A-Za-z0-9_-]", "_", reg.upper())
+
+def norm(x):
+    return re.sub(r"[^A-Z0-9]", "", (x or "").upper())
+
+def reg_photo(reg, tname):
+    """Konkrētās lidmašīnas foto Commons pēc reģistrācijas (faila nosaukumā jābūt reģ. numuram)."""
+    d = jget("https://commons.wikimedia.org/w/api.php", {"action": "query", "format": "json", "list": "search",
+             "srnamespace": 6, "srlimit": 15, "srsearch": f'"{reg}"'})
+    if not d: return None
+    rn = norm(reg)
+    words = [w for w in re.findall(r"[A-Za-z0-9-]{3,}", tname or "") if w.lower() not in ("family", "series", "the")]
+    for hit in (d.get("query", {}).get("search") or []):
+        title = hit.get("title", "")
+        if rn not in norm(title): continue
+        if not (REG_WORDS.search(title) or any(w.lower() in title.lower() for w in words)): continue
+        if not re.search(r"\.(jpe?g|png|webp)$", title, re.I): continue
+        info = commons_info(title.split(":", 1)[1])
+        if info and info.get("thumb") and LICENSE_OK.match(info["license"] or ""):
+            info["fname"] = title
+            return info
+    return None
+
 def main():
     test = "--test" in sys.argv
     mx = int(sys.argv[sys.argv.index("--max") + 1]) if "--max" in sys.argv else 20
@@ -145,8 +172,33 @@ def main():
         json.dump(doc, open(os.path.join(OUTDIR, t + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
         log(f"  {t}: OK {title} ({len(img)//1024} KB, {info['license']})"); done += 1
         time.sleep(1)
+    # konkrētās lidmašīnas (militārās) pēc reģistrācijas
+    regs = {}
+    for c in checks:
+        for a in (c.get("list") or []):
+            r = str(a.get("reg") or "").strip()
+            if len(norm(r)) >= 4: regs.setdefault(r, str(a.get("type") or "").upper())
+    today = dt.date.today()
+    def recently_missed(k):
+        v = missing.get(k)
+        try: return v and (today - dt.date.fromisoformat(str(v)[:10])).days < 30
+        except Exception: return bool(v)
+    rtodo = [r for r in regs if not os.path.exists(os.path.join(OUTDIR, safe_id(r) + ".json")) and not recently_missed(safe_id(r))]
+    log(f"Reģistrācijas: {len(regs)}, bez foto: {len(rtodo)}")
+    rdone = 0
+    for r in rtodo[:15]:
+        t = regs[r]; info = reg_photo(r, TYPES.get(t, ""))
+        if not info: missing[safe_id(r)] = today.isoformat(); log(f"  {r}: konkrētas foto nav"); continue
+        if test: log(f"  TEST {r}: {info['fname']} | {info['license']} | {info['author']}"); continue
+        try: img = to_data_uri(info["thumb"])
+        except Exception as e: log(f"  {r}: attēla kļūda {str(e)[:100]}"); continue
+        doc = {"img": img, "name": TYPES.get(t, t), "reg": r, "author": info["author"], "license": info["license"],
+               "file": info["page"], "fetchedAt": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}
+        json.dump(doc, open(os.path.join(OUTDIR, safe_id(r) + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
+        log(f"  {r}: OK {info['fname'][:70]} ({len(img)//1024} KB, {info['license']})"); rdone += 1
+        time.sleep(1)
     json.dump(missing, open(MISS, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    log(f"Saglabāti {done} jauni foto.")
+    log(f"Saglabāti {done} jauni tipu foto un {rdone} konkrēto lidmašīnu foto.")
     open(LOG, "w", encoding="utf-8").write("\n".join(log_lines) + "\n")
 
 if __name__ == "__main__":
