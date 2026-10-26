@@ -51,3 +51,5 @@ kas palika, problēmas, recenzenta piezīmes.
   S 102B Korpen (signālu izlūkošana).
 - 2026-10-26: `mil_tracks.py` seko arī **Krievijas/Baltkrievijas** lidmašīnām (arī civilajām): ik ~60 s 3 apgabali (Kaļiņingradas
   koridors pār Baltijas jūru, Somu līcis/Pēterburga, Pleskava–Baltkrievija); `air_checks.py` pievieno `trace` arī `ruList` ierakstiem.
+- 2026-10-26: GitHub `air-checks.yml` grafiks reāli palaižas tikai ik 2–6 h (lapā lidmašīnas bija stundām vecas). Tagad
+  `air_checks.py` palaiž arī `mil-tracks.yml` cilpa ik ~10 min. Lapa lidmašīnas kartītē rāda pozīcijas vecumu.

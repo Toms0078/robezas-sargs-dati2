@@ -1,7 +1,7 @@
 name: Militāro lidmašīnu maršruti (adsb.lol)
 
 # Viena palaišana strādā ~5 h 40 min: ik ~30 s nolasa adsb.lol militāro sarakstu un ik ~10 min saglabā
-# data/rs/miltracks.json. Nākamā plānotā palaišana gaida rindā (concurrency) un turpina.
+# data/rs/miltracks.json un veic lidmašīnu pārbaudi (air_checks.py → data/rs/airchecks.json). Nākamā plānotā palaišana gaida rindā (concurrency) un turpina.
 on:
   schedule:
     - cron: "17 */2 * * *"
@@ -38,7 +38,9 @@ jobs:
           while true; do
             git pull -q --rebase -X theirs origin main || git rebase --abort || true
             python mil_tracks.py 540 2>&1 | tail -n 5 | tee data/rs/miltracks.log || true
-            git add data/rs/miltracks.json data/rs/miltracks.log
+            # air-checks.yml grafiku GitHub palaiž tikai reizi 2–6 h, tāpēc lidmašīnu pārbaudi veicam arī šeit (~ik 10 min)
+            python air_checks.py > /dev/null 2>&1 || true
+            git add data/rs/miltracks.json data/rs/miltracks.log data/rs/airchecks.json data/rs/airchecks.log data/rs/routes_cache.json
             if ! git diff --cached --quiet; then
               git commit -q -m "Maršruti: $(date -u +%Y-%m-%dT%H:%MZ)"
               for i in 1 2 3; do
