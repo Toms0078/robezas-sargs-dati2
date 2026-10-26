@@ -1,0 +1,263 @@
+{
+ "updated": "2026-10-26T13:20:21Z",
+ "source": "VesselAPI (vesselapi.com)",
+ "checks": {
+  "riga_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-26T11:12:00Z",
+      "vessel": {
+       "name": "martha hoj",
+       "imo": 8937596,
+       "mmsi": 219034422
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T08:31:00Z",
+      "vessel": {
+       "name": "martha hoj",
+       "imo": 8937596,
+       "mmsi": 219034422
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-26T08:24:00Z",
+      "vessel": {
+       "name": "x-press agility",
+       "imo": 9483671,
+       "mmsi": 636026718
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-25T17:03:00Z",
+      "vessel": {
+       "name": "martha hoj",
+       "imo": 8937596,
+       "mmsi": 219034422
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-25T14:20:00Z",
+      "vessel": {
+       "name": "martha hoj",
+       "imo": 8937596,
+       "mmsi": 219034422
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     }
+    ]
+   }
+  },
+  "ventspils_events": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "portEvents": [
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T11:27:00Z",
+      "vessel": {
+       "name": "baltica",
+       "imo": 9032745,
+       "mmsi": 261061000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-26T09:21:00Z",
+      "vessel": {
+       "name": "atlantic rosa",
+       "imo": 9993860,
+       "mmsi": 538011176
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-26T09:19:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T08:05:00Z",
+      "vessel": {
+       "name": "dee4 larch",
+       "imo": 9697909,
+       "mmsi": 219409000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T07:58:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T07:30:00Z",
+      "vessel": {
+       "name": "lady amalia",
+       "imo": 9624847,
+       "mmsi": 246685000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-10-26T05:15:00Z",
+      "vessel": {
+       "name": "stena scandica",
+       "imo": 9329849,
+       "mmsi": 219029263
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-10-26T04:52:00Z",
+      "vessel": {
+       "name": "stena baltica",
+       "imo": 9329851,
+       "mmsi": 219029947
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     }
+    ]
+   }
+  },
+  "riga_inbound": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "vesselETAs": [
+     {
+      "mmsi": 255802660,
+      "imo": 9247314,
+      "vessel_name": "ESTLAND",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4,
+      "eta": "2026-10-26T18:00:00Z",
+      "timestamp": "2026-10-26T12:21:21Z"
+     },
+     {
+      "mmsi": 255917287,
+      "imo": 9359258,
+      "vessel_name": "ELBMOON",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 8.4,
+      "eta": "2026-10-26T20:00:00Z",
+      "timestamp": "2026-10-26T05:48:23Z"
+     },
+     {
+      "mmsi": 255619000,
+      "imo": 9247120,
+      "vessel_name": "OSTERBOTTEN",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4.5,
+      "eta": "2026-10-27T13:00:00Z",
+      "timestamp": "2026-10-26T13:19:16.374537Z"
+     },
+     {
+      "mmsi": 244770997,
+      "imo": 9988102,
+      "vessel_name": "LONGEON",
+      "destination": "LV RIX",
+      "destination_port": "LVRIX",
+      "draught": 4,
+      "eta": "2026-10-27T19:30:00Z",
+      "timestamp": "2026-10-26T12:52:40Z"
+     }
+    ]
+   }
+  },
+  "butinge_area": {
+   "ok": true,
+   "status": 200,
+   "remaining": null,
+   "data": {
+    "vessels": []
+   }
+  }
+ }
+}
