@@ -97,7 +97,7 @@ def commons_info(fname):
         if not ii: return None
         md = ii.get("extmetadata") or {}
         return {"thumb": ii.get("thumburl") or ii.get("url"), "page": ii.get("descriptionurl"), "mime": ii.get("mime", ""),
-                "author": strip_html((md.get("Artist") or {}).get("value"))[:120] or "nezināms",
+                "author": re.split(r"\s*\(|\s+See also|\s+\|", strip_html((md.get("Artist") or {}).get("value")))[0][:80] or "nezināms",
                 "license": strip_html((md.get("LicenseShortName") or {}).get("value"))[:60]}
     return None
 
