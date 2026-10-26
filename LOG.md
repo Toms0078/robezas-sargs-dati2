@@ -53,3 +53,5 @@ kas palika, problēmas, recenzenta piezīmes.
   koridors pār Baltijas jūru, Somu līcis/Pēterburga, Pleskava–Baltkrievija); `air_checks.py` pievieno `trace` arī `ruList` ierakstiem.
 - 2026-10-26: GitHub `air-checks.yml` grafiks reāli palaižas tikai ik 2–6 h (lapā lidmašīnas bija stundām vecas). Tagad
   `air_checks.py` palaiž arī `mil-tracks.yml` cilpa ik ~10 min. Lapa lidmašīnas kartītē rāda pozīcijas vecumu.
+- 2026-10-26: `mil-tracks.yml` cikls saīsināts uz ~4 min (pārbaude un maršruti saglabājas ik ~5 min). GitHub Pages lapa
+  `robezas-sargs/` tos lasa ik 3 min; claude.ai artifakts — ik stundu (ieplānotu uzdevumu minimums).
