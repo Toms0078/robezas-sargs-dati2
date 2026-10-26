@@ -1,0 +1,51 @@
+name: Militāro lidmašīnu maršruti (adsb.lol)
+
+# Viena palaišana strādā ~5 h 40 min: ik ~30 s nolasa adsb.lol militāro sarakstu un ik ~10 min saglabā
+# data/rs/miltracks.json. Nākamā plānotā palaišana gaida rindā (concurrency) un turpina.
+on:
+  schedule:
+    - cron: "17 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      loop:
+        description: "Strādāt ~6 h ciklā (yes) vai vienu ciklu (no)"
+        default: "yes"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mil-tracks
+  cancel-in-progress: false
+
+jobs:
+  tracks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Seko militārajām lidmašīnām (ciklā)
+        env:
+          LOOP: ${{ github.event_name == 'schedule' && 'yes' || inputs.loop }}
+        run: |
+          git config user.name "robezas-sargs-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          end=$((SECONDS + 20400))
+          while true; do
+            git pull -q --rebase -X theirs origin main || git rebase --abort || true
+            python mil_tracks.py 540 2>&1 | tail -n 5 | tee data/rs/miltracks.log || true
+            git add data/rs/miltracks.json data/rs/miltracks.log
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Maršruti: $(date -u +%Y-%m-%dT%H:%MZ)"
+              for i in 1 2 3; do
+                git pull -q --rebase -X theirs origin main && git push -q && break
+                sleep 5
+              done
+            fi
+            [ "$LOOP" = "yes" ] || break
+            [ $SECONDS -lt $end ] || break
+          done

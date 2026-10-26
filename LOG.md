@@ -44,3 +44,8 @@ kas palika, problēmas, recenzenta piezīmes.
 - 2026-10-26 (papildinājums): `type_photos.py` meklē arī **konkrētās militārās lidmašīnas** foto Commons pēc reģistrācijas
   (faila nosaukumā jābūt reģ. numuram + aviācijas vārdam vai tipa nosaukumam, licence CC/PD) → `typephotos/R_<REĢ>.json` ar lauku `reg`.
   Lapa vispirms rāda konkrētās lidmašīnas foto, citādi tipa foto. Neatrastos reģ. atkārtoti meklē pēc 30 dienām.
+- 2026-10-26: **Pilni militāro lidmašīnu maršruti.** `mil_tracks.py` + `mil-tracks.yml` (cilpa ~5 h 40 min, cron ik 2 h :17): ik ~30 s
+  nolasa adsb.lol `/v2/mil`, glabā pozīcijas mūsu apgabalā pēdējās 12 h `data/rs/miltracks.json` (taisni posmi vienkāršoti,
+  pagriezieni saglabāti). `air_checks.py` jaunākajai pārbaudei pievieno `trace` (≤151 punkts; vecākajām pārbaudēm noņem),
+  ko Robežas sarga lapa zīmē kā pilnu maršrutu. Zviedrijas GLF4/S102 ar SVF izsaukumu vai reģ. 102002/102003 tagad apzīmē kā
+  S 102B Korpen (signālu izlūkošana).

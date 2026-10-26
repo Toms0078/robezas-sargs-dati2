@@ -226,6 +226,15 @@ def main():
             lst.append(item)
     order = {"tanker": 0, "other": 1, "nato": 2}
     lst.sort(key=lambda x: order[x["cat"]])
+    # pilni maršruti no mil_tracks.py (ik ~30 s pozīcijas pēdējās 12 h) — tikai jaunākajai pārbaudei
+    try: mt = json.load(open(os.path.join(HERE, "data", "rs", "miltracks.json"), encoding="utf-8")).get("tracks") or {}
+    except Exception: mt = {}
+    iso = lambda s_: dt.datetime.fromtimestamp(s_, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for x in lst:
+        tr = (mt.get(x["hex"]) or {}).get("p") or []
+        if len(tr) < 2: continue
+        if len(tr) > 150: st = len(tr) / 150; tr = [tr[int(i * st)] for i in range(150)] + [tr[-1]]
+        x["trace"] = [[q[0], q[1], iso(q[2])] for q in tr] + [[x["lat"], x["lon"], t_now.strftime("%Y-%m-%dT%H:%M:%SZ")]]
     n = {k: sum(1 for x in lst if x["cat"] == k) for k in order}
     note = (f"{len(seen)} lidmašīnas gaisā ({ok_pts}/{len(POINTS)} apgabali): militārās {len(lst)} — tankeri {n['tanker']}, "
             f"NATO {n['nato']}, Krievijas/Baltkrievijas {n['other']}; Krievijas civilie reisi {len(ru)}.")
@@ -239,6 +248,8 @@ def main():
     from zoneinfo import ZoneInfo
     doc["_id"] = t_now.astimezone(ZoneInfo("Europe/Riga")).strftime("%Y-%m-%d-%H%M")
     arr = thin([doc] + [x for x in arr if x.get("_id") != doc["_id"]], t_now)
+    for old_doc in arr[1:]:
+        for it in old_doc.get("list") or []: it.pop("trace", None)
     json.dump(arr, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     save_cache()
     log(note + f" Maršruti: {sum(1 for x in lst + ru if x.get('from'))}/{len(lst) + len(ru)}, jauni vaicājumi {_new[0]}. Trases: {TRACE_N[1]}/{TRACE_N[0]}.")
