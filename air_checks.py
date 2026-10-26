@@ -219,6 +219,10 @@ def main():
             t = (a.get("t") or "").upper()
             item["cat"] = c
             item["note"] = NOTE[c] + (f" — {ROLE[t]}" if t in ROLE else (f" ({t})" if t else "")) + (f", reģ. {a.get('r')}" if a.get("r") else "")
+            reg_u = str(a.get("r") or "").strip()
+            if t in ("GLF4", "S102") and (item["callsign"].upper().startswith("SVF") or reg_u in ("102002", "102003")):
+                # Zviedrijas S 102B Korpen (Gulfstream IV) — signālu izlūkošana; lido gar robežām, lai uztvertu radarus un sakarus
+                item["note"] = NOTE[c] + " — Zviedrijas signālu izlūkošanas lidmašīna S 102B Korpen" + (f", reģ. {reg_u}" if reg_u else "")
             lst.append(item)
     order = {"tanker": 0, "other": 1, "nato": 2}
     lst.sort(key=lambda x: order[x["cat"]])

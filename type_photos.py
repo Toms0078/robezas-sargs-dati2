@@ -33,7 +33,7 @@ TYPES = {
     "GLHK": "Northrop Grumman RQ-4 Global Hawk", "MQ9": "General Atomics MQ-9 Reaper", "U2": "Lockheed U-2",
     "E2": "Northrop Grumman E-2 Hawkeye", "GLF4": "Gulfstream IV", "GLF5": "Gulfstream V", "GLF6": "Gulfstream G650",
     "B350": "Beechcraft King Air", "B52": "Boeing B-52 Stratofortress", "B1": "Rockwell B-1 Lancer",
-    "S102": "Saab 340", "SF34": "Saab 340", "PC12": "Pilatus PC-12", "PC24": "Pilatus PC-24", "M28": "PZL M28 Skytruck",
+    "S102": "Gulfstream IV", "SF34": "Saab 340", "PC12": "Pilatus PC-12", "PC24": "Pilatus PC-24", "M28": "PZL M28 Skytruck",
     "LJ35": "Learjet 35", "C560": "Cessna Citation V", "C680": "Cessna Citation Sovereign", "FA7X": "Dassault Falcon 7X",
     "F900": "Dassault Falcon 900", "F2TH": "Dassault Falcon 2000", "CL60": "Bombardier Challenger 600 series",
     "GL5T": "Bombardier Global 5000", "GLEX": "Bombardier Global Express",
