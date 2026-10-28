@@ -6,6 +6,7 @@ atsevišķi Krievijas civilie reisi (ruList). Klasifikācija pēc tipa, izsaukum
 """
 import json, math, os, re, sys, time, datetime as dt
 import requests
+import adsb_src
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "data", "rs", "airchecks.json")
@@ -189,18 +190,19 @@ def main():
     log(f"{t_now.isoformat()} lidmašīnu pārbaude")
     seen, ok_pts = {}, 0
     for la, lo, r in POINTS:
-        j = get(f"https://api.adsb.lol/v2/point/{la}/{lo}/{r}")
+        j = adsb_src.point(la, lo, r)
         if not j: continue
         ok_pts += 1
         for a in j.get("ac") or []:
             if a.get("alt_baro") == "ground" or a.get("lat") is None: continue
             seen[a["hex"]] = a
-    mj = get("https://api.adsb.lol/v2/mil")
+    mj = adsb_src.mil()
     for a in (mj or {}).get("ac") or []:
         if a.get("lat") is None or a.get("alt_baro") == "ground": continue
         if BBOX[0] <= a["lat"] <= BBOX[1] and BBOX[2] <= a["lon"] <= BBOX[3]:
             seen.setdefault(a["hex"], a)
-    log(f"apgabali: {ok_pts}/{len(POINTS)}, militāro saraksts: {'ok' if mj else 'nav'}, lidmašīnas gaisā: {len(seen)}")
+    for e in adsb_src.errors[:12]: log("  " + e)
+    log(f"apgabali: {ok_pts}/{len(POINTS)}, militāro saraksts: {'ok' if mj else 'nav'}, lidmašīnas gaisā: {len(seen)}, avoti: {adsb_src.source_label()}")
     if not seen:
         log("nav datu — neko nesaglabāju"); open(LOG, "w").write("\n".join(log_lines) + "\n"); return
     lst, ru = [], []
@@ -242,7 +244,7 @@ def main():
             f"NATO {n['nato']}, Krievijas/Baltkrievijas {n['other']}; Krievijas civilie reisi {len(ru)}.")
     doc = {"checkedAt": t_now.strftime("%Y-%m-%dT%H:%M:%SZ"), "area": "Baltija, Polija, Baltijas jūra, Gotlande, Somija, Zviedrija, Norvēģija",
            "totalAirborne": len(seen), "tankers": n["tanker"], "natoMilitary": n["tanker"] + n["nato"], "otherMilitary": n["other"],
-           "ruCivil": len(ru), "list": lst, "ruList": ru, "note": note, "source": "adsb.lol (GitHub Actions)"}
+           "ruCivil": len(ru), "list": lst, "ruList": ru, "note": note, "source": adsb_src.source_label() + " (GitHub Actions)"}
     try:
         arr = json.load(open(OUT, encoding="utf-8"))
     except Exception:

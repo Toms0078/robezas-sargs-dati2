@@ -60,3 +60,8 @@ kas palika, problēmas, recenzenta piezīmes.
   JSON lasīšanu no `../data/rs/` ik 3 min (`photos/X` → `typephotos/X.json`, `doc().get()` atbalstīts). Pārbaudīts headless
   1250/400 px, bez pageerror. `air_checks.py`: AWACS/izlūki (E3TF, RC-135, P-8, GLF4/S102 u.c.) ar militāru karodziņu vai
   NATO izsaukumu vairs netiek klasificēti kā tankeri.
+
+## 2026-10-28 — lidmašīnu vākšana: rezerves avoti
+- Problēma: kopš ~08:05 UTC adsb.lol uz GitHub Actions pieprasījumiem atbildēja HTTP 429 — pārbaudēs izdevās tikai 1/9 apgabali, kartē lidmašīnu gandrīz nebija.
+- Labojums: jauns `adsb_src.py` — katrs vaicājums pēc kārtas adsb.lol → airplanes.live → adsb.fi (tas pats readsb formāts, bez atslēgām), ≤1 piepr./s uz avotu, pēc 429 avots 5 min izlaists. Izmanto `air_checks.py` un `mil_tracks.py`; logā un laukā `source` redzams, kuri avoti strādāja.
+- Lietotājam: claude.ai ieplānotais uzdevums "Baltijas debesis" (kopē uz artefaktu) 28.10. 12:32 UTC beidzās ar ACCESS_DENIED — jāseko, vai atjaunojas.

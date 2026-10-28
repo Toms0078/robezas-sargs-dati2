@@ -9,6 +9,7 @@ Lieto: python mil_tracks.py [seconds]
 """
 import json, math, os, sys, time, datetime as dt
 import requests
+import adsb_src
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "data", "rs", "miltracks.json")
@@ -58,17 +59,10 @@ def main():
     end = time.time() + secs; polls = ok = 0
     while True:
         polls += 1
-        try:
-            r = requests.get("https://api.adsb.lol/v2/mil", headers=UA, timeout=25)
-            j = r.json() if r.status_code == 200 else None
-        except Exception as e:
-            print("kļūda:", str(e)[:100]); j = None
+        j = adsb_src.mil()
         if j and polls % 2 == 1:
             for la0, lo0, r0 in RU_POINTS:
-                try:
-                    rr = requests.get(f"https://api.adsb.lol/v2/point/{la0}/{lo0}/{r0}", headers=UA, timeout=25)
-                    jj = rr.json() if rr.status_code == 200 else None
-                except Exception: jj = None
+                jj = adsb_src.point(la0, lo0, r0)
                 if jj: j.setdefault("ac", []).extend(a for a in (jj.get("ac") or []) if is_ru(a))
                 time.sleep(1)
         if j:
@@ -92,7 +86,8 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(data, open(OUT, "w", encoding="utf-8"), separators=(",", ":"))
     npts = sum(len(t["p"]) for t in tracks.values())
-    print(f"{data['updatedAt']} vaicājumi {ok}/{polls}, lidmašīnas {len(tracks)}, punkti {npts}, fails {os.path.getsize(OUT)//1024} KB")
+    print(f"{data['updatedAt']} vaicājumi {ok}/{polls}, lidmašīnas {len(tracks)}, punkti {npts}, fails {os.path.getsize(OUT)//1024} KB, avoti {adsb_src.source_label()}")
+    for e in adsb_src.errors[:10]: print("  " + e)
 
 if __name__ == "__main__":
     main()
