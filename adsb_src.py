@@ -1,7 +1,7 @@
 """Atvērto ADS-B datu avoti ar rezervēm (bez AI, bez atslēgām).
 
 adsb.lol no GitHub Actions kopīgajām IP adresēm mēdz atbildēt HTTP 429 (pārāk daudz pieprasījumu).
-Tādēļ katru vaicājumu mēģinām pēc kārtas: adsb.lol → airplanes.live → adsb.fi. Visiem ir tas pats readsb JSON formāts
+Tādēļ katru vaicājumu mēģinām pēc kārtas: adsb.lol → adsb.fi. Visiem ir tas pats readsb JSON formāts
 (lauks "ac"; adsb.fi v2 dažkārt "aircraft"). Avots, kas atbildēja 429 vai kļūdu, šajā palaišanā uz COOL sekundēm tiek
 izlaists, lai to nepārslogotu. Ievērojam ~1 pieprasījumu sekundē uz katru avotu (airplanes.live un adsb.fi noteikums).
 """
@@ -25,7 +25,8 @@ MIL = {
     "airplanes.live": "https://api.airplanes.live/v2/mil",
     "adsb.fi": "https://opendata.adsb.fi/api/v2/mil",
 }
-ORDER = ["adsb.lol", "airplanes.live", "adsb.fi"]
+# airplanes.live atbild 403 (bez atļaujas automātiskiem pieprasījumiem) — neizmantojam, ievērojam viņu noteikumus.
+ORDER = ["adsb.lol", "adsb.fi"]
 
 
 def _get(src, url):
