@@ -1,0 +1,23 @@
+== https://api.adsb.lol/v2/point/57/24/100
+HTTP/2 200 
+content-type: application/json
+x-ratelimit-limit: 4, 4;w=1, 60;w=60, 500;w=86400
+x-ratelimit-remaining: 3
+x-ratelimit-reset: 1
+{"ac":[
+{"hex":"39a203","type":"adsb_icao","flight":"TAY6IX  ","r":"F-HIQD","t":"B738","alt_baro":31425,"alt_geom":31900,"gs":436.0,"ias":281,"tas":448,"mach":0.768,"wd":249,"ws":24,"oat":-49,"tat":-2
+== https://api.airplanes.live/v2/point/57/24/100
+HTTP/2 403 
+content-type: application/json
+{"error": "Please contact us at contact@airplanes.live. Your email MUST include any links, a description of the project, and any information you deem appropriate."}
+== https://opendata.adsb.fi/api/v3/lat/57/lon/24/dist/100
+HTTP/2 200 
+content-type: application/json
+{"ac":[
+{"hex":"39a203","type":"adsb_icao","flight":"TAY6IX  ","r":"F-HIQD","t":"B738","desc":"BOEING 737-800","alt_baro":31525,"alt_geom":31975,"gs":438.1,"ias":281,"tas":450,"mach":0.768,"wd":249,"w
+== https://opendata.adsb.fi/api/v2/lat/57/lon/24/dist/100
+HTTP/2 200 
+content-type: application/json
+{"now": 1793212796.001
+,"aircraft":[
+{"hex":"39a203","type":"adsb_icao","flight":"TAY6IX  ","r":"F-HIQD","t":"B738","desc":"BOEING 737-800","alt_baro":31575,"alt_geom":32025,"gs":438.1,"ias":281,"tas"
