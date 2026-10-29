@@ -1,9 +1,27 @@
 {
- "updatedAt": "2026-10-29T08:39:53Z",
- "checkedAt": "2026-10-29T08:39:53Z",
+ "updatedAt": "2026-10-29T14:29:31Z",
+ "checkedAt": "2026-10-29T14:29:31Z",
  "note": "Mūsu reģionā aktīvu trauksmju nav.",
  "source": "GitHub Actions + Gemini",
  "alerts": [
+  {
+   "id": "pl-2026-10-29-001",
+   "cc": "PL",
+   "kind": "warning",
+   "level": "yellow",
+   "status": "ended",
+   "start": "2026-10-29T07:16:49Z",
+   "end": null,
+   "areas": [
+    "PL-podkarpackie-leski"
+   ],
+   "channel": "sms",
+   "title": "RCB brīdinājums par trauksmes sirēnu pārbaudi Lesko apriņķī (beigas nav paziņotas)",
+   "text": "Iedzīvotājiem izsūtīts RCB brīdinājums par plānotu trauksmes sirēnu pārbaudi.",
+   "source": "Gov.pl",
+   "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE4zNmVRMy1fOXJoSENXeldITXhMX29QNmxYdGZsemlqVlpJaW1LNmtxYVpRUzZyTmttLVg2cl90bHFfUGlsNi01Vjk1R3pGT2tva01wRzFaWWNGbFZGSjI0cGsxQWJaSFo0ZjU0bXRZaVFRekFqSlJRa1dFOA?oc=5",
+   "via": "gemini-fast"
+  },
   {
    "id": "pl-2026-10-28-0915",
    "cc": "PL",
@@ -106,24 +124,22 @@
    "via": "gemini-fast"
   },
   {
-   "areas": [
-    "LV-kraslavas",
-    "LV-rezeknes",
-    "LV-pils-rezekne"
-   ],
-   "cc": "LV",
-   "channel": "cb",
-   "end": "2026-10-22T10:15:00Z",
-   "extra": [],
-   "id": "lv-2026-10-22-1240",
+   "id": "ru-2026-10-29-001",
+   "cc": "RU",
    "kind": "air",
-   "level": "yellow",
-   "source": "LSM",
-   "start": "2026-10-22T09:40:00Z",
+   "level": "red",
    "status": "ended",
-   "text": "Informatīvs brīdinājums — tūlītēja rīcība nebija nepieciešama, tikai jāseko informācijai.",
-   "title": "Iespējams gaisa telpas apdraudējums Krāslavas un Rēzeknes novadā (dzeltenais, informatīvs)",
-   "url": "https://www.lsm.lv/raksts/zinas/latvija/22.10.2026-izsludinats-iespejamais-gaisa-telpas-apdraudejums-kraslavas-un-rezeknes-novada.a668670/"
+   "start": "2026-10-29T03:30:00Z",
+   "end": "2026-10-29T03:20:00Z",
+   "areas": [
+    "RU-nizhny"
+   ],
+   "channel": "official",
+   "title": "Atcelts bezpilota lidaparātu briesmu režīms Ņižņijnovgorodas apgabalā",
+   "text": "Iepriekš izsludinātais bezpilota lidaparātu briesmu režīms Ņižņijnovgorodas apgabalā ir atcelts.",
+   "source": "Время Н",
+   "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE01d28tSjYtU2I3ajk0Wk1SbGdDSTlkbGtPRWp5OGVlMVliV1ZaamlpMlkzVXN5bHg2V3Nqaldsamw0T2lFYlhPMGxB?oc=5",
+   "via": "gemini-fast"
   },
   {
    "id": "ru-2026-10-28-0330",
@@ -179,5 +195,6 @@
    "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOdGx5aWJuMnphWDFqMHpJVXhyUVdRbFNUeEJNbFkydGFyakFhTzMxZE8xWGJlbk9wUlktWWhEVVg2N2N2NW5SSFpESjFGbzJIai1uSVFYemRQMmxFS2k1VVhZM3MxQ1Noa3RKejFRRjlKdUFKZ0cxYkpyT2QwMW11TG9HWGJodmt4NzRtZFFCVHFEeGNXOVl3dmNsYU56V0YxLUlMMm1FaUVtZ2FnQzlxR21UVWdVU3I5cmVNU05MeFhfLWdRX3ZWZUR4RFJRYTIwTnfSAdIBQVVfeXFMTnRseWlibjJ6YVgxajB6SVV4clFXUWxTVHhCTWxZMnRhcmpBYU8zMWRPMVhiZW5PcFJZLVloRFVYNjdjdjVuUkhaREoxRm8ySGotbklRWHpkUDJsRUtpNVVYWTNzMUNTaGt0SnoxUUY5SnVBSmdHMWJKck9kMDFtdUxvR1hiaHZreDc0bWRRQlRxRHhjVzlZd3ZjbGFOeldGMS1JTDJtRWlFbWdhZ0M5cUdtVFVnVVNyOXJlTVNOTHhYXy1nUV92VmVEeERSUWEyME53?oc=5",
    "via": "gemini-fast"
   }
- ]
+ ],
+ "fastCheckedAt": "2026-10-29T14:29:31Z"
 }
