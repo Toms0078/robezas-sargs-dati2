@@ -486,7 +486,7 @@ details.more > summary .muted { font-size: 13px; }
     <span class="stamp num" id="updated">Ielādē…</span>
   </div>
   <nav class="nav" aria-label="Sadaļas">
-      <a href="#parskats">Vērtējums</a><a href="#debesis">Karte</a><a href="#izmainas">Izmaiņas</a><a href="#vestniecibas">Vēstniecības</a><a href="#karaspeks">Karaspēks</a><a href="#infrastruktura">Infrastruktūra</a><a href="#more">Viss</a>
+      <a href="#parskats">Vērtējums</a><a href="#debesis">Karte</a><a href="#tiesraide">Tiešraide</a><a href="#izmainas">Izmaiņas</a><a href="#vestniecibas">Vēstniecības</a><a href="#karaspeks">Karaspēks</a><a href="#infrastruktura">Infrastruktūra</a><a href="#more">Viss</a>
     </nav>
 </header>
 
@@ -652,6 +652,20 @@ details.more > summary .muted { font-size: 13px; }
       </table>
     </div>
   </section>
+<!-- GH-ONLY:tiesraide (tikai GitHub Pages versijā; claude.ai artefakts iframe neatļauj) -->
+<section id="tiesraide" aria-labelledby="liveT">
+  <div class="sec-head"><h2 id="liveT">Lidmašīnas tiešraidē</h2><a class="livefull" href="https://globe.adsb.lol/?lat=57.5&amp;lon=23&amp;zoom=5.5" target="_blank" rel="noopener">Atvērt pilnā ekrānā ↗</a></div>
+  <div class="panel liveframe">
+    <iframe src="https://globe.adsb.lol/?lat=57.5&amp;lon=23&amp;zoom=5.5" title="Lidmašīnas tiešraidē — adsb.lol karte" loading="lazy" referrerpolicy="no-referrer"></iframe>
+  </div>
+  <p class="note" style="margin:8px 0 0;font-size:12.5px">Avots: <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> — atklātie ADS-B dati no brīvprātīgo uztvērējiem, atjaunojas ik sekundi. Iznīcinātāji un Krievijas militārās lidmašīnas bieži lido ar izslēgtu raidītāju, tāpēc kartē tās var neredzēt.</p>
+</section>
+<style>
+#tiesraide .livefull { font-size: 13.5px; white-space: nowrap; }
+#tiesraide .liveframe { padding: 0; overflow: hidden; }
+#tiesraide iframe { display: block; width: 100%; height: min(75vh, 640px); min-height: 360px; border: 0; background: var(--sea); }
+</style>
+<!-- /GH-ONLY:tiesraide -->
 <section id="izmainas" class="pulse" aria-label="Izmaiņas un datu svaigums">
   <div class="panel"><h3>Kas mainījies</h3><p class="note" id="chgWhen" style="margin:0 0 6px;font-size:12.5px"></p><ul class="chg" id="chgList"><li><span class="ar">·</span><span class="muted">Salīdzinājums parādīsies, kad būs ielādēti divi pārskati.</span></li></ul></div>
   <div class="panel"><h3>Datu svaigums</h3><p class="note" style="margin:0 0 6px;font-size:12.5px">Cik sen katrs bloks atjaunots. Dzeltens vai sarkans nozīmē, ka dati jāpārbauda.</p><div class="frlist" id="frList"></div></div>

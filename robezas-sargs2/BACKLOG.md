@@ -9,6 +9,9 @@ pasaules līmeņa kvalitāte, strādā bez viņa iesaistes.** Lietotājs pārsva
 - Kanoniskais avots: claude.ai artefakts https://claude.ai/artifact/RyNuSPzgsooxbcqqiDVTNn (lapa bez `<html>/<head>` skeleta, ar `window.claude.use("db")`).
 - GitHub Pages kopija: `robezas-sargs2/index.html` = `<head>` + artefakta saturs + datu aizstājējs (`<script>` ar "Robežas sargs 2 — GitHub versija",
   lasa `../data/rs/*.json`). Pēc katras izmaiņas atjauno ABAS: publicē artefaktu un pārbūvē GitHub failu (saglabā to pašu head un aizstājēju).
+- GitHub failā ir arī bloki starp `<!-- GH-ONLY:… -->` un `<!-- /GH-ONLY:… -->` (piem. `tiesraide` — adsb.lol iframe, ko claude.ai artefakts
+  neatļauj) un navigācijas saite `<a href="#tiesraide">Tiešraide</a>` aiz „Karte“. Pārbūvējot GitHub failu, šos blokus un saiti OBLIGĀTI saglabā
+  tajā pašā vietā (bloks `tiesraide` — tieši aiz `<section id="debesis">` beigām).
 
 ## Darāmais (prioritātes secībā)
 - [x] 2026-10-26 Lidmašīnas izvēle, uzspiežot maršruta līnijai vai sākuma punktam.

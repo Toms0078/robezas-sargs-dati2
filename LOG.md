@@ -65,3 +65,8 @@ kas palika, problēmas, recenzenta piezīmes.
 - Problēma: kopš ~08:05 UTC adsb.lol uz GitHub Actions pieprasījumiem atbildēja HTTP 429 — pārbaudēs izdevās tikai 1/9 apgabali, kartē lidmašīnu gandrīz nebija.
 - Labojums: jauns `adsb_src.py` — katrs vaicājums pēc kārtas adsb.lol → airplanes.live → adsb.fi (tas pats readsb formāts, bez atslēgām), ≤1 piepr./s uz avotu, pēc 429 avots 5 min izlaists. Izmanto `air_checks.py` un `mil_tracks.py`; logā un laukā `source` redzams, kuri avoti strādāja.
 - Lietotājam: claude.ai ieplānotais uzdevums "Baltijas debesis" (kopē uz artefaktu) 28.10. 12:32 UTC beidzās ar ACCESS_DENIED — jāseko, vai atjaunojas.
+- 2026-10-29: `robezas-sargs2/index.html` — sadaļa „Lidmašīnas tiešraidē“ (`#tiesraide`, aiz `#debesis`): adsb.lol globusa iframe
+  (lat 57.5, lon 23, zoom 5.5; augstums min(75vh, 640px), min 360px, loading="lazy"), saite „Atvērt pilnā ekrānā ↗“, piezīme par avotu;
+  navigācijā „Tiešraide“ aiz „Karte“. Bloks iezīmēts `<!-- GH-ONLY:tiesraide -->` (tikai GitHub versijā), BACKLOG.md norādīts to saglabāt
+  pārbūvējot. Pārbaudīts headless 1250/400 px: iframe 1146×640 / 366×640, bez horizontālas ritināšanas, bez pageerror
+  (adsb.lol saturu sesijas tīklā ielādēt nevarēja — vai vietne atļauj iegulšanu, jāpārbauda publicētajā lapā).
