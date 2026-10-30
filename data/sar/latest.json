@@ -1,8 +1,8 @@
 {
- "updated": "2026-10-29",
+ "updated": "2026-10-30",
  "period": [
-  "2026-10-11",
-  "2026-10-25"
+  "2026-10-12",
+  "2026-10-26"
  ],
  "source": "Global Fishing Watch, SAR vessel detections",
  "regions": {
@@ -14,10 +14,10 @@
     20.4,
     21.3
    ],
-   "total": 83,
-   "dark": 7,
+   "total": 82,
+   "dark": 8,
    "dark_by_class": {
-    "nenoteikts": 6,
+    "nenoteikts": 7,
     "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)": 1
    }
   },
@@ -41,10 +41,10 @@
     21.0,
     24.6
    ],
-   "total": 264,
-   "dark": 28,
+   "total": 284,
+   "dark": 26,
    "dark_by_class": {
-    "nenoteikts": 28
+    "nenoteikts": 26
    }
   },
   "kaliningrad": {
@@ -55,29 +55,15 @@
     19.2,
     21.0
    ],
-   "total": 172,
-   "dark": 96,
+   "total": 166,
+   "dark": 91,
    "dark_by_class": {
-    "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)": 32,
-    "nenoteikts": 64
+    "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)": 31,
+    "nenoteikts": 60
    }
   }
  },
  "detections": [
-  {
-   "region": "butinge",
-   "date": "2026-10-24",
-   "lat": 56.06,
-   "lon": 21.0,
-   "matched": true,
-   "name": "TAK-4",
-   "flag": "LTU",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "277148000",
-   "imo": "7920405",
-   "n": 1,
-   "buoy_km": 2.6
-  },
   {
    "region": "butinge",
    "date": "2026-10-17",
@@ -94,6 +80,20 @@
   },
   {
    "region": "butinge",
+   "date": "2026-10-24",
+   "lat": 56.06,
+   "lon": 21.0,
+   "matched": true,
+   "name": "TAK-4",
+   "flag": "LTU",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "277148000",
+   "imo": "7920405",
+   "n": 1,
+   "buoy_km": 2.6
+  },
+  {
+   "region": "butinge",
    "date": "2026-10-23",
    "lat": 55.69,
    "lon": 20.690001,
@@ -105,20 +105,6 @@
    "imo": "9019080",
    "n": 1,
    "buoy_km": 44.6
-  },
-  {
-   "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 56.31,
-   "lon": 20.58,
-   "matched": true,
-   "name": "VENTA MAERSK",
-   "flag": "DNK",
-   "type": "CARGO",
-   "mmsi": "219115000",
-   "imo": "9775763",
-   "n": 1,
-   "buoy_km": 36.2
   },
   {
    "region": "butinge",
@@ -461,17 +447,17 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 55.66,
-   "lon": 20.41,
+   "date": "2026-10-25",
+   "lat": 55.68,
+   "lon": 20.91,
    "matched": true,
-   "name": "ENERGY",
-   "flag": "PRT",
-   "type": "CARGO",
-   "mmsi": "255806300",
-   "imo": "9255787",
+   "name": "RIO",
+   "flag": "NLD",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "245618000",
+   "imo": "8613047",
    "n": 1,
-   "buoy_km": 56.3
+   "buoy_km": 42.6
   },
   {
    "region": "butinge",
@@ -643,17 +629,17 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-16",
-   "lat": 55.75,
-   "lon": 20.719999,
+   "date": "2026-10-25",
+   "lat": 55.71,
+   "lon": 20.99,
    "matched": true,
-   "name": "MARCO POLO",
-   "flag": "CYP",
+   "name": "PATRIA SEAWAYS",
+   "flag": "LTU",
    "type": "PASSENGER",
-   "mmsi": "209764000",
-   "imo": "9019080",
+   "mmsi": "277291000",
+   "imo": "8917390",
    "n": 1,
-   "buoy_km": 37.7
+   "buoy_km": 39.2
   },
   {
    "region": "butinge",
@@ -668,6 +654,20 @@
    "imo": "9269300",
    "n": 1,
    "buoy_km": 1.4
+  },
+  {
+   "region": "butinge",
+   "date": "2026-10-16",
+   "lat": 55.75,
+   "lon": 20.719999,
+   "matched": true,
+   "name": "MARCO POLO",
+   "flag": "CYP",
+   "type": "PASSENGER",
+   "mmsi": "209764000",
+   "imo": "9019080",
+   "n": 1,
+   "buoy_km": 37.7
   },
   {
    "region": "butinge",
@@ -739,34 +739,6 @@
    "imo": "1108859",
    "n": 1,
    "buoy_km": 18.6
-  },
-  {
-   "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 55.7,
-   "lon": 20.860001,
-   "matched": true,
-   "name": "FREDERIK",
-   "flag": "ATG",
-   "type": "CARGO",
-   "mmsi": "304058000",
-   "imo": "9518402",
-   "n": 1,
-   "buoy_km": 40.7
-  },
-  {
-   "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 55.73,
-   "lon": 20.57,
-   "matched": true,
-   "name": "WILSON GIJON",
-   "flag": "BHS",
-   "type": "CARGO",
-   "mmsi": "311001794",
-   "imo": "9056038",
-   "n": 1,
-   "buoy_km": 44.1
   },
   {
    "region": "butinge",
@@ -854,17 +826,17 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 56.37,
-   "lon": 20.52,
+   "date": "2026-10-25",
+   "lat": 55.72,
+   "lon": 20.75,
    "matched": true,
-   "name": "NORDBORG",
-   "flag": "NLD",
+   "name": "KATRIN",
+   "flag": "ATG",
    "type": "CARGO",
-   "mmsi": "245157000",
-   "imo": "9148180",
+   "mmsi": "305511000",
+   "imo": "9155987",
    "n": 1,
-   "buoy_km": 43.7
+   "buoy_km": 40.2
   },
   {
    "region": "butinge",
@@ -953,6 +925,20 @@
   },
   {
    "region": "butinge",
+   "date": "2026-10-12",
+   "lat": 55.75,
+   "lon": 20.700001,
+   "matched": true,
+   "name": "AURA SEAWAYS",
+   "flag": "DNK",
+   "type": "CARGO",
+   "mmsi": "219028116",
+   "imo": "9851036",
+   "n": 1,
+   "buoy_km": 38.2
+  },
+  {
+   "region": "butinge",
    "date": "2026-10-18",
    "lat": 56.3,
    "lon": 20.450001,
@@ -995,17 +981,17 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-12",
-   "lat": 55.75,
-   "lon": 20.700001,
+   "date": "2026-10-25",
+   "lat": 55.68,
+   "lon": 20.93,
    "matched": true,
-   "name": "AURA SEAWAYS",
-   "flag": "DNK",
-   "type": "CARGO",
-   "mmsi": "219028116",
-   "imo": "9851036",
+   "name": "SAND FULMAR",
+   "flag": "NLD",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "245122000",
+   "imo": "9174127",
    "n": 1,
-   "buoy_km": 38.2
+   "buoy_km": 42.5
   },
   {
    "region": "butinge",
@@ -1065,20 +1051,6 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 55.76,
-   "lon": 20.940001,
-   "matched": true,
-   "name": "ALPINE SPIRIT",
-   "flag": "MHL",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "538012731",
-   "imo": "9573696",
-   "n": 1,
-   "buoy_km": 33.6
-  },
-  {
-   "region": "butinge",
    "date": "2026-10-24",
    "lat": 55.73,
    "lon": 20.59,
@@ -1107,17 +1079,17 @@
   },
   {
    "region": "butinge",
-   "date": "2026-10-11",
-   "lat": 55.77,
-   "lon": 20.860001,
+   "date": "2026-10-25",
+   "lat": 55.81,
+   "lon": 20.5,
    "matched": true,
-   "name": "RUBIKON 202",
-   "flag": "PRT",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "255806519",
-   "imo": "9344423",
+   "name": "MSC ROSE",
+   "flag": "LBR",
+   "type": "CARGO",
+   "mmsi": "636023564",
+   "imo": "9957359",
    "n": 1,
-   "buoy_km": 33.0
+   "buoy_km": 40.0
   },
   {
    "region": "butinge",
@@ -1132,6 +1104,21 @@
    "imo": "9504126",
    "n": 1,
    "buoy_km": 39.9
+  },
+  {
+   "region": "butinge",
+   "date": "2026-10-25",
+   "lat": 55.58,
+   "lon": 21.08,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 54.1,
+   "class": "nenoteikts"
   },
   {
    "region": "butinge",
@@ -1235,6 +1222,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.77,
+   "lon": 22.34,
+   "matched": true,
+   "name": "KAMELIA",
+   "flag": "MLT",
+   "type": "CARGO",
+   "mmsi": "229245000",
+   "imo": "9188958",
+   "n": 1,
+   "buoy_km": 207.6
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-13",
    "lat": 57.82,
    "lon": 23.280001,
@@ -1246,21 +1247,6 @@
    "imo": "8989953",
    "n": 1,
    "buoy_km": 240.9
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.5,
-   "lon": 21.15,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 160.3,
-   "class": "nenoteikts"
   },
   {
    "region": "gulf_riga",
@@ -1419,6 +1405,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.12,
+   "lon": 23.889999,
+   "matched": true,
+   "name": "X-PRESS AGILITY",
+   "flag": "LBR",
+   "type": "CARGO",
+   "mmsi": "636026718",
+   "imo": "9483671",
+   "n": 1,
+   "buoy_km": 214.6
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 57.63,
    "lon": 23.049999,
@@ -1433,6 +1433,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.79,
+   "lon": 21.879999,
+   "matched": true,
+   "name": "ALAND",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255802540",
+   "imo": "9350783",
+   "n": 1,
+   "buoy_km": 200.1
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 57.53,
    "lon": 21.16,
@@ -1444,20 +1458,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 163.7
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.52,
-   "lon": 21.379999,
-   "matched": true,
-   "name": "DIAVOLO ROSSO",
-   "flag": "MLT",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "249579000",
-   "imo": "9721750",
-   "n": 1,
-   "buoy_km": 164.1
   },
   {
    "region": "gulf_riga",
@@ -1545,20 +1545,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.44,
-   "lon": 21.459999,
-   "matched": true,
-   "name": "VALDAY",
-   "flag": "ATG",
-   "type": "CARGO",
-   "mmsi": "305094000",
-   "imo": "9142576",
-   "n": 1,
-   "buoy_km": 156.3
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.27,
    "lon": 21.219999,
@@ -1629,17 +1615,17 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.9,
-   "lon": 21.48,
+   "date": "2026-10-25",
+   "lat": 57.44,
+   "lon": 21.469999,
    "matched": true,
-   "name": "RAMUS",
-   "flag": "LTU",
-   "type": "FISHING",
-   "mmsi": "277543000",
-   "imo": "6726280",
+   "name": "STENA BALTICA",
+   "flag": "DNK",
+   "type": "PASSENGER",
+   "mmsi": "219029947",
+   "imo": "9329851",
    "n": 1,
-   "buoy_km": 206.8
+   "buoy_km": 156.4
   },
   {
    "region": "gulf_riga",
@@ -1668,6 +1654,20 @@
    "imo": "8716942",
    "n": 1,
    "buoy_km": 173.5
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.09,
+   "lon": 23.889999,
+   "matched": true,
+   "name": "BRAVE HEART",
+   "flag": "BRB",
+   "type": "CARGO",
+   "mmsi": "314766000",
+   "imo": "9317767",
+   "n": 1,
+   "buoy_km": 212.8
   },
   {
    "region": "gulf_riga",
@@ -1710,20 +1710,6 @@
    "imo": "8860482",
    "n": 1,
    "buoy_km": 263.4
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.86,
-   "lon": 21.280001,
-   "matched": true,
-   "name": "MARIE",
-   "flag": "EST",
-   "type": "FISHING",
-   "mmsi": "276845000",
-   "imo": "8702757",
-   "n": 1,
-   "buoy_km": 200.9
   },
   {
    "region": "gulf_riga",
@@ -1840,6 +1826,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.7,
+   "lon": 22.110001,
+   "matched": true,
+   "name": "ELBRUNNER",
+   "flag": "CYP",
+   "type": "CARGO",
+   "mmsi": "210568000",
+   "imo": "9395563",
+   "n": 1,
+   "buoy_km": 195.1
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-23",
    "lat": 58.48,
    "lon": 21.51,
@@ -1851,6 +1851,20 @@
    "imo": "9904352",
    "n": 1,
    "buoy_km": 270.9
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.18,
+   "lon": 23.83,
+   "matched": true,
+   "name": "RADUGA PROTON",
+   "flag": "CYP",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "209658000",
+   "imo": "8131116",
+   "n": 1,
+   "buoy_km": 215.2
   },
   {
    "region": "gulf_riga",
@@ -1982,6 +1996,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.16,
+   "lon": 23.860001,
+   "matched": true,
+   "name": "ELBTEAM",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255806267",
+   "imo": "9429273",
+   "n": 1,
+   "buoy_km": 215.5
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-18",
    "lat": 57.33,
    "lon": 23.23,
@@ -2010,6 +2038,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.6,
+   "lon": 22.700001,
+   "matched": true,
+   "name": "DALARNA",
+   "flag": "CYP",
+   "type": "CARGO",
+   "mmsi": "210021000",
+   "imo": "9165085",
+   "n": 2,
+   "buoy_km": 201.2
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 58.09,
    "lon": 21.120001,
@@ -2021,6 +2063,20 @@
    "imo": "6726280",
    "n": 1,
    "buoy_km": 225.7
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.13,
+   "lon": 23.870001,
+   "matched": true,
+   "name": "X-PRESS AGILITY",
+   "flag": "LBR",
+   "type": "CARGO",
+   "mmsi": "636026718",
+   "imo": "9483671",
+   "n": 1,
+   "buoy_km": 214.2
   },
   {
    "region": "gulf_riga",
@@ -2110,6 +2166,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.08,
+   "lon": 24.0,
+   "matched": true,
+   "name": "DINA",
+   "flag": "LVA",
+   "type": "PASSENGER",
+   "mmsi": "275439000",
+   "imo": null,
+   "n": 1,
+   "buoy_km": 218.0
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-20",
    "lat": 57.55,
    "lon": 23.190001,
@@ -2192,6 +2262,20 @@
    "imo": "8702757",
    "n": 1,
    "buoy_km": 211.3
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.85,
+   "lon": 22.540001,
+   "matched": true,
+   "name": "BEATA",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255805882",
+   "imo": "9053828",
+   "n": 1,
+   "buoy_km": 220.7
   },
   {
    "region": "gulf_riga",
@@ -2307,6 +2391,20 @@
    "n": 1,
    "buoy_km": 208.5,
    "class": "nenoteikts"
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.56,
+   "lon": 22.74,
+   "matched": true,
+   "name": "DMC SAILOR",
+   "flag": "KNA",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "341894001",
+   "imo": "8807961",
+   "n": 1,
+   "buoy_km": 198.8
   },
   {
    "region": "gulf_riga",
@@ -2563,6 +2661,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.38,
+   "lon": 23.389999,
+   "matched": true,
+   "name": "LAURIERBORG",
+   "flag": "NLD",
+   "type": "CARGO",
+   "mmsi": "246924000",
+   "imo": "9279070",
+   "n": 1,
+   "buoy_km": 296.4
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.73,
    "lon": 23.040001,
@@ -2605,20 +2717,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.41,
-   "lon": 21.48,
-   "matched": true,
-   "name": "VALDEROY",
-   "flag": "LVA",
-   "type": "FISHING",
-   "mmsi": "275412000",
-   "imo": null,
-   "n": 1,
-   "buoy_km": 153.2
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-20",
    "lat": 57.19,
    "lon": 23.530001,
@@ -2658,6 +2756,20 @@
    "imo": "9633020",
    "n": 1,
    "buoy_km": 213.5
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.12,
+   "lon": 23.85,
+   "matched": true,
+   "name": "LAUNKALNE",
+   "flag": "CYP",
+   "type": "CARGO",
+   "mmsi": "210388000",
+   "imo": "9504114",
+   "n": 2,
+   "buoy_km": 212.6
   },
   {
    "region": "gulf_riga",
@@ -3101,21 +3213,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.43,
-   "lon": 21.43,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 154.8,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.09,
    "lon": 23.969999,
@@ -3127,6 +3224,20 @@
    "imo": "9322011",
    "n": 1,
    "buoy_km": 217.0
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.04,
+   "lon": 21.58,
+   "matched": true,
+   "name": "VARMLAND",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255806444",
+   "imo": "9191943",
+   "n": 1,
+   "buoy_km": 223.1
   },
   {
    "region": "gulf_riga",
@@ -3186,6 +3297,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.19,
+   "lon": 23.809999,
+   "matched": true,
+   "name": "FEGULUS",
+   "flag": "BHS",
+   "type": "CARRIER",
+   "mmsi": "311000644",
+   "imo": "9055709",
+   "n": 1,
+   "buoy_km": 214.8
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-18",
    "lat": 58.3,
    "lon": 21.09,
@@ -3197,21 +3322,6 @@
    "imo": "1095363",
    "n": 1,
    "buoy_km": 249.0
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 58.3,
-   "lon": 21.15,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 249.1,
-   "class": "nenoteikts"
   },
   {
    "region": "gulf_riga",
@@ -3395,20 +3505,6 @@
    "imo": "9412531",
    "n": 1,
    "buoy_km": 243.8
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.51,
-   "lon": 21.360001,
-   "matched": true,
-   "name": "AAI PRELUDE",
-   "flag": "HKG",
-   "type": "CARGO",
-   "mmsi": "477856900",
-   "imo": "9952361",
-   "n": 1,
-   "buoy_km": 162.9
   },
   {
    "region": "gulf_riga",
@@ -3622,6 +3718,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.64,
+   "lon": 23.0,
+   "matched": true,
+   "name": "HS HAN",
+   "flag": "MHL",
+   "type": "CARGO",
+   "mmsi": "538012276",
+   "imo": "9611589",
+   "n": 1,
+   "buoy_km": 214.9
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-18",
    "lat": 57.67,
    "lon": 21.540001,
@@ -3647,6 +3757,20 @@
    "imo": "9321615",
    "n": 1,
    "buoy_km": 201.9
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.13,
+   "lon": 23.860001,
+   "matched": true,
+   "name": "ELBRUNNER",
+   "flag": "CYP",
+   "type": "CARGO",
+   "mmsi": "210568000",
+   "imo": "9395563",
+   "n": 1,
+   "buoy_km": 213.7
   },
   {
    "region": "gulf_riga",
@@ -3748,20 +3872,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.47,
-   "lon": 21.48,
-   "matched": true,
-   "name": "EDITH ESSBERGER",
-   "flag": "PRT",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "255916482",
-   "imo": "9191656",
-   "n": 1,
-   "buoy_km": 159.8
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 57.63,
    "lon": 21.469999,
@@ -3846,6 +3956,34 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.09,
+   "lon": 23.9,
+   "matched": true,
+   "name": "BRAVE HEART",
+   "flag": "BRB",
+   "type": "CARGO",
+   "mmsi": "314766000",
+   "imo": "9317767",
+   "n": 1,
+   "buoy_km": 213.4
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.11,
+   "lon": 23.92,
+   "matched": true,
+   "name": "ELBTEAM",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255806267",
+   "imo": "9429273",
+   "n": 1,
+   "buoy_km": 215.6
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 57.11,
    "lon": 23.879999,
@@ -3913,20 +4051,6 @@
    "imo": "9268875",
    "n": 1,
    "buoy_km": 213.3
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 58.21,
-   "lon": 21.040001,
-   "matched": true,
-   "name": "PIZHMA",
-   "flag": "RUS",
-   "type": "CARGO",
-   "mmsi": "273413510",
-   "imo": "8814354",
-   "n": 1,
-   "buoy_km": 238.9
   },
   {
    "region": "gulf_riga",
@@ -4014,6 +4138,34 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.1,
+   "lon": 21.309999,
+   "matched": true,
+   "name": "LV WARSHIP P-07",
+   "flag": "LVA",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "275421000",
+   "imo": null,
+   "n": 1,
+   "buoy_km": 117.4
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.1,
+   "lon": 23.969999,
+   "matched": true,
+   "name": "AMBER STAR",
+   "flag": "ATG",
+   "type": "CARGO",
+   "mmsi": "305641000",
+   "imo": "9534286",
+   "n": 1,
+   "buoy_km": 217.6
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.68,
    "lon": 21.93,
@@ -4095,6 +4247,20 @@
    "imo": "8331584",
    "n": 1,
    "buoy_km": 219.1
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.33,
+   "lon": 23.549999,
+   "matched": true,
+   "name": "PATAGONIA",
+   "flag": "SGP",
+   "type": "CARGO",
+   "mmsi": "566098000",
+   "imo": "9611280",
+   "n": 1,
+   "buoy_km": 211.9
   },
   {
    "region": "gulf_riga",
@@ -4198,6 +4364,34 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.35,
+   "lon": 21.02,
+   "matched": true,
+   "name": "ANDREY ZUEV",
+   "flag": "RUS",
+   "type": "CARGO",
+   "mmsi": "273453780",
+   "imo": "9873125",
+   "n": 1,
+   "buoy_km": 254.4
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.39,
+   "lon": 23.459999,
+   "matched": true,
+   "name": "EVAGELIA",
+   "flag": "LBR",
+   "type": "CARGO",
+   "mmsi": "636026119",
+   "imo": "1085992",
+   "n": 1,
+   "buoy_km": 212.4
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-18",
    "lat": 57.81,
    "lon": 22.709999,
@@ -4282,6 +4476,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.11,
+   "lon": 23.870001,
+   "matched": true,
+   "name": "KILLU",
+   "flag": "ATG",
+   "type": "CARGO",
+   "mmsi": "304625000",
+   "imo": "9454826",
+   "n": 2,
+   "buoy_km": 213.0
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-19",
    "lat": 57.08,
    "lon": 23.530001,
@@ -4335,6 +4543,20 @@
    "imo": "7817531",
    "n": 1,
    "buoy_km": 145.6
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.07,
+   "lon": 24.01,
+   "matched": true,
+   "name": "MARTHA HOJ",
+   "flag": "DNK",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "219034422",
+   "imo": "8937596",
+   "n": 1,
+   "buoy_km": 218.0
   },
   {
    "region": "gulf_riga",
@@ -4678,6 +4900,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.87,
+   "lon": 22.66,
+   "matched": true,
+   "name": "FINNLAND",
+   "flag": "PRT",
+   "type": "CARGO",
+   "mmsi": "255806250",
+   "imo": "9301598",
+   "n": 1,
+   "buoy_km": 226.0
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.09,
    "lon": 23.889999,
@@ -4734,20 +4970,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.41,
-   "lon": 21.379999,
-   "matched": true,
-   "name": "GT AURIGA",
-   "flag": "ATG",
-   "type": "CARGO",
-   "mmsi": "304010285",
-   "imo": "9041318",
-   "n": 1,
-   "buoy_km": 152.1
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 56.91,
    "lon": 21.139999,
@@ -4773,6 +4995,20 @@
    "imo": "6726280",
    "n": 1,
    "buoy_km": 159.0
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.19,
+   "lon": 21.49,
+   "matched": true,
+   "name": "RIX SPIRIT",
+   "flag": "CYP",
+   "type": "CARGO",
+   "mmsi": "210549000",
+   "imo": "9136204",
+   "n": 1,
+   "buoy_km": 238.8
   },
   {
    "region": "gulf_riga",
@@ -4829,6 +5065,21 @@
    "imo": "8729303",
    "n": 1,
    "buoy_km": 236.8
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.19,
+   "lon": 24.15,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 305.1,
+   "class": "nenoteikts"
   },
   {
    "region": "gulf_riga",
@@ -4903,6 +5154,20 @@
   },
   {
    "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 57.84,
+   "lon": 22.549999,
+   "matched": true,
+   "name": "BALTIC ARROW",
+   "flag": "KNA",
+   "type": "CARGO",
+   "mmsi": "341810000",
+   "imo": "9243863",
+   "n": 1,
+   "buoy_km": 220.0
+  },
+  {
+   "region": "gulf_riga",
    "date": "2026-10-13",
    "lat": 57.13,
    "lon": 23.84,
@@ -4956,6 +5221,20 @@
    "imo": "9750440",
    "n": 1,
    "buoy_km": 212.6
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 55.33,
+   "lon": 20.65,
+   "matched": true,
+   "name": "BALKHAN",
+   "flag": "RUS",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "273410800",
+   "imo": "8724509",
+   "n": 1,
+   "buoy_km": 83.7
   },
   {
    "region": "kaliningrad",
@@ -5193,20 +5472,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.98,
-   "lon": 19.459999,
-   "matched": true,
-   "name": "CLYNELISH",
-   "flag": "SGP",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "563330900",
-   "imo": "1055480",
-   "n": 1,
-   "buoy_km": 152.9
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-19",
    "lat": 54.31,
    "lon": 19.370001,
@@ -5221,21 +5486,7 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-23",
-   "lat": 55.17,
-   "lon": 20.01,
-   "matched": true,
-   "name": "MRTK-0857",
-   "flag": "RUS",
-   "type": "FISHING",
-   "mmsi": "273437740",
-   "imo": "8953459",
-   "n": 1,
-   "buoy_km": 115.7
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
+   "date": "2026-10-25",
    "lat": 54.66,
    "lon": 19.809999,
    "matched": false,
@@ -5247,6 +5498,20 @@
    "n": 1,
    "buoy_km": 171.9,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-23",
+   "lat": 55.17,
+   "lon": 20.01,
+   "matched": true,
+   "name": "MRTK-0857",
+   "flag": "RUS",
+   "type": "FISHING",
+   "mmsi": "273437740",
+   "imo": "8953459",
+   "n": 1,
+   "buoy_km": 115.7
   },
   {
    "region": "kaliningrad",
@@ -5611,20 +5876,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.64,
-   "lon": 20.040001,
-   "matched": true,
-   "name": "PARUSNIK",
-   "flag": "RUS",
-   "type": "FISHING",
-   "mmsi": "273354510",
-   "imo": null,
-   "n": 1,
-   "buoy_km": 168.4
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-12",
    "lat": 54.64,
    "lon": 19.799999,
@@ -5637,21 +5888,6 @@
    "n": 1,
    "buoy_km": 174.2,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 55.11,
-   "lon": 19.66,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 133.6,
-   "class": "nenoteikts"
   },
   {
    "region": "kaliningrad",
@@ -5726,21 +5962,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.64,
-   "lon": 19.799999,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 174.2,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-23",
    "lat": 54.7,
    "lon": 19.76,
@@ -5799,21 +6020,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.69,
-   "lon": 19.9,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 166.6,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-23",
    "lat": 54.93,
    "lon": 19.889999,
@@ -5839,20 +6045,6 @@
    "imo": "9878929",
    "n": 1,
    "buoy_km": 118.2
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.65,
-   "lon": 19.790001,
-   "matched": true,
-   "name": "BELOMOR",
-   "flag": "RUS",
-   "type": "OTHER_NON_FISHING",
-   "mmsi": "273272930",
-   "imo": "9384435",
-   "n": 1,
-   "buoy_km": 173.5
   },
   {
    "region": "kaliningrad",
@@ -5970,20 +6162,6 @@
    "n": 1,
    "buoy_km": 92.6,
    "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 55.31,
-   "lon": 20.77,
-   "matched": true,
-   "name": "AKVAMARIN",
-   "flag": "RUS",
-   "type": "SEISMIC_VESSEL",
-   "mmsi": "273393530",
-   "imo": "7825552",
-   "n": 1,
-   "buoy_km": 84.4
   },
   {
    "region": "kaliningrad",
@@ -6132,21 +6310,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.91,
-   "lon": 19.68,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 151.3,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-17",
    "lat": 54.65,
    "lon": 20.27,
@@ -6204,6 +6367,20 @@
    "n": 1,
    "buoy_km": 174.8,
    "class": "nenoteikts"
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 55.18,
+   "lon": 19.389999,
+   "matched": true,
+   "name": "AMADEUS SAFFIER",
+   "flag": "NLD",
+   "type": "OTHER_NON_FISHING",
+   "mmsi": "245918000",
+   "imo": "9996903",
+   "n": 1,
+   "buoy_km": 139.0
   },
   {
    "region": "kaliningrad",
@@ -6353,6 +6530,20 @@
   },
   {
    "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.3,
+   "lon": 19.389999,
+   "matched": true,
+   "name": "DARSS",
+   "flag": "DEU",
+   "type": "CARGO",
+   "mmsi": "211224560",
+   "imo": "9124550",
+   "n": 1,
+   "buoy_km": 219.8
+  },
+  {
+   "region": "kaliningrad",
    "date": "2026-10-24",
    "lat": 55.1,
    "lon": 20.040001,
@@ -6469,9 +6660,9 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.66,
-   "lon": 19.780001,
+   "date": "2026-10-25",
+   "lat": 54.79,
+   "lon": 19.629999,
    "matched": false,
    "name": null,
    "flag": null,
@@ -6479,8 +6670,22 @@
    "mmsi": null,
    "imo": null,
    "n": 1,
-   "buoy_km": 172.8,
+   "buoy_km": 164.4,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-17",
+   "lat": 54.99,
+   "lon": 19.93,
+   "matched": true,
+   "name": "UDRIYA",
+   "flag": "RUS",
+   "type": "FISHING",
+   "mmsi": "273434650",
+   "imo": "8722240",
+   "n": 1,
+   "buoy_km": 135.6
   },
   {
    "region": "kaliningrad",
@@ -6496,20 +6701,6 @@
    "n": 1,
    "buoy_km": 143.7,
    "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-17",
-   "lat": 54.99,
-   "lon": 19.93,
-   "matched": true,
-   "name": "UDRIYA",
-   "flag": "RUS",
-   "type": "FISHING",
-   "mmsi": "273434650",
-   "imo": "8722240",
-   "n": 1,
-   "buoy_km": 135.6
   },
   {
    "region": "kaliningrad",
@@ -6952,6 +7143,21 @@
   },
   {
    "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.65,
+   "lon": 19.809999,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 173.0,
+   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
+  },
+  {
+   "region": "kaliningrad",
    "date": "2026-10-23",
    "lat": 54.66,
    "lon": 19.66,
@@ -6977,6 +7183,21 @@
    "imo": null,
    "n": 1,
    "buoy_km": 113.6,
+   "class": "nenoteikts"
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.67,
+   "lon": 19.75,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 172.6,
    "class": "nenoteikts"
   },
   {
@@ -7158,21 +7379,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.65,
-   "lon": 19.77,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 174.0,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-19",
    "lat": 55.28,
    "lon": 20.51,
@@ -7184,21 +7390,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 91.4,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.68,
-   "lon": 19.83,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 169.4,
    "class": "nenoteikts"
   },
   {
@@ -7242,6 +7433,21 @@
    "imo": "8897368",
    "n": 1,
    "buoy_km": 179.0
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.65,
+   "lon": 19.77,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 174.0,
+   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
    "region": "kaliningrad",
@@ -7358,36 +7564,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 174.5,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 55.13,
-   "lon": 20.58,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 106.3,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.65,
-   "lon": 19.83,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 172.4,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
@@ -7540,6 +7716,21 @@
   },
   {
    "region": "butinge",
+   "date": "2026-10-25",
+   "lat": 55.58,
+   "lon": 21.08,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 54.1,
+   "class": "nenoteikts"
+  },
+  {
+   "region": "butinge",
    "date": "2026-10-23",
    "lat": 55.66,
    "lon": 20.809999,
@@ -7566,21 +7757,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 55.4,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.5,
-   "lon": 21.15,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 160.3,
    "class": "nenoteikts"
   },
   {
@@ -7840,36 +8016,6 @@
   },
   {
    "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 57.43,
-   "lon": 21.43,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 154.8,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "gulf_riga",
-   "date": "2026-10-11",
-   "lat": 58.3,
-   "lon": 21.15,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 249.1,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "gulf_riga",
    "date": "2026-10-24",
    "lat": 57.7,
    "lon": 23.67,
@@ -7971,6 +8117,21 @@
    "imo": null,
    "n": 1,
    "buoy_km": 227.5,
+   "class": "nenoteikts"
+  },
+  {
+   "region": "gulf_riga",
+   "date": "2026-10-25",
+   "lat": 58.19,
+   "lon": 24.15,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 305.1,
    "class": "nenoteikts"
   },
   {
@@ -8140,7 +8301,7 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
+   "date": "2026-10-25",
    "lat": 54.66,
    "lon": 19.809999,
    "matched": false,
@@ -8335,21 +8496,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 55.11,
-   "lon": 19.66,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 133.6,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-17",
    "lat": 54.7,
    "lon": 19.809999,
@@ -8362,21 +8508,6 @@
    "n": 1,
    "buoy_km": 167.9,
    "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.64,
-   "lon": 19.799999,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 174.2,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
    "region": "kaliningrad",
@@ -8406,21 +8537,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 142.8,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.69,
-   "lon": 19.9,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 166.6,
    "class": "nenoteikts"
   },
   {
@@ -8571,21 +8687,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 111.1,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.91,
-   "lon": 19.68,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 151.3,
    "class": "nenoteikts"
   },
   {
@@ -8800,9 +8901,9 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.66,
-   "lon": 19.780001,
+   "date": "2026-10-25",
+   "lat": 54.79,
+   "lon": 19.629999,
    "matched": false,
    "name": null,
    "flag": null,
@@ -8810,7 +8911,7 @@
    "mmsi": null,
    "imo": null,
    "n": 1,
-   "buoy_km": 172.8,
+   "buoy_km": 164.4,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
@@ -9115,6 +9216,21 @@
   },
   {
    "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.65,
+   "lon": 19.809999,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 173.0,
+   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
+  },
+  {
+   "region": "kaliningrad",
    "date": "2026-10-16",
    "lat": 55.08,
    "lon": 20.459999,
@@ -9126,6 +9242,21 @@
    "imo": null,
    "n": 1,
    "buoy_km": 113.6,
+   "class": "nenoteikts"
+  },
+  {
+   "region": "kaliningrad",
+   "date": "2026-10-25",
+   "lat": 54.67,
+   "lon": 19.75,
+   "matched": false,
+   "name": null,
+   "flag": null,
+   "type": null,
+   "mmsi": null,
+   "imo": null,
+   "n": 1,
+   "buoy_km": 172.6,
    "class": "nenoteikts"
   },
   {
@@ -9265,21 +9396,6 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.65,
-   "lon": 19.77,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 174.0,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
    "date": "2026-10-19",
    "lat": 55.28,
    "lon": 20.51,
@@ -9295,9 +9411,9 @@
   },
   {
    "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.68,
-   "lon": 19.83,
+   "date": "2026-10-25",
+   "lat": 54.65,
+   "lon": 19.77,
    "matched": false,
    "name": null,
    "flag": null,
@@ -9305,8 +9421,8 @@
    "mmsi": null,
    "imo": null,
    "n": 1,
-   "buoy_km": 169.4,
-   "class": "nenoteikts"
+   "buoy_km": 174.0,
+   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
    "region": "kaliningrad",
@@ -9381,36 +9497,6 @@
    "imo": null,
    "n": 1,
    "buoy_km": 174.5,
-   "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 55.13,
-   "lon": 20.58,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 106.3,
-   "class": "nenoteikts"
-  },
-  {
-   "region": "kaliningrad",
-   "date": "2026-10-11",
-   "lat": 54.65,
-   "lon": 19.83,
-   "matched": false,
-   "name": null,
-   "flag": null,
-   "type": null,
-   "mmsi": null,
-   "imo": null,
-   "n": 1,
-   "buoy_km": 172.4,
    "class": "nav zvejas kuģis (kravas, tankkuģis, flote u.c.)"
   },
   {
