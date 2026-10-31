@@ -1,27 +1,21 @@
 {
- "updated": "2026-10-31T17:11:30Z",
+ "updated": "2026-10-31T17:26:30Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 6106,
+ "messages_heard": 6100,
  "diag": {
-  "static_msgs": 1571,
-  "ships_heard": 2825,
-  "within_60km": 14,
+  "static_msgs": 1601,
+  "ships_heard": 2875,
+  "within_60km": 16,
   "nearest": [
    {
-    "mmsi": 277347000,
-    "name": "NIDA",
-    "km": 40.8,
-    "sog": 0
-   },
-   {
-    "mmsi": 277213000,
-    "name": "LBB1044",
-    "km": 50.3,
-    "sog": 0
+    "mmsi": 245618000,
+    "name": "RIO",
+    "km": 37.4,
+    "sog": 1.3
    },
    {
     "mmsi": 275220000,
@@ -30,8 +24,26 @@
     "sog": 0
    },
    {
+    "mmsi": 275005000,
+    "name": "SAR KA-08",
+    "km": 50.4,
+    "sog": 0.1
+   },
+   {
+    "mmsi": 275075160,
+    "name": "BARTA",
+    "km": 50.5,
+    "sog": 0.1
+   },
+   {
     "mmsi": 275552000,
     "name": "TAK-7",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 277421000,
+    "name": "TAK-6",
     "km": 50.5,
     "sog": 0
    },
@@ -42,26 +54,14 @@
     "sog": 0.1
    },
    {
-    "mmsi": 275340000,
-    "name": "",
-    "km": 50.5,
-    "sog": 0
-   },
-   {
-    "mmsi": 275075160,
-    "name": "BARTA",
-    "km": 50.5,
-    "sog": 0.1
-   },
-   {
-    "mmsi": 265522600,
-    "name": "MARIA ELENORA",
+    "mmsi": 275041216,
+    "name": "SILJE",
     "km": 50.7,
-    "sog": 0.1
+    "sog": 0
    }
   ],
   "dest_like_butinge": [
-   "BRUNSBUTTEL-HAMBURG"
+   "BRUNSBUTTEL"
   ]
  },
  "ships": [
@@ -99,6 +99,39 @@
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.4 m"
   },
   {
+   "mmsi": 538009203,
+   "first_seen": "2026-10-31T16:26:30Z",
+   "name": "PACIFIC GARNET",
+   "imo": 9893084,
+   "callsign": "V7A4445",
+   "ais_type": 80,
+   "length": 250,
+   "beam": 44,
+   "destination": "LTBOT",
+   "dest_match": true,
+   "eta": "03.11 02:00 UTC",
+   "draught": 14,
+   "static_time": "2026-10-31T16:26:30Z",
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 90,
+   "empty_pct": 10,
+   "cargo_t_est": 94200,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14 m",
+   "lat": 57.57184,
+   "lon": 8.13691,
+   "sog": 13.7,
+   "cog": 75.8,
+   "nav_status": 0,
+   "pos_time": "2026-10-31T17:23:21Z",
+   "last_seen": "2026-10-31T17:26:30Z",
+   "dist_buoy_km": 796.84
+  },
+  {
    "mmsi": 241730000,
    "first_seen": "2026-10-30T23:58:44Z",
    "name": "SEA URCHIN",
@@ -130,31 +163,6 @@
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.5 m"
-  },
-  {
-   "mmsi": 538009203,
-   "first_seen": "2026-10-31T16:26:30Z",
-   "name": "PACIFIC GARNET",
-   "imo": 9893084,
-   "callsign": "V7A4445",
-   "ais_type": 80,
-   "length": 250,
-   "beam": 44,
-   "destination": "LTBOT",
-   "dest_match": true,
-   "eta": "03.11 02:00 UTC",
-   "draught": 14,
-   "static_time": "2026-10-31T16:26:30Z",
-   "status": "ceļā",
-   "dwt": 110000,
-   "dwt_source": "novērtēts",
-   "max_draught": 14.8,
-   "load_pct": 90,
-   "empty_pct": 10,
-   "cargo_t_est": 94200,
-   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
-   "cargo_state": "pilns",
-   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14 m"
   }
  ]
 }
