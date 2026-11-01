@@ -1,19 +1,104 @@
 {
- "updated": "2026-11-01T02:05:08Z",
+ "updated": "2026-11-01T02:20:08Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 1496,
+ "messages_heard": 6296,
  "diag": {
-  "static_msgs": 837,
-  "ships_heard": 647,
-  "within_60km": 0,
-  "nearest": [],
-  "dest_like_butinge": []
+  "static_msgs": 1714,
+  "ships_heard": 2834,
+  "within_60km": 12,
+  "nearest": [
+   {
+    "mmsi": 305501000,
+    "name": "PAIVI",
+    "km": 39.6,
+    "sog": 0
+   },
+   {
+    "mmsi": 277347000,
+    "name": "NIDA",
+    "km": 40.8,
+    "sog": 0
+   },
+   {
+    "mmsi": 277213000,
+    "name": "LBB1044",
+    "km": 50.3,
+    "sog": 0
+   },
+   {
+    "mmsi": 275075160,
+    "name": "BARTA",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 275442000,
+    "name": "LIVA",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 275481000,
+    "name": "AUSMA",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 275552000,
+    "name": "TAK-7",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 275340000,
+    "name": "",
+    "km": 50.5,
+    "sog": 0
+   }
+  ],
+  "dest_like_butinge": [
+   "BRUNSBUTTEL",
+   "LTBOT"
+  ]
  },
  "ships": [
+  {
+   "mmsi": 538009203,
+   "first_seen": "2026-10-31T16:26:30Z",
+   "name": "PACIFIC GARNET",
+   "imo": 9893084,
+   "callsign": "V7A4445",
+   "ais_type": 80,
+   "length": 250,
+   "beam": 44,
+   "destination": "LTBOT",
+   "dest_match": true,
+   "eta": "03.11 02:00 UTC",
+   "draught": 14,
+   "static_time": "2026-11-01T02:20:08Z",
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 90,
+   "empty_pct": 10,
+   "cargo_t_est": 94200,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14 m",
+   "lat": 57.5414,
+   "lon": 11.26756,
+   "sog": 12.2,
+   "cog": 135.2,
+   "nav_status": 0,
+   "pos_time": "2026-11-01T02:18:11Z",
+   "last_seen": "2026-11-01T02:20:08Z",
+   "dist_buoy_km": 611.89
+  },
   {
    "mmsi": 257956000,
    "first_seen": "2026-10-31T02:03:09Z",
@@ -28,14 +113,14 @@
    "eta": "02.11 20:20 UTC",
    "draught": 14.4,
    "static_time": "2026-11-01T01:35:09Z",
-   "lat": 55.90859,
-   "lon": 10.89349,
-   "sog": 9.5,
-   "cog": 241.2,
+   "lat": 55.80097,
+   "lon": 10.80344,
+   "sog": 11.5,
+   "cog": 181.6,
    "nav_status": 4,
-   "pos_time": "2026-11-01T01:33:38Z",
-   "last_seen": "2026-11-01T01:35:09Z",
-   "dist_buoy_km": 625.72,
+   "pos_time": "2026-11-01T02:19:09Z",
+   "last_seen": "2026-11-01T02:20:08Z",
+   "dist_buoy_km": 632.62,
    "status": "ceļā",
    "dwt": 160000,
    "dwt_source": "novērtēts",
@@ -46,39 +131,6 @@
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.4 m"
-  },
-  {
-   "mmsi": 538009203,
-   "first_seen": "2026-10-31T16:26:30Z",
-   "name": "PACIFIC GARNET",
-   "imo": 9893084,
-   "callsign": "V7A4445",
-   "ais_type": 80,
-   "length": 250,
-   "beam": 44,
-   "destination": "LTBOT",
-   "dest_match": true,
-   "eta": "03.11 02:00 UTC",
-   "draught": 14,
-   "static_time": "2026-10-31T21:45:55Z",
-   "status": "ceļā",
-   "dwt": 110000,
-   "dwt_source": "novērtēts",
-   "max_draught": 14.8,
-   "load_pct": 90,
-   "empty_pct": 10,
-   "cargo_t_est": 94200,
-   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
-   "cargo_state": "pilns",
-   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14 m",
-   "lat": 57.65161,
-   "lon": 11.05866,
-   "sog": 12.4,
-   "cog": 128.4,
-   "nav_status": 0,
-   "pos_time": "2026-11-01T01:32:20Z",
-   "last_seen": "2026-11-01T01:35:09Z",
-   "dist_buoy_km": 626.59
   },
   {
    "mmsi": 241730000,
