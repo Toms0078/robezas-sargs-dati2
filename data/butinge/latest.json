@@ -1,39 +1,39 @@
 {
- "updated": "2026-11-04T22:37:24Z",
+ "updated": "2026-11-04T22:52:34Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 5938,
+ "messages_heard": 5968,
  "diag": {
-  "static_msgs": 1603,
-  "ships_heard": 2826,
-  "within_60km": 15,
+  "static_msgs": 1595,
+  "ships_heard": 2868,
+  "within_60km": 12,
   "nearest": [
-   {
-    "mmsi": 245618000,
-    "name": "RIO",
-    "km": 36.4,
-    "sog": 7
-   },
-   {
-    "mmsi": 255915582,
-    "name": "BALTIC WIND",
-    "km": 38.3,
-    "sog": 8.3
-   },
-   {
-    "mmsi": 277385000,
-    "name": "KLASCO1",
-    "km": 40.1,
-    "sog": 0.1
-   },
    {
     "mmsi": 277542000,
     "name": "KLASCO-3",
     "km": 40.1,
     "sog": 0.3
+   },
+   {
+    "mmsi": 255915582,
+    "name": "BALTIC WIND",
+    "km": 42.0,
+    "sog": 8.9
+   },
+   {
+    "mmsi": 538012153,
+    "name": "RC GEMINI",
+    "km": 42.2,
+    "sog": 0
+   },
+   {
+    "mmsi": 277199060,
+    "name": "PATRIA",
+    "km": 43.2,
+    "sog": 0
    },
    {
     "mmsi": 277213000,
@@ -54,13 +54,15 @@
     "sog": 0
    },
    {
-    "mmsi": 275552000,
-    "name": "TAK-7",
+    "mmsi": 275442000,
+    "name": "LIVA",
     "km": 50.5,
     "sog": 0
    }
   ],
-  "dest_like_butinge": []
+  "dest_like_butinge": [
+   "BRUNSBUTTEL"
+  ]
  },
  "ships": [
   {
@@ -97,39 +99,6 @@
    "dist_buoy_km": 2.35
   },
   {
-   "mmsi": 257956000,
-   "first_seen": "2026-10-31T02:03:09Z",
-   "name": "FRIDA KNUTSEN",
-   "imo": 9905916,
-   "callsign": "LAOL8",
-   "ais_type": 80,
-   "length": 277,
-   "beam": 46,
-   "destination": "LT BOT",
-   "dest_match": true,
-   "eta": "02.11 20:20 UTC",
-   "draught": 14.4,
-   "static_time": "2026-11-01T22:48:12Z",
-   "lat": 55.34487,
-   "lon": 14.81652,
-   "sog": 6,
-   "cog": 204.5,
-   "nav_status": 0,
-   "pos_time": "2026-11-04T22:03:48Z",
-   "last_seen": "2026-11-04T22:07:34Z",
-   "dist_buoy_km": 392.83,
-   "status": "ceļā",
-   "dwt": 160000,
-   "dwt_source": "novērtēts",
-   "max_draught": 16.0,
-   "load_pct": 82,
-   "empty_pct": 18,
-   "cargo_t_est": 124400,
-   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
-   "cargo_state": "pilns",
-   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.4 m"
-  },
-  {
    "mmsi": 311001662,
    "first_seen": "2026-11-01T16:58:55Z",
    "name": "ARION",
@@ -161,6 +130,39 @@
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
    "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.7 m"
+  },
+  {
+   "mmsi": 257956000,
+   "first_seen": "2026-10-31T02:03:09Z",
+   "name": "FRIDA KNUTSEN",
+   "imo": 9905916,
+   "callsign": "LAOL8",
+   "ais_type": 80,
+   "length": 277,
+   "beam": 46,
+   "destination": "LT BOT",
+   "dest_match": true,
+   "eta": "02.11 20:20 UTC",
+   "draught": 14.4,
+   "static_time": "2026-11-01T22:48:12Z",
+   "lat": 55.27392,
+   "lon": 14.6481,
+   "sog": 11.4,
+   "cog": 225.1,
+   "nav_status": 0,
+   "pos_time": "2026-11-04T22:48:38Z",
+   "last_seen": "2026-11-04T22:52:34Z",
+   "dist_buoy_km": 405.14,
+   "status": "ceļā",
+   "dwt": 160000,
+   "dwt_source": "novērtēts",
+   "max_draught": 16.0,
+   "load_pct": 82,
+   "empty_pct": 18,
+   "cargo_t_est": 124400,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.4 m"
   },
   {
    "mmsi": 241730000,
