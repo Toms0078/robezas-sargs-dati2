@@ -1,6 +1,11 @@
-dip: ziņas 214, jaunas 60
-  modelis gemini-3.1-flash-lite: 17806 + 278 tokeni
-dip: pievienoti 2 notikumi (gemini-3.1-flash-lite)
-inv: ziņas 30, jaunas 25
-  modelis gemini-3.1-flash-lite: 6795 + 130 tokeni
-inv: pievienotas 1 ziņas (gemini-3.1-flash-lite)
+  gemini-3.5-flash: HTTP 503 — {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+  modelis gemini-3.5-flash: 2706 + 861 tokeni, meklējumi: 0 [], avoti: 0
+  modelis gemini-3.5-flash-lite: 1621 + 456 tokeni, meklējumi: 0 [], avoti: 0
+transit: Gemini nemeklēja (0 avotu) — nekas netiek mainīts
