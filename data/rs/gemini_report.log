@@ -1,10 +1,17 @@
-2026-11-03T21:58:14Z vakara pārskats (iepriekšējais 2026-11-03-1419)
-  modelis gemini-3.5-flash: 1477 + 2728 tokeni, meklējumi: 4 ['Gotland Sweden defence drone Baltic Sea November 2026', 'Polska granica dron incydent Wojsko Polskie listopad 2026', 'Baltic sea critical infrastructure cable drone air space November 2026', 'Lietuva border drone airspace VSD KAM November 2026'], avoti: 15
-  modelis gemini-3.1-flash-lite: 6099 + 2806 tokeni
-ziņas: atjaunots (gemini-3.5-flash, avoti 15, izmesti nepārbaudāmi ieraksti: 9)
-  modelis gemini-3.5-flash: 808 + 3626 tokeni, meklējumi: 8 ['"Andris Sprūds" OR "Kaspars Pudāns" OR "Laurynas Kasčiūnas" November 2026', 'Alexander Stubb news November 2026', 'Kristen Michal news November 2026', 'Edgars Rinkevics news November 2026', 'Gitanas Nauseda news November 2026', '"Ulf Kristersson" November 2026'], avoti: 18
-  modelis gemini-3.1-flash-lite: 4636 + 1323 tokeni
-valstu vadītāji: atjaunots (gemini-3.5-flash, avoti 16, izmesti nepārbaudāmi ieraksti: 1)
+2026-11-04T12:29:36Z vakara pārskats (iepriekšējais 2026-11-03-2358)
+  modelis gemini-3.5-flash: 1376 + 3759 tokeni, meklējumi: 0 [], avoti: 0
+  gemini-3.1-flash-lite: HTTP 503 — {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 503
+  modelis gemini-3.5-flash-lite: 571 + 2062 tokeni, meklējumi: 3 ['Latvija gaisa telpas incidents novembris 2026', 'Latvija droni robeža karaspēks 2026. gada novembris', 'Critical infrastructure Baltic Sea November 2026'], avoti: 6
+  modelis gemini-3.5-flash-lite: 4627 + 5452 tokeni
+ziņas: atjaunots (gemini-3.5-flash-lite, avoti 6, izmesti nepārbaudāmi ieraksti: 13)
   gemini-3.5-flash: HTTP 503 — {
   "error": {
     "code": 503,
@@ -13,9 +20,22 @@ valstu vadītāji: atjaunots (gemini-3.5-flash, avoti 16, izmesti nepārbaudāmi
   }
 }
 
-  modelis gemini-3.5-flash: 519 + 1440 tokeni, meklējumi: 4 ['Baltic security news today', 'VDD bridinajums', 'NBS pazinojums', 'Latvija drosiba sodien'], avoti: 8
-  modelis gemini-3.1-flash-lite: 2541 + 673 tokeni
-drošības posms: atjaunots (gemini-3.5-flash, avoti 8, izmesti nepārbaudāmi ieraksti: 2)
+  gemini-3.5-flash: HTTP 503
+  gemini-3.1-flash-lite: HTTP 503 — {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 503
+  modelis gemini-3.5-flash-lite: 282 + 1474 tokeni, meklējumi: 4 ['Petteri Orpo 2026 November', 'Edgars Rinkēvičs 2026. gada novembris', 'Gitanas Nausėda 2026 lapkritis', 'Alexander Stubb 2026 November'], avoti: 8
+  modelis gemini-3.5-flash-lite: 2974 + 1612 tokeni
+valstu vadītāji: atjaunots (gemini-3.5-flash-lite, avoti 8, izmesti nepārbaudāmi ieraksti: 4)
+  modelis gemini-3.5-flash: 539 + 1679 tokeni, meklējumi: 3 ['Baltic security news today', 'NBS pazinojums', 'Latvija drosiba sodien'], avoti: 6
+  modelis gemini-3.1-flash-lite: 2436 + 831 tokeni
+drošības posms: atjaunots (gemini-3.5-flash, avoti 5, izmesti nepārbaudāmi ieraksti: 2)
   gemini-3.5-flash: HTTP 503 — {
   "error": {
     "code": 503,
@@ -24,8 +44,8 @@ drošības posms: atjaunots (gemini-3.5-flash, avoti 8, izmesti nepārbaudāmi i
   }
 }
 
-  modelis gemini-3.5-flash: 994 + 3193 tokeni, meklējumi: 7 ['Nord Pool Latvia price', 'site:lsm.lv "novembris 2026"', 'degvielas cenas Latvijā', '"Nord Pool" "3. novembris" 2026', '"robežsardze" "3. novembris" 2026', 'Inčukalns gāze'], avoti: 9
-  modelis gemini-3.1-flash-lite: 5577 + 2107 tokeni
-infrastruktūra: nav derīgas atbildes ar meklēšanu (avoti 8); paturu iepriekšējo
+  modelis gemini-3.5-flash: 653 + 3411 tokeni, meklējumi: 4 ['site:lsm.lv "novembrī"', 'Incukalns gaze', 'robeža Latvija ziņas 2026', 'degvielas cenas Latvija'], avoti: 5
+  modelis gemini-3.1-flash-lite: 5767 + 2146 tokeni
+infrastruktūra: atjaunots (gemini-3.5-flash, avoti 5, izmesti nepārbaudāmi ieraksti: 0)
 ceļošanas brīdinājumi: no advisories.json, izmaiņas 0
-saglabāts 2026-11-03-2358: Vakara pārskats: Latvijas austrumu pierobežā fiksēta drona nokrišana, kamēr reģionā turpinās paaugstināta drošības gatavība.
+saglabāts 2026-11-04-1429: Vakara pārskats: NBS identificē svētdienas incidenta dronu kā Krievijas "Geran", kamēr Balvu novadā nokritis no kursa novirzījies Ukrainas lidaparāts.
