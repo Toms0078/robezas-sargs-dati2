@@ -1,9 +1,27 @@
 {
- "updatedAt": "2026-11-05T07:00:45Z",
- "checkedAt": "2026-11-05T07:00:45Z",
- "note": "Mūsu reģionā aktīvu trauksmju nav.",
+ "updatedAt": "2026-11-05T14:24:13Z",
+ "checkedAt": "2026-11-05T14:24:13Z",
+ "note": "Aktīvas trauksmes mūsu reģionā: 1.",
  "source": "GitHub Actions + Gemini",
  "alerts": [
+  {
+   "id": "lv-2026-11-05-1253",
+   "cc": "LV",
+   "kind": "air",
+   "level": "red",
+   "status": "active",
+   "start": "2026-11-05T09:53:41Z",
+   "end": null,
+   "areas": [
+    "LV"
+   ],
+   "channel": "official",
+   "title": "Latvijā izsludināts gaisa telpas apdraudējums",
+   "text": "Iedzīvotājiem jāseko līdzi oficiālajai informācijai un jāievēro drošības dienestu norādījumi.",
+   "source": "Infoerdve.lt",
+   "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9pSEZiTGNKZVdUcVdnY3VJY01ONlM3bVp6T0I0dVBpLTdjQmJrTERkeE10NFRQVjgyWlZ1a1c4enJESUxqVXdNNEdyeGlLZm9iMUNaaHhsdFF2YWZsUXhZeDFhYks2UFlsNXc?oc=5",
+   "via": "gemini-fast"
+  },
   {
    "id": "pl-2026-11-03-1336",
    "cc": "PL",
@@ -99,24 +117,6 @@
    "via": "gemini-fast"
   },
   {
-   "id": "pl-2026-10-29-001",
-   "cc": "PL",
-   "kind": "warning",
-   "level": "yellow",
-   "status": "ended",
-   "start": "2026-10-29T07:16:49Z",
-   "end": null,
-   "areas": [
-    "PL-podkarpackie-leski"
-   ],
-   "channel": "sms",
-   "title": "RCB brīdinājums par trauksmes sirēnu pārbaudi Lesko apriņķī (beigas nav paziņotas)",
-   "text": "Iedzīvotājiem izsūtīts RCB brīdinājums par plānotu trauksmes sirēnu pārbaudi.",
-   "source": "Gov.pl",
-   "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE4zNmVRMy1fOXJoSENXeldITXhMX29QNmxYdGZsemlqVlpJaW1LNmtxYVpRUzZyTmttLVg2cl90bHFfUGlsNi01Vjk1R3pGT2tva01wRzFaWWNGbFZGSjI0cGsxQWJaSFo0ZjU0bXRZaVFRekFqSlJRa1dFOA?oc=5",
-   "via": "gemini-fast"
-  },
-  {
    "id": "lv-2026-11-01-0720",
    "cc": "LV",
    "kind": "air",
@@ -191,5 +191,6 @@
    "url": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE0zYld6OW5tWmh5WDdFVGVwNGhuMUUwT0FwY0trUWNFQVJOeTRFRjlYSnd5N1NQWTE5eU0ycmpKRHdWOGNjV2d2M0RR?oc=5",
    "via": "gemini-fast"
   }
- ]
+ ],
+ "fastCheckedAt": "2026-11-05T14:24:13Z"
 }
