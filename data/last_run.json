@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-11-05T06:52:37+00:00",
+  "run_at": "2026-11-05T15:31:17+00:00",
   "sources": {
     "adv_CA": {
       "countries": 9,
@@ -17,17 +17,6 @@
       "countries": 9,
       "ok": true
     },
-    "bio": {
-      "empty_feeds": [
-        "cdc_han"
-      ],
-      "errors": [
-        "cidrap: 404 Client Error: Not Found for url: https://www.cidrap.umn.edu/news/rss.xml"
-      ],
-      "new": 76,
-      "ok": true,
-      "total": 5656
-    },
     "news": {
       "empty_feeds": [
         "lv",
@@ -35,22 +24,23 @@
         "emb_de",
         "inv_lv",
         "inv_drop_lt",
-        "inv_drop_ee",
-        "us_state",
-        "us_emb_lv",
-        "us_emb_ee",
-        "us_emb_lt",
-        "us_emb_pl",
-        "us_emb_fi",
-        "us_emb_se",
-        "us_emb_no",
-        "us_emb_ru",
-        "us_emb_by"
+        "inv_drop_ee"
       ],
-      "errors": [],
-      "new": 26,
+      "errors": [
+        "us_state: 405 Client Error: Not Allowed for url: https://www.state.gov/rss-feed/press-releases/feed/",
+        "us_emb_lv: 405 Client Error: Not Allowed for url: https://lv.usembassy.gov/feed/",
+        "us_emb_ee: 405 Client Error: Not Allowed for url: https://ee.usembassy.gov/feed/",
+        "us_emb_lt: 405 Client Error: Not Allowed for url: https://lt.usembassy.gov/feed/",
+        "us_emb_pl: 405 Client Error: Not Allowed for url: https://pl.usembassy.gov/feed/",
+        "us_emb_fi: 405 Client Error: Not Allowed for url: https://fi.usembassy.gov/feed/",
+        "us_emb_se: 405 Client Error: Not Allowed for url: https://se.usembassy.gov/feed/",
+        "us_emb_no: 405 Client Error: Not Allowed for url: https://no.usembassy.gov/feed/",
+        "us_emb_ru: 405 Client Error: Not Allowed for url: https://ru.usembassy.gov/feed/",
+        "us_emb_by: 405 Client Error: Not Allowed for url: https://by.usembassy.gov/feed/"
+      ],
+      "new": 28,
       "ok": true,
-      "total": 2327
+      "total": 2355
     }
   }
 }
