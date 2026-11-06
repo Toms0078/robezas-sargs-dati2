@@ -1,44 +1,38 @@
 {
- "updated": "2026-11-06T16:18:14Z",
+ "updated": "2026-11-06T16:33:11Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 5770,
+ "messages_heard": 5651,
  "diag": {
-  "static_msgs": 1517,
-  "ships_heard": 2709,
-  "within_60km": 17,
+  "static_msgs": 1501,
+  "ships_heard": 2680,
+  "within_60km": 14,
   "nearest": [
    {
-    "mmsi": 275041216,
-    "name": "SILJE",
-    "km": 37.5,
-    "sog": 4.4
+    "mmsi": 230706000,
+    "name": "SAANA",
+    "km": 38.1,
+    "sog": 0.5
    },
    {
-    "mmsi": 277585000,
-    "name": "TAK-9",
-    "km": 40.4,
-    "sog": 9.3
-   },
-   {
-    "mmsi": 351361000,
-    "name": "MSC KALINA",
-    "km": 44.4,
+    "mmsi": 277542000,
+    "name": "KLASCO-3",
+    "km": 40.1,
     "sog": 0
    },
    {
-    "mmsi": 219560000,
-    "name": "STENA FLAVIA",
-    "km": 49.4,
-    "sog": 16.9
+    "mmsi": 277149000,
+    "name": "TAK 5",
+    "km": 41.6,
+    "sog": 0
    },
    {
     "mmsi": 255806478,
     "name": "CEMCOASTER",
-    "km": 49.8,
+    "km": 49.3,
     "sog": 11.5
    },
    {
@@ -54,10 +48,16 @@
     "sog": 0
    },
    {
-    "mmsi": 275552000,
-    "name": "TAK-7",
+    "mmsi": 275481000,
+    "name": "AUSMA",
     "km": 50.5,
-    "sog": 3.4
+    "sog": 0
+   },
+   {
+    "mmsi": 275442000,
+    "name": "LIVA",
+    "km": 50.5,
+    "sog": 0
    }
   ],
   "dest_like_butinge": [
@@ -66,6 +66,39 @@
   ]
  },
  "ships": [
+  {
+   "mmsi": 230706000,
+   "first_seen": "2026-11-06T16:33:11Z",
+   "name": "SAANA",
+   "imo": 9739836,
+   "callsign": "OJUN",
+   "ais_type": 80,
+   "length": 150,
+   "beam": 23,
+   "destination": "FISKV>LTKLJ",
+   "dest_match": false,
+   "eta": "06.11 16:00 UTC",
+   "draught": 8.3,
+   "static_time": "2026-11-06T16:33:11Z",
+   "lat": 55.72714,
+   "lon": 21.08819,
+   "sog": 0.5,
+   "cog": 137.1,
+   "nav_status": 0,
+   "pos_time": "2026-11-06T16:29:26Z",
+   "last_seen": "2026-11-06T16:33:11Z",
+   "dist_buoy_km": 38.11,
+   "status": "gaida",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 96,
+   "empty_pct": 4,
+   "cargo_t_est": 10900,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (150 m), iegrime 8.3 m"
+  },
   {
    "mmsi": 311001662,
    "first_seen": "2026-11-01T16:58:55Z",
