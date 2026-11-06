@@ -1,26 +1,26 @@
 {
- "updated": "2026-11-06T04:23:09Z",
+ "updated": "2026-11-06T04:38:09Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 5941,
+ "messages_heard": 6009,
  "diag": {
-  "static_msgs": 1522,
-  "ships_heard": 2756,
-  "within_60km": 19,
+  "static_msgs": 1568,
+  "ships_heard": 2752,
+  "within_60km": 20,
   "nearest": [
+   {
+    "mmsi": 277425000,
+    "name": "KLASCO2",
+    "km": 40.1,
+    "sog": 0.1
+   },
    {
     "mmsi": 277385000,
     "name": "KLASCO1",
     "km": 40.1,
-    "sog": 0
-   },
-   {
-    "mmsi": 257350980,
-    "name": "SALTVAER",
-    "km": 41.4,
     "sog": 0
    },
    {
@@ -30,22 +30,22 @@
     "sog": 0
    },
    {
-    "mmsi": 538012153,
-    "name": "RC GEMINI",
-    "km": 42.2,
-    "sog": 0
-   },
-   {
-    "mmsi": 277199060,
-    "name": "PATRIA",
-    "km": 43.2,
-    "sog": 0
-   },
-   {
     "mmsi": 245122000,
     "name": "SAND FULMAR",
-    "km": 44.4,
-    "sog": 2.4
+    "km": 44.3,
+    "sog": 1.9
+   },
+   {
+    "mmsi": 277585000,
+    "name": "TAK-9",
+    "km": 46.0,
+    "sog": 8.1
+   },
+   {
+    "mmsi": 257689000,
+    "name": "LINK POLARIS",
+    "km": 46.5,
+    "sog": 0
    },
    {
     "mmsi": 277213000,
@@ -61,9 +61,7 @@
    }
   ],
   "dest_like_butinge": [
-   "BRUNSBUTTEL",
-   "BUTINGE LT",
-   "DEBUT"
+   "BRUNSBUTTEL"
   ]
  },
  "ships": [
@@ -155,6 +153,39 @@
    "pos_time": "2026-11-06T04:21:29Z",
    "last_seen": "2026-11-06T04:23:09Z",
    "dist_buoy_km": 649.32,
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 96,
+   "empty_pct": 4,
+   "cargo_t_est": 100600,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 14.5 m"
+  },
+  {
+   "mmsi": 636024113,
+   "first_seen": "2026-11-06T04:38:09Z",
+   "name": "ATLANTIC GEM",
+   "imo": 1022469,
+   "callsign": "5LRA8",
+   "ais_type": 80,
+   "length": 250,
+   "beam": 44,
+   "destination": "LT BOT",
+   "dest_match": true,
+   "eta": "10.11 05:00 UTC",
+   "draught": 14.5,
+   "static_time": "2026-11-06T04:38:09Z",
+   "lat": 50.41427,
+   "lon": 0.64723,
+   "sog": null,
+   "cog": null,
+   "nav_status": null,
+   "pos_time": "2026-11-06T04:38:05Z",
+   "last_seen": "2026-11-06T04:38:09Z",
+   "dist_buoy_km": 1483.13,
    "status": "ceļā",
    "dwt": 110000,
    "dwt_source": "novērtēts",
