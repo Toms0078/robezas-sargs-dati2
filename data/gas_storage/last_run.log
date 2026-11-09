@@ -1,9 +1,9 @@
-LV: 2026-11-07 51.1% · 12.4703 TWh no 24.4053 TWh (iesūkn. 22.09, izņem. 21.6 GWh/d)
+LV: 2026-11-07 51.1% · 12.4702 TWh no 24.4053 TWh (iesūkn. 22.09, izņem. 21.6 GWh/d)
 PL: 2026-11-07 97.82% · 36.0443 TWh no 36.8491 TWh (iesūkn. 34.91, izņem. 134.6 GWh/d)
 DK: 2026-11-07 90.11% · 7.3803 TWh no 8.19 TWh (iesūkn. 14.51, izņem. 14.5 GWh/d)
 SE: 2026-11-07 90.46% · 0.0751 TWh no 0.083 TWh (iesūkn. 0.0, izņem. 0.0 GWh/d)
-DE: 2026-11-07 59.21% · 146.4573 TWh no 247.3563 TWh (iesūkn. 53.03, izņem. 867.5 GWh/d)
-  LV UGS Incukalns: 51.1% 12.4703 TWh pērn 59.95% maks. izņem. 240.0 GWh/d 
+DE: 2026-11-07 59.21% · 146.4691 TWh no 247.3563 TWh (iesūkn. 63.35, izņem. 861.7 GWh/d)
+  LV UGS Incukalns: 51.1% 12.4702 TWh pērn 59.95% maks. izņem. 240.0 GWh/d 
   PL VGS GIM Sanok (Brzeznica, Husow, Strachocina, Swarzow): 101.99% 13.3167 TWh pērn 99.18% maks. izņem. 129.35 GWh/d 
   PL VGS GIM Kawerna (Kosakowo, Mogilno): 94.53% 9.0073 TWh pērn 96.31% maks. izņem. 307.56 GWh/d 
   PL UGS Wierzchowice: 96.19% 13.7203 TWh pērn 103.04% maks. izņem. 158.4 GWh/d 
@@ -35,8 +35,15 @@ ALSI PL [{"name": "Poland", "code": "PL", "url": "PL", "updatedAt": "2026-11-08 
 ALSI PL: 2026-11-07 krājums 158.11 (10³ m³?) / 1038.04 GWh, max 500.0 / 3282.65 GWh, izsūtīts 193.0 GWh/d
 ALSI FI [{"name": "Finland", "code": "FI", "url": "FI", "updatedAt": "2026-11-05 10:07:40", "gasDayStart": "2026-11-07", "gasDayEnd": "2026-11-08", "inventory": {"lng": "138", "gwh": "896"}, "sendOut": "60", "dtmi": {"lng": "148.81", "gwh": "966.19"}, "dtrs": "140", "contractedCapacity": "60", "availableCapacity": "80", "coveredCapacity": "100", "info": [], "status": "E"}]
 ALSI FI: 2026-11-07 krājums 138.0 (10³ m³?) / 896.0 GWh, max 148.81 / 966.19 GWh, izsūtīts 60.0 GWh/d
-ALSI DE [{"name": "Germany", "code": "DE", "url": "DE", "updatedAt": "2026-11-06 18:20:03", "gasDayStart": "2026-11-07", "gasDayEnd": "2026-11-08", "inventory": {"lng": "123.29", "gwh": "831.65"}, "sendOut": "205.4", "dtmi": {"lng": "781.07", "gwh": "5268.69"}, "dtrs": "844", "contractedCapacity": "585.45", "availableCapacity": "258.5", "coveredCapacity": "100", "info": [], "status": "E"}]
-ALSI DE: 2026-11-07 krājums 123.29 (10³ m³?) / 831.65 GWh, max 781.07 / 5268.69 GWh, izsūtīts 205.4 GWh/d
+ALSI DE tukšs: {"last_page": 0, "total": 0, "dataset": "lng ERROR", "error": "Try/Catch error", "message": "API key: f1377ac57d763e8a7ca991ee6f4c7cb4", "data": []}
+   ALSI listing: Deutsche Energy Terminal GmbH 21X000000001403J | Wilhelmshaven LNG Terminal 1 (FSRU Hoegh Esperanza) 21W000000000129W
+   ALSI listing: Deutsche Energy Terminal GmbH 21X000000001403J | Brunsbuettel LNG Terminal 1 (FSRU Hoegh Gannet) 37W000000000107A
+   ALSI listing: Deutsche Energy Terminal GmbH 21X000000001403J | Stade LNG Terminal 1 (FSRU Energos Force) 37W000000000110L
+   ALSI listing: Deutsche Energy Terminal GmbH 21X000000001403J | Wilhelmshaven LNG Terminal 2 (FSRU Excelerate Excelsior) 37W000000000111J
+   ALSI listing: Deutsche ReGas GmbH & Co. KGaA	 37X000000000265F | Ostsee LNG Terminal / Lubmin (FSRU Neptune) 37W000000000106C
+   ALSI listing: Deutsche ReGas GmbH & Co. KGaA	 37X000000000265F | Mukran LNG Terminal (FSRU Neptune / FSRU Energos Power) 37W000000000114D
+ALSI DE [{"name": "Wilhelmshaven LNG Terminal 1 (FSRU Hoegh Esperanza)", "code": "21W000000000129W", "url": "21W000000000129W/DE/21X000000001403J", "longitude": "8.1519", "latitude": "53.5224", "type": "FSRU", "updatedAt": "2026-11-06 10:35:58", "gasDayStart": "2026-11-07", "gasDayEnd": "2026-11-08", "inventory": {"lng": "12.99", "gwh": "83.07"}, "sendOut": "1.6", "dtmi": {"lng": "167.56", "gwh": "1071.53"}, "dtrs": "160.1", "contractedCapacity": "160.1", "availableCapacity": "0", "info": [], "status": "E"}]
+ALSI DE: 2026-11-07 krājums 12.99 (10³ m³?) / 83.07 GWh, max 167.56 / 1071.53 GWh, izsūtīts 1.6 GWh/d
 ALSI saraksts: FI Floating LNG Terminal Finland Oy ['Inkoo LNG Terminal (FSRU Exemplar)']
 ALSI terminālis Inkoo LNG Terminal (FSRU Exemplar): 2026-11-07 138.0 / 148.81 tūkst. m³, izsūt. 60.0 GWh/d
 ALSI saraksts: FI Hamina LNG Oy ['Hamina LNG Terminal']
