@@ -24,7 +24,7 @@ DE: 2026-11-08 58.95% · 145.8111 TWh no 247.3563 TWh (iesūkn. 72.82, izņem. 7
   DE VSP NORD (Rehden, Jemgum): 62.54% 5.5878 TWh pērn 86.54% maks. izņem. 159.17 GWh/d 
   DE UGS Uelsen: 54.01% 5.3326 TWh pērn 84.32% maks. izņem. 108.96 GWh/d 
   DE UGS Harsefeld: 87.52% 1.0826 TWh pērn 99.87% maks. izņem. 82.56 GWh/d 
-  DE UGS Lesum: 65.22% 1.1048 TWh pērn 97.73% maks. izņem. 58.08 GWh/d 
+  DE UGS Lesum: 65.22% 1.1048 TWh pērn None% maks. izņem. 58.08 GWh/d 
   DE UGS Kiel-Rönne: 22.55% 0.1179 TWh pērn 93.05% maks. izņem. 27.12 GWh/d 
   DE UGS Etzel Erdgas Lager EGL: 95.65% 10.0239 TWh pērn 91.37% maks. izņem. 276.45 GWh/d 
   DE UGS Etzel ESE (Uniper Energy Storage): 68.26% 7.4065 TWh pērn 84.95% maks. izņem. 403.68 GWh/d 
@@ -35,14 +35,14 @@ ALSI PL [{"name": "Poland", "code": "PL", "url": "PL", "updatedAt": "2026-11-09 
 ALSI PL: 2026-11-08 krājums 120.6 (10³ m³?) / 791.74 GWh, max 500.0 / 3282.5 GWh, izsūtīts 229.4 GWh/d
 ALSI FI [{"name": "Finland", "code": "FI", "url": "FI", "updatedAt": "2026-11-09 10:28:32", "gasDayStart": "2026-11-08", "gasDayEnd": "2026-11-09", "inventory": {"lng": "63", "gwh": "412"}, "sendOut": "83", "dtmi": {"lng": "148.81", "gwh": "973.17"}, "dtrs": "140", "contractedCapacity": "84", "availableCapacity": "56", "coveredCapacity": "100", "info": [], "status": "C"}]
 ALSI FI: 2026-11-08 krājums 63.0 (10³ m³?) / 412.0 GWh, max 148.81 / 973.17 GWh, izsūtīts 83.0 GWh/d
-ALSI DE [{"name": "Germany", "code": "DE", "url": "DE", "updatedAt": "2026-11-09 11:08:49", "gasDayStart": "2026-11-08", "gasDayEnd": "2026-11-09", "inventory": {"lng": "217.48", "gwh": "1439.16"}, "sendOut": "156.8", "dtmi": {"lng": "781.07", "gwh": "5168.68"}, "dtrs": "844", "contractedCapacity": "585.45", "availableCapacity": "258.5", "coveredCapacity": "100", "info": [], "status": "E"}]
-ALSI DE: 2026-11-08 krājums 217.48 (10³ m³?) / 1439.16 GWh, max 781.07 / 5168.68 GWh, izsūtīts 156.8 GWh/d
+ALSI DE [{"name": "Germany", "code": "DE", "url": "DE", "updatedAt": "2026-11-10 11:10:38", "gasDayStart": "2026-11-08", "gasDayEnd": "2026-11-09", "inventory": {"lng": "216.47", "gwh": "1432.86"}, "sendOut": "156.7", "dtmi": {"lng": "781.07", "gwh": "5170.06"}, "dtrs": "844", "contractedCapacity": "585.45", "availableCapacity": "258.5", "coveredCapacity": "100", "info": [], "status": "C"}]
+ALSI DE: 2026-11-08 krājums 216.47 (10³ m³?) / 1432.86 GWh, max 781.07 / 5170.06 GWh, izsūtīts 156.7 GWh/d
 ALSI saraksts: FI Floating LNG Terminal Finland Oy ['Inkoo LNG Terminal (FSRU Exemplar)']
 ALSI terminālis Inkoo LNG Terminal (FSRU Exemplar): 2026-11-08 63.0 / 148.81 tūkst. m³, izsūt. 83.0 GWh/d
 ALSI saraksts: FI Hamina LNG Oy ['Hamina LNG Terminal']
 ALSI terminālis Hamina LNG Terminal: 2026-11-08 None / None tūkst. m³, izsūt. None GWh/d
 ALSI terminālis Ostsee LNG Terminal / Lubmin (FSRU Neptune): 2026-11-08 None / None tūkst. m³, izsūt. None GWh/d
-ALSI terminālis Mukran LNG Terminal (FSRU Neptune / FSRU Energos Power): 2026-11-08 32.88 / 310.0 tūkst. m³, izsūt. 2.0 GWh/d
+ALSI terminālis Mukran LNG Terminal (FSRU Neptune / FSRU Energos Power): 2026-11-08 31.87 / 310.0 tūkst. m³, izsūt. 1.9 GWh/d
 ALSI terminālis Klaipėda LNG Terminal (FSRU Independence): 2026-11-08 110.09 / 166.73 tūkst. m³, izsūt. 114.5 GWh/d
 ALSI terminālis Świnoujście LNG Terminal: 2026-11-08 120.6 / 500.0 tūkst. m³, izsūt. 229.4 GWh/d
 krātuves: [('LV', 'UGS Incukalns', True), ('PL', 'VGS GIM Sanok (Brzeznica, Husow, Strachocina, Swarzow)', True), ('PL', 'VGS GIM Kawerna (Kosakowo, Mogilno)', True), ('PL', 'UGS Wierzchowice', True), ('DK', 'VGS GSD Gas Storage (Lille Torup, Stenlille)', True), ('SE', 'UGS Skallen', True), ('DE', 'UGS Etzel EDF (VGS)', True), ('DE', 'UGS Etzel EnBW (VGS)', True), ('DE', 'UGS Ronnenberg-Empelde', True), ('DE', 'UGS Kraak', True), ('DE', 'UGS Etzel EGL (Equinor Storage Deutschland)', True), ('DE', 'UGS Etzel EKB', True), ('DE', 'UGS Rüdersdorf H', True), ('DE', 'UGS Jemgum H (EWE)', True), ('DE', 'UGS Etzel ESE (MET)', True), ('DE', 'UGS Etzel ESE (OMV)', True), ('DE', 'UGS Rehden', True), ('DE', 'UGS Jemgum H (SEFE Storage)', True), ('DE', 'VSP NORD (Rehden, Jemgum)', True), ('DE', 'UGS Uelsen', True), ('DE', 'UGS Harsefeld', True), ('DE', 'UGS Lesum', True), ('DE', 'UGS Kiel-Rönne', True), ('DE', 'UGS Etzel Erdgas Lager EGL', True), ('DE', 'UGS Etzel ESE (Uniper Energy Storage)', True), ('DE', 'UGS Etzel ESE (VGS)', True)]
