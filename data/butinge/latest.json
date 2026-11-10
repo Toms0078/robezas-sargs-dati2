@@ -1,16 +1,28 @@
 {
- "updated": "2026-11-10T01:57:19Z",
+ "updated": "2026-11-10T02:12:19Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 5931,
+ "messages_heard": 5975,
  "diag": {
-  "static_msgs": 1740,
-  "ships_heard": 2685,
-  "within_60km": 2,
+  "static_msgs": 1718,
+  "ships_heard": 2656,
+  "within_60km": 4,
   "nearest": [
+   {
+    "mmsi": 231875000,
+    "name": "FURE SKAGEN",
+    "km": 38.2,
+    "sog": 0.4
+   },
+   {
+    "mmsi": 277542000,
+    "name": "KLASCO-3",
+    "km": 40.1,
+    "sog": 0
+   },
    {
     "mmsi": 277425000,
     "name": "KLASCO2",
@@ -18,17 +30,48 @@
     "sog": 0
    },
    {
-    "mmsi": 277540000,
-    "name": "TAK-10",
-    "km": 41.4,
+    "mmsi": 277149000,
+    "name": "TAK 5",
+    "km": 41.5,
     "sog": 0
    }
   ],
-  "dest_like_butinge": [
-   "BRUNSBUTTEL"
-  ]
+  "dest_like_butinge": []
  },
  "ships": [
+  {
+   "mmsi": 231875000,
+   "first_seen": "2026-11-10T02:12:19Z",
+   "name": "FURE SKAGEN",
+   "imo": 9362152,
+   "callsign": "OZ2210",
+   "ais_type": 89,
+   "length": 144,
+   "beam": 24,
+   "destination": "LT KLJ",
+   "dest_match": false,
+   "eta": "10.11 02:00 UTC",
+   "draught": 6.2,
+   "static_time": "2026-11-10T02:12:19Z",
+   "lat": 55.72638,
+   "lon": 21.09174,
+   "sog": 0.4,
+   "cog": 94,
+   "nav_status": 0,
+   "pos_time": "2026-11-10T02:11:43Z",
+   "last_seen": "2026-11-10T02:12:19Z",
+   "dist_buoy_km": 38.24,
+   "status": "gaida",
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 51,
+   "empty_pct": 49,
+   "cargo_t_est": 5800,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (144 m), iegrime 6.2 m"
+  },
   {
    "mmsi": 241730000,
    "first_seen": "2026-10-30T23:58:44Z",
