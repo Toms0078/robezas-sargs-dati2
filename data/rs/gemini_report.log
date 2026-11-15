@@ -1,122 +1,254 @@
-2026-11-14T20:54:53Z vakara pārskats (iepriekšējais 2026-11-07-2228)
-  gemini-3.5-flash: HTTP 403 {
+2026-11-15T12:14:07Z vakara pārskats (iepriekšējais 2026-11-07-2228)
+  gemini-3.5-flash: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.1-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash: HTTP 429
+  gemini-3.1-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.5-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 429
+  gemini-3.5-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash-lite: HTTP 429
+  gemini-2.5-flash-lite: nav pieejams (404)
+  gemini-2.5-flash: nav pieejams (404)
+ziņas: kļūda — gemini-2.5-flash: nav pieejams (404); paturu iepriekšējo
+  gemini-3.5-flash: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash: HTTP 429
+  gemini-3.1-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-ziņas: kļūda — gemini-2.5-flash: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 429
+  gemini-3.5-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_; paturu iepriekšējo
-  gemini-3.5-flash: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash-lite: HTTP 429
+  gemini-2.5-flash-lite: nav pieejams (404)
+  gemini-2.5-flash: nav pieejams (404)
+valstu vadītāji: kļūda — gemini-2.5-flash: nav pieejams (404); paturu iepriekšējo
+  gemini-3.5-flash: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.1-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash: HTTP 429
+  gemini-3.1-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.5-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 429
+  gemini-3.5-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash-lite: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash-lite: HTTP 429
+  gemini-2.5-flash-lite: nav pieejams (404)
+  gemini-2.5-flash: nav pieejams (404)
+drošības posms: kļūda — gemini-2.5-flash: nav pieejams (404); paturu iepriekšējo
+  gemini-3.5-flash: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash: HTTP 429
+  gemini-3.1-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-valstu vadītāji: kļūda — gemini-2.5-flash: HTTP 403 {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.1-flash-lite: HTTP 429
+  gemini-3.5-flash-lite: HTTP 429 — {
   "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_; paturu iepriekšējo
-  gemini-3.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.1-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.5-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-drošības posms: kļūda — gemini-2.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_; paturu iepriekšējo
-  gemini-3.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.1-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-3.5-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash-lite: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-  gemini-2.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_
-infrastruktūra: kļūda — gemini-2.5-flash: HTTP 403 {
-  "error": {
-    "code": 403,
-    "message": "Your billing account has an outstanding balance. Make a payment at https://aistudio.google.com/billing to restore service. For more information, see https://ai.google.dev/gemini-api/docs/troubleshooting#project-unavailable.",
-    "status": "PERMISSION_; paturu iepriekšējo
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. ",
+    "status": "RESOURCE_EXHAUSTED",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.Help",
+        "links": [
+          {
+            "description": "Learn more about Gemini API quotas",
+            "url": "https://aistudio.google.com/docs/rate-limits"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+  gemini-3.5-flash-lite: HTTP 429
+  gemini-2.5-flash-lite: nav pieejams (404)
+  gemini-2.5-flash: nav pieejams (404)
+infrastruktūra: kļūda — gemini-2.5-flash: nav pieejams (404); paturu iepriekšējo
 neviena daļa netika atjaunota — jaunu pārskatu nesaglabāju
