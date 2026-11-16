@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T14:08:00Z",
+ "updated": "2026-11-16T16:08:40Z",
  "source": "VesselAPI (vesselapi.com)",
  "checks": {
   "riga_events": {
@@ -10,11 +10,25 @@
     "portEvents": [
      {
       "event": "Departure",
-      "timestamp": "2026-11-15T12:58:00Z",
+      "timestamp": "2026-11-16T14:02:00Z",
       "vessel": {
        "name": "martha hoj",
        "imo": 8937596,
        "mmsi": 219034422
+      },
+      "port": {
+       "name": "riga",
+       "country": "latvia",
+       "unlo_code": "LVRIX"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-16T13:19:00Z",
+      "vessel": {
+       "name": "rix sail",
+       "imo": 9114713,
+       "mmsi": 341299002
       },
       "port": {
        "name": "riga",
@@ -24,7 +38,7 @@
      },
      {
       "event": "Arrival",
-      "timestamp": "2026-11-15T07:40:00Z",
+      "timestamp": "2026-11-15T21:34:00Z",
       "vessel": {
        "name": "martha hoj",
        "imo": 8937596,
@@ -38,21 +52,7 @@
      },
      {
       "event": "Departure",
-      "timestamp": "2026-11-15T06:45:00Z",
-      "vessel": {
-       "name": "halland",
-       "imo": 9436238,
-       "mmsi": 212536000
-      },
-      "port": {
-       "name": "riga",
-       "country": "latvia",
-       "unlo_code": "LVRIX"
-      }
-     },
-     {
-      "event": "Departure",
-      "timestamp": "2026-11-15T05:08:00Z",
+      "timestamp": "2026-11-15T19:08:00Z",
       "vessel": {
        "name": "martha hoj",
        "imo": 8937596,
@@ -74,12 +74,11 @@
    "data": {
     "portEvents": [
      {
-      "event": "Arrival",
-      "timestamp": "2026-11-15T05:35:00Z",
+      "event": "Departure",
+      "timestamp": "2026-11-16T11:46:00Z",
       "vessel": {
-       "name": "stena baltica",
-       "imo": 9329851,
-       "mmsi": 219029947
+       "name": "lv warship p-08",
+       "mmsi": 275428000
       },
       "port": {
        "name": "ventspils",
@@ -89,7 +88,119 @@
      },
      {
       "event": "Arrival",
-      "timestamp": "2026-11-14T22:44:00Z",
+      "timestamp": "2026-11-16T10:19:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-16T09:32:00Z",
+      "vessel": {
+       "name": "point lisas",
+       "imo": 9905162,
+       "mmsi": 563123100
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-16T09:31:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-11-16T08:45:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-16T08:06:00Z",
+      "vessel": {
+       "name": "pilot ronis",
+       "imo": 1720303,
+       "mmsi": 275465000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-16T08:06:00Z",
+      "vessel": {
+       "name": "maersk kaya",
+       "imo": 9431288,
+       "mmsi": 566030000
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-11-16T06:19:00Z",
+      "vessel": {
+       "name": "arklow crest",
+       "imo": 9771468,
+       "mmsi": 250013654
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Arrival",
+      "timestamp": "2026-11-16T05:23:00Z",
+      "vessel": {
+       "name": "stena scandica",
+       "imo": 9329849,
+       "mmsi": 219029263
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-15T21:38:00Z",
       "vessel": {
        "name": "revala",
        "imo": 1097438,
@@ -103,11 +214,25 @@
      },
      {
       "event": "Departure",
-      "timestamp": "2026-11-14T20:40:00Z",
+      "timestamp": "2026-11-15T21:17:00Z",
       "vessel": {
-       "name": "stena scandica",
-       "imo": 9329849,
-       "mmsi": 219029263
+       "name": "stena baltica",
+       "imo": 9329851,
+       "mmsi": 219029947
+      },
+      "port": {
+       "name": "ventspils",
+       "country": "latvia",
+       "unlo_code": "LVVNT"
+      }
+     },
+     {
+      "event": "Departure",
+      "timestamp": "2026-11-15T16:37:00Z",
+      "vessel": {
+       "name": "als",
+       "imo": 9968164,
+       "mmsi": 255848000
       },
       "port": {
        "name": "ventspils",
@@ -125,56 +250,6 @@
    "data": {
     "vesselETAs": [
      {
-      "mmsi": 305497000,
-      "imo": 9333450,
-      "vessel_name": "KEIT",
-      "destination": "LVRIX",
-      "destination_port": "LVRIX",
-      "draught": 4.9,
-      "eta": "2026-11-15T18:00:00Z",
-      "timestamp": "2026-11-14T16:29:42Z"
-     },
-     {
-      "mmsi": 255805594,
-      "imo": 9454230,
-      "vessel_name": "SVENDBORG",
-      "destination": "LV RIX",
-      "destination_port": "LVRIX",
-      "draught": 7.2,
-      "eta": "2026-11-16T03:00:00Z",
-      "timestamp": "2026-11-14T17:33:47Z"
-     },
-     {
-      "mmsi": 255806086,
-      "imo": 9454242,
-      "vessel_name": "SONDERBORG",
-      "destination": "PLGDN>LVRIX",
-      "destination_port": "LVRIX",
-      "draught": 6.9,
-      "eta": "2026-11-16T04:00:00Z",
-      "timestamp": "2026-11-14T22:44:37Z"
-     },
-     {
-      "mmsi": 354537000,
-      "imo": 8918966,
-      "vessel_name": "MSC MANDY III",
-      "destination": "RULED->LVRIX",
-      "destination_port": "LVRIX",
-      "draught": 7.8,
-      "eta": "2026-11-16T06:00:00Z",
-      "timestamp": "2026-11-15T12:03:58Z"
-     },
-     {
-      "mmsi": 245901000,
-      "imo": 9547324,
-      "vessel_name": "LONGVIKING",
-      "destination": "LVRIX",
-      "destination_port": "LVRIX",
-      "draught": 4.4,
-      "eta": "2026-11-16T20:00:00Z",
-      "timestamp": "2026-11-15T13:53:44Z"
-     },
-     {
       "mmsi": 210885000,
       "imo": 1095375,
       "vessel_name": "BALTICMAR",
@@ -182,17 +257,47 @@
       "destination_port": "LVRIX",
       "draught": 4.6,
       "eta": "2026-11-16T23:00:00Z",
-      "timestamp": "2026-11-15T14:02:40Z"
+      "timestamp": "2026-11-15T19:30:49Z"
      },
      {
       "mmsi": 255806341,
       "imo": 9373632,
       "vessel_name": "SONGA AURORA",
-      "destination": "RIGA",
+      "destination": "LVRIX",
       "destination_port": "LVRIX",
       "draught": 8.7,
-      "eta": "2026-11-17T07:00:00Z",
-      "timestamp": "2026-11-15T14:03:00Z"
+      "eta": "2026-11-17T05:00:00Z",
+      "timestamp": "2026-11-16T06:16:12Z"
+     },
+     {
+      "mmsi": 255917275,
+      "imo": 9387425,
+      "vessel_name": "ELBOCEAN",
+      "destination": "RIGA",
+      "destination_port": "LVRIX",
+      "draught": 8,
+      "eta": "2026-11-17T11:00:00Z",
+      "timestamp": "2026-11-16T16:03:30Z"
+     },
+     {
+      "mmsi": 311014800,
+      "imo": 9001813,
+      "vessel_name": "HAV SNAPPER",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4,
+      "eta": "2026-11-17T14:00:00Z",
+      "timestamp": "2026-11-16T15:42:20Z"
+     },
+     {
+      "mmsi": 244770997,
+      "imo": 9988102,
+      "vessel_name": "LONGEON",
+      "destination": "LVRIX",
+      "destination_port": "LVRIX",
+      "draught": 4,
+      "eta": "2026-11-17T15:00:00Z",
+      "timestamp": "2026-11-16T15:17:01Z"
      },
      {
       "mmsi": 259029000,
@@ -200,9 +305,19 @@
       "vessel_name": "HAVBRIS",
       "destination": "RIGA",
       "destination_port": "LVRIX",
-      "draught": 4.5,
+      "draught": 4.7,
       "eta": "2026-11-18T12:00:00Z",
-      "timestamp": "2026-11-15T14:03:20Z"
+      "timestamp": "2026-11-16T16:03:34Z"
+     },
+     {
+      "mmsi": 229246000,
+      "imo": 9191747,
+      "vessel_name": "KRISTEL",
+      "destination": "RIGA",
+      "destination_port": "LVRIX",
+      "draught": 5.6,
+      "eta": "2026-11-18T19:00:00Z",
+      "timestamp": "2026-11-16T16:03:24Z"
      }
     ]
    }
@@ -212,7 +327,68 @@
    "status": 200,
    "remaining": null,
    "data": {
-    "vessels": []
+    "vessels": [
+     {
+      "mmsi": 277228000,
+      "vessel_name": "LTU WARSHIP",
+      "latitude": 56.24683,
+      "longitude": 20.83883,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.83883,
+        56.24683
+       ]
+      },
+      "timestamp": "2026-11-16T16:05:40.041715Z",
+      "processed_timestamp": "2026-11-16T16:05:43.838087Z",
+      "suspected_glitch": false,
+      "cog": 352,
+      "sog": 14.2,
+      "heading": 348,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 277228000,
+      "vessel_name": "LTU WARSHIP",
+      "latitude": 56.22983,
+      "longitude": 20.844,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.844,
+        56.22983
+       ]
+      },
+      "timestamp": "2026-11-16T16:01:20Z",
+      "processed_timestamp": "2026-11-16T16:04:44.171179Z",
+      "suspected_glitch": false,
+      "cog": 348,
+      "sog": 13.2,
+      "heading": 351,
+      "nav_status": 0
+     },
+     {
+      "mmsi": 277228000,
+      "vessel_name": "LTU WARSHIP",
+      "latitude": 56.218,
+      "longitude": 20.84783,
+      "location": {
+       "type": "Point",
+       "coordinates": [
+        20.84783,
+        56.218
+       ]
+      },
+      "timestamp": "2026-11-16T15:58:19Z",
+      "processed_timestamp": "2026-11-16T15:59:19.184245Z",
+      "suspected_glitch": false,
+      "cog": 350,
+      "sog": 14.9,
+      "heading": 347,
+      "nav_status": 0
+     }
+    ]
    }
   }
  }
