@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-22T00:31:05Z",
- "total": 105,
+ "updated": "2026-11-22T00:46:05Z",
+ "total": 104,
  "gas": 1,
- "tankers": 104,
+ "tankers": 103,
  "laden": 41,
  "ships": [
   {
@@ -90,6 +90,8 @@
    ],
    "route_km": 675,
    "pred_arrival": "2026-11-23T07:54:44Z",
+   "silent_h": 0.6,
+   "pred_route_km": 663,
    "route": [
     [
      57.346,
@@ -572,11 +574,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.3248,
-   "lon": 28.024,
-   "sog": 0.0,
-   "cog": 123.6,
-   "last_seen": "2026-11-22T00:23:57Z",
+   "lat": 60.3247,
+   "lon": 28.0239,
+   "sog": 0.2,
+   "cog": 262.9,
+   "last_seen": "2026-11-22T00:41:11Z",
    "track": [
     [
      60.032,
@@ -686,85 +688,6 @@
    "ru_linked": true
   },
   {
-   "mmsi": 563087500,
-   "first_seen": "2026-11-21T12:46:52Z",
-   "name": "THERESA SCHULTE",
-   "imo": 9553622,
-   "ais_type": 84,
-   "flag": "Singapūra",
-   "length": 143,
-   "draught": 8.1,
-   "destination": "PLGDN",
-   "eta": "22.11 03:00 UTC",
-   "port_id": "gdansk",
-   "port": "Gdaņska",
-   "country": "PL",
-   "dest_pos": [
-    54.4,
-    18.68
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Bornholma",
-   "lat": 54.8163,
-   "lon": 18.9499,
-   "sog": 13.4,
-   "cog": 132.4,
-   "last_seen": "2026-11-22T00:28:15Z",
-   "track": [
-    [
-     55.907,
-     15.373,
-     "2026-11-21T13:30"
-    ],
-    [
-     55.848,
-     15.543,
-     "2026-11-21T14:01"
-    ],
-    [
-     54.965,
-     18.688,
-     "2026-11-21T23:30"
-    ],
-    [
-     54.893,
-     18.815,
-     "2026-11-21T23:58"
-    ],
-    [
-     54.816,
-     18.95,
-     "2026-11-22T00:28"
-    ]
-   ],
-   "route_km": 49,
-   "pred_arrival": "2026-11-22T02:38:11Z",
-   "route": [
-    [
-     54.816,
-     18.95
-    ],
-    [
-     54.4,
-     18.68
-    ]
-   ],
-   "dwt": 12000,
-   "dwt_source": "novērtēts",
-   "max_draught": 8.5,
-   "load_pct": 91,
-   "empty_pct": 9,
-   "cargo_t_est": 10400,
-   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
-   "cargo_state": "pilns",
-   "cargo_basis": "produktu tankkuģa izmērs (143 m), iegrime 8.1 m",
-   "laden": true,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
    "mmsi": 219814000,
    "first_seen": "2026-11-19T21:00:38Z",
    "name": "TERN SEA",
@@ -785,11 +708,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Fehmarna / Kīle",
-   "lat": 59.6038,
-   "lon": 23.6201,
-   "sog": 11.7,
-   "cog": 69.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 59.6221,
+   "lon": 23.7384,
+   "sog": 11.9,
+   "cog": 73.8,
+   "last_seen": "2026-11-22T00:46:01Z",
    "track": [
     [
      54.987,
@@ -1005,14 +928,19 @@
      59.604,
      23.62,
      "2026-11-22T00:27"
+    ],
+    [
+     59.622,
+     23.738,
+     "2026-11-22T00:46"
     ]
    ],
-   "route_km": 52,
-   "pred_arrival": "2026-11-22T03:03:19Z",
+   "route_km": 48,
+   "pred_arrival": "2026-11-22T03:07:02Z",
    "route": [
     [
-     59.604,
-     23.62
+     59.622,
+     23.738
     ],
     [
      60.03,
@@ -1034,11 +962,90 @@
    "ru_linked": false
   },
   {
+   "mmsi": 563087500,
+   "first_seen": "2026-11-21T12:46:52Z",
+   "name": "THERESA SCHULTE",
+   "imo": 9553622,
+   "ais_type": 84,
+   "flag": "Singapūra",
+   "length": 143,
+   "draught": 8.1,
+   "destination": "PLGDN",
+   "eta": "22.11 03:00 UTC",
+   "port_id": "gdansk",
+   "port": "Gdaņska",
+   "country": "PL",
+   "dest_pos": [
+    54.4,
+    18.68
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Bornholma",
+   "lat": 54.8163,
+   "lon": 18.9499,
+   "sog": 13.4,
+   "cog": 132.4,
+   "last_seen": "2026-11-22T00:28:15Z",
+   "track": [
+    [
+     55.907,
+     15.373,
+     "2026-11-21T13:30"
+    ],
+    [
+     55.848,
+     15.543,
+     "2026-11-21T14:01"
+    ],
+    [
+     54.965,
+     18.688,
+     "2026-11-21T23:30"
+    ],
+    [
+     54.893,
+     18.815,
+     "2026-11-21T23:58"
+    ],
+    [
+     54.816,
+     18.95,
+     "2026-11-22T00:28"
+    ]
+   ],
+   "route_km": 49,
+   "pred_arrival": "2026-11-22T02:38:11Z",
+   "route": [
+    [
+     54.816,
+     18.95
+    ],
+    [
+     54.4,
+     18.68
+    ]
+   ],
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 91,
+   "empty_pct": 9,
+   "cargo_t_est": 10400,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (143 m), iegrime 8.1 m",
+   "laden": true,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": false
+  },
+  {
    "mmsi": 219015298,
    "first_seen": "2026-11-16T09:45:31Z",
    "name": "TARNBRIS",
    "imo": 9372652,
-   "ais_type": 89,
+   "ais_type": 80,
    "flag": "Dānija",
    "length": 129,
    "draught": 8.1,
@@ -1054,11 +1061,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 59.825,
-   "lon": 25.1984,
-   "sog": 4.8,
-   "cog": 79.6,
-   "last_seen": "2026-11-22T00:28:24Z",
+   "lat": 59.8283,
+   "lon": 25.2335,
+   "sog": 4.9,
+   "cog": 80.4,
+   "last_seen": "2026-11-22T00:41:54Z",
    "track": [
     [
      53.705,
@@ -1461,12 +1468,12 @@
      "2026-11-22T00:28"
     ]
    ],
-   "route_km": 56,
-   "pred_arrival": "2026-11-22T07:21:28Z",
+   "route_km": 55,
+   "pred_arrival": "2026-11-22T07:19:24Z",
    "route": [
     [
-     59.825,
-     25.198
+     59.828,
+     25.233
     ],
     [
      60.3,
@@ -1546,6 +1553,109 @@
    "ru_linked": false
   },
   {
+   "mmsi": 255806519,
+   "first_seen": "2026-11-21T21:31:05Z",
+   "name": "RUBIKON 202",
+   "imo": 9344423,
+   "ais_type": 80,
+   "flag": null,
+   "length": 144,
+   "draught": 6.5,
+   "destination": "LTKLJ",
+   "eta": "22.11 23:00 UTC",
+   "port_id": "klaipeda",
+   "port": "Klaipēda",
+   "country": "LT",
+   "dest_pos": [
+    55.705,
+    21.09
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Gdaņskas līcis",
+   "lat": 54.6522,
+   "lon": 19.106,
+   "sog": 8.6,
+   "cog": 346,
+   "last_seen": "2026-11-22T00:45:35Z",
+   "track": [
+    [
+     54.408,
+     18.718,
+     "2026-11-21T21:57"
+    ],
+    [
+     54.411,
+     18.797,
+     "2026-11-21T22:28"
+    ],
+    [
+     54.428,
+     18.933,
+     "2026-11-21T22:59"
+    ],
+    [
+     54.447,
+     18.99,
+     "2026-11-21T23:15"
+    ],
+    [
+     54.514,
+     19.045,
+     "2026-11-21T23:44"
+    ],
+    [
+     54.551,
+     19.074,
+     "2026-11-22T00:00"
+    ],
+    [
+     54.581,
+     19.1,
+     "2026-11-22T00:14"
+    ],
+    [
+     54.614,
+     19.122,
+     "2026-11-22T00:28"
+    ],
+    [
+     54.652,
+     19.106,
+     "2026-11-22T00:45"
+    ]
+   ],
+   "route_km": 189,
+   "pred_arrival": "2026-11-22T13:41:06Z",
+   "route": [
+    [
+     54.652,
+     19.106
+    ],
+    [
+     55.8,
+     20.7
+    ],
+    [
+     55.705,
+     21.09
+    ]
+   ],
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 57,
+   "empty_pct": 43,
+   "cargo_t_est": 6500,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (144 m), iegrime 6.5 m",
+   "laden": true,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": false
+  },
+  {
    "mmsi": 266466000,
    "first_seen": "2026-11-21T21:46:05Z",
    "name": "ASTREA",
@@ -1595,8 +1705,8 @@
    ],
    "route_km": 190,
    "pred_arrival": "2026-11-22T09:59:06Z",
-   "silent_h": 1.0,
-   "pred_route_km": 171,
+   "silent_h": 1.3,
+   "pred_route_km": 166,
    "route": [
     [
      55.963,
@@ -1634,104 +1744,6 @@
    "ru_linked": false
   },
   {
-   "mmsi": 255806519,
-   "first_seen": "2026-11-21T21:31:05Z",
-   "name": "RUBIKON 202",
-   "imo": 9344423,
-   "ais_type": 80,
-   "flag": null,
-   "length": 144,
-   "draught": 6.5,
-   "destination": "LTKLJ",
-   "eta": "22.11 23:00 UTC",
-   "port_id": "klaipeda",
-   "port": "Klaipēda",
-   "country": "LT",
-   "dest_pos": [
-    55.705,
-    21.09
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Gdaņskas līcis",
-   "lat": 54.6139,
-   "lon": 19.1218,
-   "sog": 8,
-   "cog": 348,
-   "last_seen": "2026-11-22T00:28:54Z",
-   "track": [
-    [
-     54.408,
-     18.718,
-     "2026-11-21T21:57"
-    ],
-    [
-     54.411,
-     18.797,
-     "2026-11-21T22:28"
-    ],
-    [
-     54.428,
-     18.933,
-     "2026-11-21T22:59"
-    ],
-    [
-     54.447,
-     18.99,
-     "2026-11-21T23:15"
-    ],
-    [
-     54.514,
-     19.045,
-     "2026-11-21T23:44"
-    ],
-    [
-     54.551,
-     19.074,
-     "2026-11-22T00:00"
-    ],
-    [
-     54.581,
-     19.1,
-     "2026-11-22T00:14"
-    ],
-    [
-     54.614,
-     19.122,
-     "2026-11-22T00:28"
-    ]
-   ],
-   "route_km": 192,
-   "pred_arrival": "2026-11-22T14:34:50Z",
-   "route": [
-    [
-     54.614,
-     19.122
-    ],
-    [
-     55.8,
-     20.7
-    ],
-    [
-     55.705,
-     21.09
-    ]
-   ],
-   "dwt": 12000,
-   "dwt_source": "novērtēts",
-   "max_draught": 8.5,
-   "load_pct": 57,
-   "empty_pct": 43,
-   "cargo_t_est": 6500,
-   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
-   "cargo_state": "daļēji pilns",
-   "cargo_basis": "produktu tankkuģa izmērs (144 m), iegrime 6.5 m",
-   "laden": true,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
    "mmsi": 219008000,
    "first_seen": "2026-11-21T15:47:00Z",
    "name": "TERN OCEAN",
@@ -1752,11 +1764,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 60.0272,
-   "lon": 19.2374,
-   "sog": 11.4,
-   "cog": 138.3,
-   "last_seen": "2026-11-22T00:26:55Z",
+   "lat": 59.982,
+   "lon": 19.317,
+   "sog": 11.5,
+   "cog": 140.5,
+   "last_seen": "2026-11-22T00:45:46Z",
    "track": [
     [
      61.336,
@@ -1897,14 +1909,19 @@
      60.027,
      19.237,
      "2026-11-22T00:26"
+    ],
+    [
+     59.982,
+     19.317,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 223,
-   "pred_arrival": "2026-11-22T11:55:41Z",
+   "route_km": 227,
+   "pred_arrival": "2026-11-22T12:20:07Z",
    "route": [
     [
-     60.027,
-     19.237
+     59.982,
+     19.317
     ],
     [
      61.0,
@@ -1950,11 +1967,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 54.3586,
-   "lon": 9.8743,
-   "sog": 7.5,
-   "cog": 116,
-   "last_seen": "2026-11-22T00:29:22Z",
+   "lat": 54.3436,
+   "lon": 9.9221,
+   "sog": 7.1,
+   "cog": 118,
+   "last_seen": "2026-11-22T00:45:23Z",
    "track": [
     [
      51.279,
@@ -2135,14 +2152,19 @@
      54.359,
      9.874,
      "2026-11-22T00:29"
+    ],
+    [
+     54.344,
+     9.922,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 311,
-   "pred_arrival": "2026-11-23T00:48:08Z",
+   "route_km": 308,
+   "pred_arrival": "2026-11-23T02:13:29Z",
    "route": [
     [
-     54.359,
-     9.874
+     54.344,
+     9.922
     ],
     [
      54.55,
@@ -2470,8 +2492,8 @@
    ],
    "route_km": 409,
    "pred_arrival": "2026-11-22T19:14:56Z",
-   "silent_h": 1.1,
-   "pred_route_km": 386,
+   "silent_h": 1.3,
+   "pred_route_km": 381,
    "route": [
     [
      58.894,
@@ -2942,8 +2964,8 @@
    ],
    "route_km": 453,
    "pred_arrival": "2026-11-22T08:40:15Z",
-   "silent_h": 15.2,
-   "pred_route_km": 158,
+   "silent_h": 15.4,
+   "pred_route_km": 153,
    "route": [
     [
      55.128,
@@ -3410,8 +3432,8 @@
    ],
    "route_km": 534,
    "pred_arrival": "2026-11-22T23:36:21Z",
-   "silent_h": 3.3,
-   "pred_route_km": 468,
+   "silent_h": 3.5,
+   "pred_route_km": 463,
    "route": [
     [
      54.515,
@@ -3473,17 +3495,12 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas līcis",
-   "lat": 60.2561,
-   "lon": 19.0085,
+   "lat": 60.2056,
+   "lon": 19.0176,
    "sog": 12.3,
-   "cog": 176.1,
-   "last_seen": "2026-11-22T00:29:27Z",
+   "cog": 175.3,
+   "last_seen": "2026-11-22T00:44:16Z",
    "track": [
-    [
-     65.534,
-     24.41,
-     "2026-11-20T17:58"
-    ],
     [
      65.497,
      24.337,
@@ -3878,14 +3895,19 @@
      60.256,
      19.009,
      "2026-11-22T00:29"
+    ],
+    [
+     60.206,
+     19.018,
+     "2026-11-22T00:44"
     ]
    ],
-   "route_km": 543,
-   "pred_arrival": "2026-11-23T02:22:46Z",
+   "route_km": 537,
+   "pred_arrival": "2026-11-23T02:22:24Z",
    "route": [
     [
-     60.256,
-     19.009
+     60.206,
+     19.018
     ],
     [
      59.7,
@@ -3947,11 +3969,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas līcis",
-   "lat": 64.6723,
+   "lat": 64.6734,
    "lon": 21.651,
-   "sog": 2.5,
-   "cog": 10.7,
-   "last_seen": "2026-11-22T00:26:54Z",
+   "sog": 2.0,
+   "cog": 359.7,
+   "last_seen": "2026-11-22T00:28:43Z",
    "track": [
     [
      63.022,
@@ -4173,7 +4195,7 @@
    "pred_arrival": "2026-11-25T18:26:27Z",
    "route": [
     [
-     64.672,
+     64.673,
      21.651
     ],
     [
@@ -4324,8 +4346,8 @@
    ],
    "route_km": 625,
    "pred_arrival": "2026-11-22T23:04:34Z",
-   "silent_h": 8.5,
-   "pred_route_km": 454,
+   "silent_h": 8.8,
+   "pred_route_km": 449,
    "route": [
     [
      55.233,
@@ -4517,8 +4539,8 @@
    ],
    "route_km": 640,
    "pred_arrival": "2026-11-23T04:00:29Z",
-   "silent_h": 4.1,
-   "pred_route_km": 557,
+   "silent_h": 4.3,
+   "pred_route_km": 552,
    "route": [
     [
      57.033,
@@ -4588,11 +4610,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 63.3777,
-   "lon": 20.4968,
-   "sog": 12.1,
-   "cog": 226.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 63.3396,
+   "lon": 20.4228,
+   "sog": 12.4,
+   "cog": 217.6,
+   "last_seen": "2026-11-22T00:42:02Z",
    "track": [
     [
      61.094,
@@ -4833,14 +4855,19 @@
      63.378,
      20.497,
      "2026-11-22T00:27"
+    ],
+    [
+     63.34,
+     20.423,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 658,
-   "pred_arrival": "2026-11-23T08:21:40Z",
+   "route_km": 653,
+   "pred_arrival": "2026-11-23T07:37:02Z",
    "route": [
     [
-     63.378,
-     20.497
+     63.34,
+     20.423
     ],
     [
      61.0,
@@ -4894,11 +4921,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.0246,
-   "lon": 25.5219,
-   "sog": 0.6,
-   "cog": 151.6,
-   "last_seen": "2026-11-22T00:25:50Z",
+   "lat": 60.0247,
+   "lon": 25.5214,
+   "sog": 0.0,
+   "cog": 175.6,
+   "last_seen": "2026-11-22T00:40:48Z",
    "track": [
     [
      59.157,
@@ -5081,7 +5108,7 @@
    "route": [
     [
      60.025,
-     25.522
+     25.521
     ],
     [
      59.55,
@@ -5237,7 +5264,7 @@
    "lon": 25.5513,
    "sog": 0.0,
    "cog": 356.6,
-   "last_seen": "2026-11-22T00:25:14Z",
+   "last_seen": "2026-11-22T00:40:17Z",
    "track": [
     [
      60.305,
@@ -5457,8 +5484,8 @@
    ],
    "route_km": 942,
    "pred_arrival": "2026-11-23T18:53:16Z",
-   "silent_h": 7.0,
-   "pred_route_km": 809,
+   "silent_h": 7.2,
+   "pred_route_km": 804,
    "route": [
     [
      55.26,
@@ -5504,139 +5531,6 @@
    "ru_linked": false
   },
   {
-   "mmsi": 210048000,
-   "first_seen": "2026-11-21T12:46:52Z",
-   "name": "NORMA",
-   "imo": 9870666,
-   "ais_type": 80,
-   "flag": "Kipra",
-   "length": 110,
-   "draught": 6.6,
-   "destination": "FI PRV",
-   "eta": "24.11 09:00 UTC",
-   "port_id": "porvoo",
-   "port": "Porvo / Šēldvika",
-   "country": "FI",
-   "dest_pos": [
-    60.3,
-    25.55
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Gēdsera",
-   "lat": 55.4771,
-   "lon": 14.8748,
-   "sog": 10.8,
-   "cog": 63.7,
-   "last_seen": "2026-11-21T23:44:18Z",
-   "track": [
-    [
-     54.398,
-     12.152,
-     "2026-11-21T12:45"
-    ],
-    [
-     54.427,
-     12.2,
-     "2026-11-21T12:59"
-    ],
-    [
-     54.461,
-     12.24,
-     "2026-11-21T13:13"
-    ],
-    [
-     54.546,
-     12.289,
-     "2026-11-21T13:44"
-    ],
-    [
-     55.083,
-     14.226,
-     "2026-11-21T20:42"
-    ],
-    [
-     55.12,
-     14.282,
-     "2026-11-21T20:59"
-    ],
-    [
-     55.156,
-     14.332,
-     "2026-11-21T21:14"
-    ],
-    [
-     55.335,
-     14.571,
-     "2026-11-21T22:28"
-    ],
-    [
-     55.477,
-     14.875,
-     "2026-11-21T23:44"
-    ]
-   ],
-   "route_km": 979,
-   "pred_arrival": "2026-11-24T04:56:15Z",
-   "silent_h": 0.8,
-   "pred_route_km": 965,
-   "route": [
-    [
-     55.477,
-     14.875
-    ],
-    [
-     55.5,
-     16.0
-    ],
-    [
-     56.8,
-     18.3
-    ],
-    [
-     57.8,
-     19.6
-    ],
-    [
-     58.6,
-     19.8
-    ],
-    [
-     59.4,
-     22.8
-    ],
-    [
-     59.45,
-     23.9
-    ],
-    [
-     59.55,
-     24.7
-    ],
-    [
-     59.9,
-     26.5
-    ],
-    [
-     60.3,
-     25.55
-    ]
-   ],
-   "dwt": 6000,
-   "dwt_source": "novērtēts",
-   "max_draught": 8.5,
-   "load_pct": 59,
-   "empty_pct": 41,
-   "cargo_t_est": 3400,
-   "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
-   "cargo_state": "daļēji pilns",
-   "cargo_basis": "mazs tankkuģis (110 m), iegrime 6.6 m",
-   "laden": true,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
    "mmsi": 403745000,
    "first_seen": "2026-11-20T03:48:11Z",
    "name": "AYLA",
@@ -5657,11 +5551,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Vācu līcis",
-   "lat": 57.4897,
-   "lon": 11.3754,
-   "sog": 12.7,
-   "cog": 159.4,
-   "last_seen": "2026-11-22T00:27:26Z",
+   "lat": 57.4328,
+   "lon": 11.4226,
+   "sog": 12.6,
+   "cog": 155.8,
+   "last_seen": "2026-11-22T00:45:15Z",
    "track": [
     [
      52.406,
@@ -5772,14 +5666,19 @@
      57.49,
      11.375,
      "2026-11-22T00:27"
+    ],
+    [
+     57.433,
+     11.423,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 986,
-   "pred_arrival": "2026-11-23T22:02:28Z",
+   "route_km": 979,
+   "pred_arrival": "2026-11-23T22:22:38Z",
    "route": [
     [
-     57.49,
-     11.375
+     57.433,
+     11.423
     ],
     [
      55.95,
@@ -5831,6 +5730,139 @@
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "pilns",
    "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 9.9 m",
+   "laden": true,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": false
+  },
+  {
+   "mmsi": 210048000,
+   "first_seen": "2026-11-21T12:46:52Z",
+   "name": "NORMA",
+   "imo": 9870666,
+   "ais_type": 80,
+   "flag": "Kipra",
+   "length": 110,
+   "draught": 6.6,
+   "destination": "FI PRV",
+   "eta": "24.11 09:00 UTC",
+   "port_id": "porvoo",
+   "port": "Porvo / Šēldvika",
+   "country": "FI",
+   "dest_pos": [
+    60.3,
+    25.55
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Gēdsera",
+   "lat": 55.4771,
+   "lon": 14.8748,
+   "sog": 10.8,
+   "cog": 63.7,
+   "last_seen": "2026-11-21T23:44:18Z",
+   "track": [
+    [
+     54.398,
+     12.152,
+     "2026-11-21T12:45"
+    ],
+    [
+     54.427,
+     12.2,
+     "2026-11-21T12:59"
+    ],
+    [
+     54.461,
+     12.24,
+     "2026-11-21T13:13"
+    ],
+    [
+     54.546,
+     12.289,
+     "2026-11-21T13:44"
+    ],
+    [
+     55.083,
+     14.226,
+     "2026-11-21T20:42"
+    ],
+    [
+     55.12,
+     14.282,
+     "2026-11-21T20:59"
+    ],
+    [
+     55.156,
+     14.332,
+     "2026-11-21T21:14"
+    ],
+    [
+     55.335,
+     14.571,
+     "2026-11-21T22:28"
+    ],
+    [
+     55.477,
+     14.875,
+     "2026-11-21T23:44"
+    ]
+   ],
+   "route_km": 979,
+   "pred_arrival": "2026-11-24T04:56:15Z",
+   "silent_h": 1.0,
+   "pred_route_km": 960,
+   "route": [
+    [
+     55.477,
+     14.875
+    ],
+    [
+     55.5,
+     16.0
+    ],
+    [
+     56.8,
+     18.3
+    ],
+    [
+     57.8,
+     19.6
+    ],
+    [
+     58.6,
+     19.8
+    ],
+    [
+     59.4,
+     22.8
+    ],
+    [
+     59.45,
+     23.9
+    ],
+    [
+     59.55,
+     24.7
+    ],
+    [
+     59.9,
+     26.5
+    ],
+    [
+     60.3,
+     25.55
+    ]
+   ],
+   "dwt": 6000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 59,
+   "empty_pct": 41,
+   "cargo_t_est": 3400,
+   "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "mazs tankkuģis (110 m), iegrime 6.6 m",
    "laden": true,
    "sanctioned": false,
    "shadow_listed": false,
@@ -6730,8 +6762,8 @@
    ],
    "route_km": 1038,
    "pred_arrival": "2026-11-23T13:42:13Z",
-   "silent_h": 17.7,
-   "pred_route_km": 703,
+   "silent_h": 17.9,
+   "pred_route_km": 699,
    "route": [
     [
      55.508,
@@ -6810,10 +6842,10 @@
    "terminal": null,
    "from_area": "Somu līcis",
    "lat": 60.3121,
-   "lon": 25.5568,
-   "sog": 0,
+   "lon": 25.5569,
+   "sog": 0.0,
    "cog": 52.9,
-   "last_seen": "2026-11-22T00:27:22Z",
+   "last_seen": "2026-11-22T00:39:21Z",
    "track": [
     [
      60.312,
@@ -6927,8 +6959,8 @@
    ],
    "route_km": 1628,
    "pred_arrival": "2026-11-24T18:49:41Z",
-   "silent_h": 23.0,
-   "pred_route_km": 1209,
+   "silent_h": 23.2,
+   "pred_route_km": 1204,
    "route": [
     [
      58.626,
@@ -7006,11 +7038,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Jitlande",
-   "lat": 57.7115,
-   "lon": 8.6567,
-   "sog": 7.7,
-   "cog": 84.1,
-   "last_seen": "2026-11-22T00:30:10Z",
+   "lat": 57.7141,
+   "lon": 8.704,
+   "sog": 7.6,
+   "cog": 83.9,
+   "last_seen": "2026-11-22T00:41:59Z",
    "track": [
     [
      57.679,
@@ -7058,12 +7090,12 @@
      "2026-11-22T00:30"
     ]
    ],
-   "route_km": 1698,
-   "pred_arrival": "2026-11-27T09:57:22Z",
+   "route_km": 1701,
+   "pred_arrival": "2026-11-27T12:02:05Z",
    "route": [
     [
-     57.712,
-     8.657
+     57.714,
+     8.704
     ],
     [
      57.2,
@@ -7157,11 +7189,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Gibraltārs",
-   "lat": 50.1949,
-   "lon": -0.659,
-   "sog": 9.2,
-   "cog": 76.6,
-   "last_seen": "2026-11-22T00:12:43Z",
+   "lat": 50.2138,
+   "lon": -0.5301,
+   "sog": 9.4,
+   "cog": 77.3,
+   "last_seen": "2026-11-22T00:45:24Z",
    "track": [
     [
      36.068,
@@ -7257,14 +7289,19 @@
      50.195,
      -0.659,
      "2026-11-22T00:12"
+    ],
+    [
+     50.214,
+     -0.53,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 2001,
-   "pred_arrival": "2026-11-27T07:50:48Z",
+   "route_km": 1992,
+   "pred_arrival": "2026-11-27T05:07:11Z",
    "route": [
     [
-     50.195,
-     -0.659
+     50.214,
+     -0.53
     ],
     [
      51.0,
@@ -7391,8 +7428,8 @@
    ],
    "route_km": 3566,
    "pred_arrival": "2026-11-28T22:47:58Z",
-   "silent_h": 43.0,
-   "pred_route_km": 2833,
+   "silent_h": 43.2,
+   "pred_route_km": 2829,
    "route": [
     [
      39.199,
@@ -7576,8 +7613,8 @@
    ],
    "route_km": 3608,
    "pred_arrival": "2026-12-02T02:07:57Z",
-   "silent_h": 56.6,
-   "pred_route_km": 2923,
+   "silent_h": 56.8,
+   "pred_route_km": 2920,
    "route": [
     [
      38.821,
@@ -7686,8 +7723,8 @@
    ],
    "route_km": 4172,
    "pred_arrival": "2026-11-30T13:42:59Z",
-   "silent_h": 2.3,
-   "pred_route_km": 4126,
+   "silent_h": 2.5,
+   "pred_route_km": 4121,
    "route": [
     [
      36.521,
@@ -8186,8 +8223,8 @@
    ],
    "route_km": 6504,
    "pred_arrival": "2026-12-04T07:53:49Z",
-   "silent_h": 0.5,
-   "pred_route_km": 6492,
+   "silent_h": 0.8,
+   "pred_route_km": 6487,
    "route": [
     [
      36.435,
@@ -8353,8 +8390,8 @@
    ],
    "route_km": 7488,
    "pred_arrival": "2026-12-06T03:52:11Z",
-   "silent_h": 118.5,
-   "pred_route_km": 5551,
+   "silent_h": 118.7,
+   "pred_route_km": 5547,
    "route": [
     [
      38.697,
@@ -8496,8 +8533,8 @@
    ],
    "route_km": 8151,
    "pred_arrival": "2026-12-09T14:49:27Z",
-   "silent_h": 175.7,
-   "pred_route_km": 5756,
+   "silent_h": 175.9,
+   "pred_route_km": 5753,
    "route": [
     [
      38.639,
@@ -8842,8 +8879,8 @@
    ],
    "route_km": 10600,
    "pred_arrival": "2026-12-01T03:00:07Z",
-   "silent_h": 222.7,
-   "pred_route_km": 5249,
+   "silent_h": 223.0,
+   "pred_route_km": 5243,
    "route": [
     [
      29.368,
@@ -8953,11 +8990,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.4625,
-   "lon": 24.6501,
+   "lat": 59.4624,
+   "lon": 24.65,
    "sog": 0.0,
    "cog": 24.5,
-   "last_seen": "2026-11-22T00:19:45Z",
+   "last_seen": "2026-11-22T00:31:45Z",
    "route_km": 13,
    "track": [
     [
@@ -8985,117 +9022,6 @@
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "tukšs / balastā — brauc iekraut",
    "cargo_basis": "produktu tankkuģa izmērs (124 m), iegrime 5.0 m",
-   "laden": false,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
-   "mmsi": 255915968,
-   "first_seen": "2026-11-18T03:16:42Z",
-   "name": "DREAM SYRAX",
-   "imo": 9719513,
-   "ais_type": 80,
-   "flag": null,
-   "length": 100,
-   "draught": 5.9,
-   "destination": "PLGDN",
-   "eta": "18.11 22:00 UTC",
-   "port_id": "gdansk",
-   "port": "Gdaņska",
-   "country": "PL",
-   "dest_pos": [
-    54.4,
-    18.68
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Bornholma",
-   "lat": 54.4439,
-   "lon": 18.8921,
-   "sog": 0.1,
-   "cog": 157.1,
-   "last_seen": "2026-11-22T00:28:02Z",
-   "track": [
-    [
-     56.034,
-     15.053,
-     "2026-11-18T03:31"
-    ],
-    [
-     55.996,
-     15.184,
-     "2026-11-18T03:58"
-    ],
-    [
-     55.974,
-     15.261,
-     "2026-11-18T04:14"
-    ],
-    [
-     55.954,
-     15.327,
-     "2026-11-18T04:28"
-    ],
-    [
-     55.93,
-     15.411,
-     "2026-11-18T04:45"
-    ],
-    [
-     54.731,
-     19.0,
-     "2026-11-18T17:12"
-    ],
-    [
-     54.639,
-     19.064,
-     "2026-11-18T17:43"
-    ],
-    [
-     54.517,
-     18.996,
-     "2026-11-18T18:27"
-    ],
-    [
-     54.489,
-     18.969,
-     "2026-11-18T18:40"
-    ],
-    [
-     54.459,
-     18.934,
-     "2026-11-18T18:55"
-    ],
-    [
-     54.446,
-     18.889,
-     "2026-11-18T19:57"
-    ]
-   ],
-   "route_km": 15,
-   "pred_arrival": "2026-11-18T21:06:00Z",
-   "silent_h": 0.5,
-   "pred_route_km": 11,
-   "route": [
-    [
-     54.444,
-     18.892
-    ],
-    [
-     54.4,
-     18.68
-    ]
-   ],
-   "dwt": 6000,
-   "dwt_source": "novērtēts",
-   "max_draught": 8.5,
-   "load_pct": 44,
-   "empty_pct": 56,
-   "cargo_t_est": 2500,
-   "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
-   "cargo_state": "daļēji pilns",
-   "cargo_basis": "mazs tankkuģis (100 m), iegrime 5.9 m",
    "laden": false,
    "sanctioned": false,
    "shadow_listed": false,
@@ -9184,7 +9110,7 @@
    "lon": 18.7166,
    "sog": 0,
    "cog": 360,
-   "last_seen": "2026-11-22T00:00:12Z",
+   "last_seen": "2026-11-22T00:44:14Z",
    "track": [
     [
      54.408,
@@ -9344,10 +9270,10 @@
    "first_seen": "2026-11-20T15:32:38Z",
    "name": "NEPTUNUS",
    "imo": 9410519,
-   "ais_type": 80,
+   "ais_type": 89,
    "flag": "Zviedrija",
    "length": 119,
-   "draught": 5.0,
+   "draught": 5,
    "destination": "FI SKV",
    "eta": "20.11 22:00 UTC",
    "port_id": "porvoo",
@@ -9360,11 +9286,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.022,
+   "lat": 60.0221,
    "lon": 25.4892,
-   "sog": 0.3,
-   "cog": 162.4,
-   "last_seen": "2026-11-22T00:31:00Z",
+   "sog": 0.4,
+   "cog": 155.0,
+   "last_seen": "2026-11-22T00:40:00Z",
    "track": [
     [
      59.499,
@@ -9397,7 +9323,7 @@
    "cargo_t_est": 2900,
    "cargo_guess": "naftas produkti vai ķīmikālijas (mazs piekrastes tankkuģis)",
    "cargo_state": "tukšs / balastā — brauc iekraut",
-   "cargo_basis": "mazs tankkuģis (119 m), iegrime 5.0 m",
+   "cargo_basis": "mazs tankkuģis (119 m), iegrime 5 m",
    "laden": false,
    "sanctioned": false,
    "shadow_listed": false,
@@ -10157,9 +10083,9 @@
    "from_area": "Pomožes līcis",
    "lat": 53.4153,
    "lon": 14.5859,
-   "sog": 0.1,
-   "cog": 76.4,
-   "last_seen": "2026-11-21T23:58:07Z",
+   "sog": 0.2,
+   "cog": 62.3,
+   "last_seen": "2026-11-22T00:45:17Z",
    "track": [
     [
      53.415,
@@ -10213,11 +10139,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.8291,
-   "lon": 25.7589,
-   "sog": 0.1,
-   "cog": 197.6,
-   "last_seen": "2026-11-22T00:24:37Z",
+   "lat": 59.8307,
+   "lon": 25.7583,
+   "sog": 0.3,
+   "cog": 187.7,
+   "last_seen": "2026-11-22T00:39:37Z",
    "track": [
     [
      59.833,
@@ -10228,8 +10154,8 @@
    "route_km": 80,
    "route": [
     [
-     59.829,
-     25.759
+     59.831,
+     25.758
     ],
     [
      59.55,
@@ -10275,11 +10201,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Skagena",
-   "lat": 59.8797,
+   "lat": 59.8801,
    "lon": 26.0545,
-   "sog": 0.1,
-   "cog": 175.1,
-   "last_seen": "2026-11-22T00:25:33Z",
+   "sog": 0.0,
+   "cog": 21.6,
+   "last_seen": "2026-11-22T00:40:31Z",
    "track": [
     [
      57.806,
@@ -10733,11 +10659,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Jitlande",
-   "lat": 54.5877,
-   "lon": 11.0352,
-   "sog": 13.7,
-   "cog": 100.3,
-   "last_seen": "2026-11-22T00:30:32Z",
+   "lat": 54.5782,
+   "lon": 11.1208,
+   "sog": 14,
+   "cog": 100.7,
+   "last_seen": "2026-11-22T00:43:37Z",
    "track": [
     [
      57.713,
@@ -10913,14 +10839,19 @@
      54.588,
      11.035,
      "2026-11-22T00:30"
+    ],
+    [
+     54.578,
+     11.121,
+     "2026-11-22T00:43"
     ]
    ],
-   "route_km": 110,
-   "pred_arrival": "2026-11-22T05:12:39Z",
+   "route_km": 104,
+   "pred_arrival": "2026-11-22T05:05:40Z",
    "route": [
     [
-     54.588,
-     11.035
+     54.578,
+     11.121
     ],
     [
      54.35,
@@ -10966,11 +10897,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Gibraltārs",
-   "lat": 59.8463,
-   "lon": 26.0204,
-   "sog": 0.0,
-   "cog": 177.5,
-   "last_seen": "2026-11-22T00:27:02Z",
+   "lat": 59.8462,
+   "lon": 26.0205,
+   "sog": 0.1,
+   "cog": 141.7,
+   "last_seen": "2026-11-22T00:42:03Z",
    "track": [
     [
      51.787,
@@ -11424,11 +11355,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Vācu līcis",
-   "lat": 59.8512,
+   "lat": 59.8505,
    "lon": 25.9236,
-   "sog": 0.1,
-   "cog": 27.5,
-   "last_seen": "2026-11-22T00:25:07Z",
+   "sog": 0.2,
+   "cog": 314.6,
+   "last_seen": "2026-11-22T00:40:09Z",
    "track": [
     [
      57.788,
@@ -11835,7 +11766,7 @@
    "pred_arrival": "2026-11-21T08:11:47Z",
    "route": [
     [
-     59.851,
+     59.85,
      25.924
     ],
     [
@@ -11882,11 +11813,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Ēresunds",
-   "lat": 54.4445,
-   "lon": 11.7477,
+   "lat": 54.4551,
+   "lon": 11.7009,
    "sog": 6.9,
-   "cog": 286.2,
-   "last_seen": "2026-11-22T00:27:19Z",
+   "cog": 301.6,
+   "last_seen": "2026-11-22T00:42:38Z",
    "track": [
     [
      55.562,
@@ -11957,14 +11888,19 @@
      54.439,
      11.786,
      "2026-11-22T00:15"
+    ],
+    [
+     54.455,
+     11.701,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 158,
-   "pred_arrival": "2026-11-22T13:55:20Z",
+   "route_km": 155,
+   "pred_arrival": "2026-11-22T13:54:05Z",
    "route": [
     [
-     54.444,
-     11.748
+     54.455,
+     11.701
     ],
     [
      54.55,
@@ -12811,8 +12747,8 @@
    ],
    "route_km": 246,
    "pred_arrival": "2026-11-22T07:36:42Z",
-   "silent_h": 6.5,
-   "pred_route_km": 128,
+   "silent_h": 6.8,
+   "pred_route_km": 124,
    "route": [
     [
      59.207,
@@ -12890,8 +12826,8 @@
    ],
    "route_km": 299,
    "pred_arrival": "2026-11-22T12:48:38Z",
-   "silent_h": 7.0,
-   "pred_route_km": 191,
+   "silent_h": 7.3,
+   "pred_route_km": 187,
    "route": [
     [
      58.776,
@@ -12946,10 +12882,10 @@
    "terminal": null,
    "from_area": "Somu līcis",
    "lat": 60.0258,
-   "lon": 28.4702,
-   "sog": 0.0,
-   "cog": 182.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lon": 28.47,
+   "sog": 0.5,
+   "cog": 171.3,
+   "last_seen": "2026-11-22T00:42:01Z",
    "track": [
     [
      60.045,
@@ -13087,11 +13023,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 55.1559,
-   "lon": 14.2985,
-   "sog": 13.3,
-   "cog": 93.4,
-   "last_seen": "2026-11-22T00:29:56Z",
+   "lat": 55.1892,
+   "lon": 14.3651,
+   "sog": 12.4,
+   "cog": 41.6,
+   "last_seen": "2026-11-22T00:45:08Z",
    "track": [
     [
      51.256,
@@ -13352,14 +13288,19 @@
      55.156,
      14.299,
      "2026-11-22T00:29"
+    ],
+    [
+     55.189,
+     14.365,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 353,
-   "pred_arrival": "2026-11-22T16:05:09Z",
+   "route_km": 348,
+   "pred_arrival": "2026-11-22T17:14:45Z",
    "route": [
     [
-     55.156,
-     14.299
+     55.189,
+     14.365
     ],
     [
      55.3,
@@ -13413,11 +13354,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 59.7271,
-   "lon": 20.4138,
-   "sog": 13.2,
-   "cog": 109.0,
-   "last_seen": "2026-11-22T00:26:58Z",
+   "lat": 59.6966,
+   "lon": 20.5022,
+   "sog": 13.8,
+   "cog": 144.0,
+   "last_seen": "2026-11-22T00:41:59Z",
    "track": [
     [
      61.234,
@@ -13558,14 +13499,19 @@
      59.727,
      20.414,
      "2026-11-22T00:26"
+    ],
+    [
+     59.697,
+     20.502,
+     "2026-11-22T00:41"
     ]
    ],
-   "route_km": 362,
-   "pred_arrival": "2026-11-22T16:32:41Z",
+   "route_km": 367,
+   "pred_arrival": "2026-11-22T16:18:12Z",
    "route": [
     [
-     59.727,
-     20.414
+     59.697,
+     20.502
     ],
     [
      59.7,
@@ -14067,6 +14013,103 @@
    "ru_linked": false
   },
   {
+   "mmsi": 205578090,
+   "first_seen": "2026-11-14T00:39:13Z",
+   "name": "BACH",
+   "imo": 0,
+   "ais_type": 80,
+   "flag": null,
+   "length": 135,
+   "draught": 2.7,
+   "destination": "KIELDRECHTSLUIS",
+   "eta": "12.11 11:37 UTC",
+   "port_id": "kiel",
+   "port": "Kīle",
+   "country": "DE",
+   "dest_pos": [
+    54.38,
+    10.18
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Lamanšs",
+   "lat": 51.9578,
+   "lon": 4.146,
+   "sog": 0,
+   "cog": 360,
+   "last_seen": "2026-11-22T00:43:52Z",
+   "track": [
+    [
+     51.282,
+     4.254,
+     "2026-11-14T00:35"
+    ],
+    [
+     51.283,
+     4.323,
+     "2026-11-14T11:08"
+    ],
+    [
+     51.26,
+     4.356,
+     "2026-11-14T11:56"
+    ],
+    [
+     51.691,
+     4.41,
+     "2026-11-18T18:10"
+    ],
+    [
+     51.705,
+     4.583,
+     "2026-11-19T05:31"
+    ],
+    [
+     51.774,
+     4.628,
+     "2026-11-19T05:59"
+    ],
+    [
+     51.964,
+     4.119,
+     "2026-11-19T11:25"
+    ]
+   ],
+   "route_km": 509,
+   "pred_arrival": "2026-11-23T04:41:02Z",
+   "route": [
+    [
+     51.958,
+     4.146
+    ],
+    [
+     54.2,
+     7.6
+    ],
+    [
+     54.3,
+     9.8
+    ],
+    [
+     54.38,
+     10.18
+    ]
+   ],
+   "dwt": 12000,
+   "dwt_source": "novērtēts",
+   "max_draught": 8.5,
+   "load_pct": 0,
+   "empty_pct": 100,
+   "cargo_t_est": 0,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "tukšs / balastā — brauc iekraut",
+   "cargo_basis": "produktu tankkuģa izmērs (135 m), iegrime 2.7 m",
+   "laden": false,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": false
+  },
+  {
    "mmsi": 269057227,
    "first_seen": "2026-10-26T21:25:19Z",
    "name": "BOB ROSS",
@@ -14087,17 +14130,12 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 51.8241,
-   "lon": 4.5578,
-   "sog": 10.2,
-   "cog": 165.7,
-   "last_seen": "2026-11-21T23:44:09Z",
+   "lat": 51.7008,
+   "lon": 4.5532,
+   "sog": 11,
+   "cog": 253.5,
+   "last_seen": "2026-11-22T00:45:10Z",
    "track": [
-    [
-     51.41,
-     4.032,
-     "2026-11-09T17:46"
-    ],
     [
      51.369,
      4.084,
@@ -14492,16 +14530,19 @@
      51.824,
      4.558,
      "2026-11-21T23:44"
+    ],
+    [
+     51.701,
+     4.553,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 503,
-   "pred_arrival": "2026-11-23T04:40:35Z",
-   "silent_h": 0.8,
-   "pred_route_km": 489,
+   "route_km": 514,
+   "pred_arrival": "2026-11-23T04:11:32Z",
    "route": [
     [
-     51.824,
-     4.558
+     51.701,
+     4.553
     ],
     [
      54.2,
@@ -14531,110 +14572,13 @@
    "ru_linked": false
   },
   {
-   "mmsi": 205578090,
-   "first_seen": "2026-11-14T00:39:13Z",
-   "name": "BACH",
-   "imo": 0,
-   "ais_type": 80,
-   "flag": null,
-   "length": 135,
-   "draught": 2.7,
-   "destination": "KIELDRECHTSLUIS",
-   "eta": "12.11 11:37 UTC",
-   "port_id": "kiel",
-   "port": "Kīle",
-   "country": "DE",
-   "dest_pos": [
-    54.38,
-    10.18
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Lamanšs",
-   "lat": 51.9578,
-   "lon": 4.146,
-   "sog": 0,
-   "cog": 360,
-   "last_seen": "2026-11-21T18:01:19Z",
-   "track": [
-    [
-     51.282,
-     4.254,
-     "2026-11-14T00:35"
-    ],
-    [
-     51.283,
-     4.323,
-     "2026-11-14T11:08"
-    ],
-    [
-     51.26,
-     4.356,
-     "2026-11-14T11:56"
-    ],
-    [
-     51.691,
-     4.41,
-     "2026-11-18T18:10"
-    ],
-    [
-     51.705,
-     4.583,
-     "2026-11-19T05:31"
-    ],
-    [
-     51.774,
-     4.628,
-     "2026-11-19T05:59"
-    ],
-    [
-     51.964,
-     4.119,
-     "2026-11-19T11:25"
-    ]
-   ],
-   "route_km": 509,
-   "pred_arrival": "2026-11-23T04:41:02Z",
-   "route": [
-    [
-     51.958,
-     4.146
-    ],
-    [
-     54.2,
-     7.6
-    ],
-    [
-     54.3,
-     9.8
-    ],
-    [
-     54.38,
-     10.18
-    ]
-   ],
-   "dwt": 12000,
-   "dwt_source": "novērtēts",
-   "max_draught": 8.5,
-   "load_pct": 0,
-   "empty_pct": 100,
-   "cargo_t_est": 0,
-   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
-   "cargo_state": "tukšs / balastā — brauc iekraut",
-   "cargo_basis": "produktu tankkuģa izmērs (135 m), iegrime 2.7 m",
-   "laden": false,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
    "mmsi": 311018700,
    "first_seen": "2026-11-21T23:31:05Z",
    "name": "JASMIN JOY",
    "imo": 9427471,
    "ais_type": 80,
    "flag": "Bahamas",
-   "length": 229,
+   "length": 228,
    "draught": 9.2,
    "destination": "RU ULU",
    "eta": "22.11 04:00 UTC",
@@ -14648,11 +14592,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 57.6648,
-   "lon": 32.5359,
-   "sog": 75.4,
-   "cog": 12.7,
-   "last_seen": "2026-11-22T00:27:02Z",
+   "lat": 57.6717,
+   "lon": 32.5293,
+   "sog": 39.8,
+   "cog": 212.3,
+   "last_seen": "2026-11-22T00:41:18Z",
    "track": [
     [
      57.678,
@@ -14661,11 +14605,11 @@
     ]
    ],
    "route_km": 536,
-   "pred_arrival": "2026-11-22T04:37:31Z",
+   "pred_arrival": "2026-11-22T08:35:09Z",
    "route": [
     [
-     57.665,
-     32.536
+     57.672,
+     32.529
     ],
     [
      59.9,
@@ -14684,72 +14628,7 @@
    "cargo_t_est": 29300,
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "daļēji pilns",
-   "cargo_basis": "produktu tankkuģa izmērs (229 m), iegrime 9.2 m",
-   "laden": false,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": true
-  },
-  {
-   "mmsi": 636017845,
-   "first_seen": "2026-11-21T21:01:05Z",
-   "name": "AQUADISIAC",
-   "imo": 9396713,
-   "ais_type": 80,
-   "flag": "Libērija",
-   "length": 183,
-   "draught": 7.2,
-   "destination": "RUPRI",
-   "eta": "21.11 21:00 UTC",
-   "port_id": "primorsk",
-   "port": "Primorska",
-   "country": "RU",
-   "dest_pos": [
-    60.35,
-    28.62
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Somu līcis",
-   "lat": 57.6745,
-   "lon": 32.533,
-   "sog": 81.6,
-   "cog": 182.8,
-   "last_seen": "2026-11-21T20:56:40Z",
-   "track": [
-    [
-     57.675,
-     32.533,
-     "2026-11-21T20:56"
-    ]
-   ],
-   "route_km": 554,
-   "pred_arrival": "2026-11-22T00:55:47Z",
-   "silent_h": 3.6,
-   "pred_route_km": 57,
-   "route": [
-    [
-     57.675,
-     32.533
-    ],
-    [
-     59.9,
-     26.5
-    ],
-    [
-     60.35,
-     28.62
-    ]
-   ],
-   "dwt": 35000,
-   "dwt_source": "novērtēts",
-   "max_draught": 10.5,
-   "load_pct": 43,
-   "empty_pct": 57,
-   "cargo_t_est": 14200,
-   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
-   "cargo_state": "daļēji pilns",
-   "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.2 m",
+   "cargo_basis": "produktu tankkuģa izmērs (228 m), iegrime 9.2 m",
    "laden": false,
    "sanctioned": false,
    "shadow_listed": false,
@@ -14776,11 +14655,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Stokholmas pieeja",
-   "lat": 58.6734,
-   "lon": 18.4892,
-   "sog": 11.3,
-   "cog": 72.1,
-   "last_seen": "2026-11-22T00:29:27Z",
+   "lat": 58.6872,
+   "lon": 18.5703,
+   "sog": 11.4,
+   "cog": 71.8,
+   "last_seen": "2026-11-22T00:43:28Z",
    "track": [
     [
      59.532,
@@ -14876,14 +14755,19 @@
      58.673,
      18.489,
      "2026-11-22T00:29"
+    ],
+    [
+     58.687,
+     18.57,
+     "2026-11-22T00:43"
     ]
    ],
-   "route_km": 556,
-   "pred_arrival": "2026-11-23T05:21:26Z",
+   "route_km": 551,
+   "pred_arrival": "2026-11-23T05:06:24Z",
    "route": [
     [
-     58.673,
-     18.489
+     58.687,
+     18.57
     ],
     [
      58.6,
@@ -14925,6 +14809,71 @@
    "ru_linked": false
   },
   {
+   "mmsi": 636017845,
+   "first_seen": "2026-11-21T21:01:05Z",
+   "name": "AQUADISIAC",
+   "imo": 9396713,
+   "ais_type": 80,
+   "flag": "Libērija",
+   "length": 183,
+   "draught": 7.2,
+   "destination": "RUPRI",
+   "eta": "21.11 21:00 UTC",
+   "port_id": "primorsk",
+   "port": "Primorska",
+   "country": "RU",
+   "dest_pos": [
+    60.35,
+    28.62
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Somu līcis",
+   "lat": 57.6745,
+   "lon": 32.533,
+   "sog": 81.6,
+   "cog": 182.8,
+   "last_seen": "2026-11-21T20:56:40Z",
+   "track": [
+    [
+     57.675,
+     32.533,
+     "2026-11-21T20:56"
+    ]
+   ],
+   "route_km": 554,
+   "pred_arrival": "2026-11-22T00:55:47Z",
+   "silent_h": 3.8,
+   "pred_route_km": 22,
+   "route": [
+    [
+     57.675,
+     32.533
+    ],
+    [
+     59.9,
+     26.5
+    ],
+    [
+     60.35,
+     28.62
+    ]
+   ],
+   "dwt": 35000,
+   "dwt_source": "novērtēts",
+   "max_draught": 10.5,
+   "load_pct": 43,
+   "empty_pct": 57,
+   "cargo_t_est": 14200,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.2 m",
+   "laden": false,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": true
+  },
+  {
    "mmsi": 205581790,
    "first_seen": "2026-10-28T22:16:23Z",
    "name": "OMEGA",
@@ -14945,11 +14894,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 51.3488,
-   "lon": 4.2677,
-   "sog": 2.6,
-   "cog": 94.3,
-   "last_seen": "2026-11-21T23:44:24Z",
+   "lat": 51.348,
+   "lon": 4.2711,
+   "sog": 0.6,
+   "cog": 162.8,
+   "last_seen": "2026-11-22T00:45:56Z",
    "track": [
     [
      51.37,
@@ -15356,8 +15305,8 @@
    "pred_arrival": "2026-11-24T01:08:40Z",
    "route": [
     [
-     51.349,
-     4.268
+     51.348,
+     4.271
     ],
     [
      54.2,
@@ -15894,11 +15843,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.402,
-   "lon": 26.8784,
-   "sog": 13.9,
-   "cog": 244.0,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 60.3815,
+   "lon": 26.769,
+   "sog": 13.8,
+   "cog": 251.0,
+   "last_seen": "2026-11-22T00:42:02Z",
    "track": [
     [
      60.428,
@@ -15909,14 +15858,19 @@
      60.402,
      26.878,
      "2026-11-22T00:27"
+    ],
+    [
+     60.382,
+     26.769,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 579,
-   "pred_arrival": "2026-11-23T00:54:01Z",
+   "route_km": 573,
+   "pred_arrival": "2026-11-23T01:03:57Z",
    "route": [
     [
-     60.402,
-     26.878
+     60.382,
+     26.769
     ],
     [
      59.55,
@@ -16544,8 +16498,8 @@
    ],
    "route_km": 681,
    "pred_arrival": "2026-11-22T11:04:36Z",
-   "silent_h": 15.4,
-   "pred_route_km": 277,
+   "silent_h": 15.7,
+   "pred_route_km": 270,
    "route": [
     [
      51.213,
@@ -16623,8 +16577,8 @@
    ],
    "route_km": 699,
    "pred_arrival": "2026-11-22T22:23:25Z",
-   "silent_h": 31.4,
-   "pred_route_km": 287,
+   "silent_h": 31.7,
+   "pred_route_km": 284,
    "route": [
     [
      59.067,
@@ -16808,8 +16762,8 @@
    ],
    "route_km": 722,
    "pred_arrival": "2026-11-24T01:12:39Z",
-   "silent_h": 7.0,
-   "pred_route_km": 631,
+   "silent_h": 7.3,
+   "pred_route_km": 627,
    "route": [
     [
      57.026,
@@ -16943,8 +16897,8 @@
    ],
    "route_km": 796,
    "pred_arrival": "2026-11-22T12:22:29Z",
-   "silent_h": 21.7,
-   "pred_route_km": 281,
+   "silent_h": 22.0,
+   "pred_route_km": 275,
    "route": [
     [
      55.525,
@@ -17018,11 +16972,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.322,
-   "lon": 22.0383,
-   "sog": 9.4,
-   "cog": 233.2,
-   "last_seen": "2026-11-22T00:27:00Z",
+   "lat": 59.2983,
+   "lon": 21.9789,
+   "sog": 9.3,
+   "cog": 231.4,
+   "last_seen": "2026-11-22T00:41:49Z",
    "track": [
     [
      57.666,
@@ -17353,14 +17307,19 @@
      59.322,
      22.038,
      "2026-11-22T00:27"
+    ],
+    [
+     59.298,
+     21.979,
+     "2026-11-22T00:41"
     ]
    ],
-   "route_km": 825,
-   "pred_arrival": "2026-11-24T03:58:02Z",
+   "route_km": 829,
+   "pred_arrival": "2026-11-24T05:00:45Z",
    "route": [
     [
-     59.322,
-     22.038
+     59.298,
+     21.979
     ],
     [
      59.4,
@@ -17408,6 +17367,107 @@
    "sanctioned": false,
    "shadow_listed": true,
    "ru_linked": true
+  },
+  {
+   "mmsi": 538010193,
+   "first_seen": "2026-11-21T21:46:05Z",
+   "name": "EVGENIA S",
+   "imo": 9388015,
+   "ais_type": 80,
+   "flag": "Māršala salas",
+   "length": 182,
+   "draught": 7.2,
+   "destination": "DE KEL",
+   "eta": "23.11 08:00 UTC",
+   "port_id": "kiel",
+   "port": "Kīle",
+   "country": "DE",
+   "dest_pos": [
+    54.38,
+    10.18
+   ],
+   "gas": false,
+   "terminal": null,
+   "from_area": "Lamanšs",
+   "lat": 50.302,
+   "lon": 0.0316,
+   "sog": 11.2,
+   "cog": 74.6,
+   "last_seen": "2026-11-22T00:43:20Z",
+   "track": [
+    [
+     50.19,
+     -0.827,
+     "2026-11-21T21:43"
+    ],
+    [
+     50.223,
+     -0.457,
+     "2026-11-21T22:59"
+    ],
+    [
+     50.246,
+     -0.31,
+     "2026-11-21T23:30"
+    ],
+    [
+     50.255,
+     -0.255,
+     "2026-11-21T23:42"
+    ],
+    [
+     50.267,
+     -0.178,
+     "2026-11-21T23:58"
+    ],
+    [
+     50.29,
+     -0.037,
+     "2026-11-22T00:29"
+    ],
+    [
+     50.302,
+     0.032,
+     "2026-11-22T00:43"
+    ]
+   ],
+   "route_km": 843,
+   "pred_arrival": "2026-11-23T20:53:42Z",
+   "route": [
+    [
+     50.302,
+     0.032
+    ],
+    [
+     51.0,
+     1.5
+    ],
+    [
+     54.2,
+     7.6
+    ],
+    [
+     54.3,
+     9.8
+    ],
+    [
+     54.38,
+     10.18
+    ]
+   ],
+   "dwt": 35000,
+   "dwt_source": "novērtēts",
+   "max_draught": 10.5,
+   "load_pct": 43,
+   "empty_pct": 57,
+   "cargo_t_est": 14200,
+   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
+   "cargo_state": "daļēji pilns",
+   "cargo_basis": "produktu tankkuģa izmērs (182 m), iegrime 7.2 m",
+   "laden": false,
+   "sanctioned": false,
+   "shadow_listed": false,
+   "ru_linked": false
   },
   {
    "mmsi": 636023557,
@@ -17712,102 +17772,6 @@
    "ru_linked": false
   },
   {
-   "mmsi": 538010193,
-   "first_seen": "2026-11-21T21:46:05Z",
-   "name": "EVGENIA S",
-   "imo": 9388015,
-   "ais_type": 80,
-   "flag": "Māršala salas",
-   "length": 182,
-   "draught": 7.2,
-   "destination": "DE KEL",
-   "eta": "23.11 08:00 UTC",
-   "port_id": "kiel",
-   "port": "Kīle",
-   "country": "DE",
-   "dest_pos": [
-    54.38,
-    10.18
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Lamanšs",
-   "lat": 50.2902,
-   "lon": -0.0366,
-   "sog": null,
-   "cog": null,
-   "last_seen": "2026-11-22T00:29:26Z",
-   "track": [
-    [
-     50.19,
-     -0.827,
-     "2026-11-21T21:43"
-    ],
-    [
-     50.223,
-     -0.457,
-     "2026-11-21T22:59"
-    ],
-    [
-     50.246,
-     -0.31,
-     "2026-11-21T23:30"
-    ],
-    [
-     50.255,
-     -0.255,
-     "2026-11-21T23:42"
-    ],
-    [
-     50.267,
-     -0.178,
-     "2026-11-21T23:58"
-    ],
-    [
-     50.29,
-     -0.037,
-     "2026-11-22T00:29"
-    ]
-   ],
-   "route_km": 848,
-   "pred_arrival": "2026-11-23T20:54:13Z",
-   "route": [
-    [
-     50.29,
-     -0.037
-    ],
-    [
-     51.0,
-     1.5
-    ],
-    [
-     54.2,
-     7.6
-    ],
-    [
-     54.3,
-     9.8
-    ],
-    [
-     54.38,
-     10.18
-    ]
-   ],
-   "dwt": 35000,
-   "dwt_source": "novērtēts",
-   "max_draught": 10.5,
-   "load_pct": 43,
-   "empty_pct": 57,
-   "cargo_t_est": 14200,
-   "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
-   "cargo_state": "daļēji pilns",
-   "cargo_basis": "produktu tankkuģa izmērs (182 m), iegrime 7.2 m",
-   "laden": false,
-   "sanctioned": false,
-   "shadow_listed": false,
-   "ru_linked": false
-  },
-  {
    "mmsi": 244090097,
    "first_seen": "2026-11-21T22:31:14Z",
    "name": "CORAL ENERGICE",
@@ -17862,6 +17826,8 @@
    ],
    "route_km": 859,
    "pred_arrival": "2026-11-23T15:00:44Z",
+   "silent_h": 0.5,
+   "pred_route_km": 847,
    "route": [
     [
      55.25,
@@ -18224,8 +18190,8 @@
    ],
    "route_km": 1006,
    "pred_arrival": "2026-11-23T16:45:17Z",
-   "silent_h": 7.0,
-   "pred_route_km": 857,
+   "silent_h": 7.3,
+   "pred_route_km": 852,
    "route": [
     [
      55.284,
@@ -18447,8 +18413,8 @@
    ],
    "route_km": 1016,
    "pred_arrival": "2026-11-24T05:38:22Z",
-   "silent_h": 1.6,
-   "pred_route_km": 987,
+   "silent_h": 1.8,
+   "pred_route_km": 982,
    "route": [
     [
      57.507,
@@ -18811,8 +18777,8 @@
    ],
    "route_km": 1032,
    "pred_arrival": "2026-11-23T23:21:27Z",
-   "silent_h": 6.3,
-   "pred_route_km": 910,
+   "silent_h": 6.5,
+   "pred_route_km": 905,
    "route": [
     [
      54.464,
@@ -19283,8 +19249,8 @@
    ],
    "route_km": 1046,
    "pred_arrival": "2026-11-24T10:12:54Z",
-   "silent_h": 2.5,
-   "pred_route_km": 1003,
+   "silent_h": 2.8,
+   "pred_route_km": 998,
    "route": [
     [
      55.294,
@@ -19362,11 +19328,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 54.4215,
-   "lon": 11.7109,
-   "sog": 11.6,
-   "cog": 115.6,
-   "last_seen": "2026-11-22T00:30:48Z",
+   "lat": 54.406,
+   "lon": 11.7804,
+   "sog": 11.7,
+   "cog": 95.9,
+   "last_seen": "2026-11-22T00:44:19Z",
    "track": [
     [
      51.441,
@@ -19592,14 +19558,19 @@
      54.422,
      11.711,
      "2026-11-22T00:30"
+    ],
+    [
+     54.406,
+     11.78,
+     "2026-11-22T00:44"
     ]
    ],
-   "route_km": 1101,
-   "pred_arrival": "2026-11-24T08:12:20Z",
+   "route_km": 1096,
+   "pred_arrival": "2026-11-24T07:43:01Z",
    "route": [
     [
-     54.422,
-     11.711
+     54.406,
+     11.78
     ],
     [
      54.35,
@@ -19738,8 +19709,8 @@
    ],
    "route_km": 1122,
    "pred_arrival": "2026-11-23T23:53:41Z",
-   "silent_h": 1.0,
-   "pred_route_km": 1098,
+   "silent_h": 1.3,
+   "pred_route_km": 1092,
    "route": [
     [
      53.066,
@@ -19982,8 +19953,8 @@
    ],
    "route_km": 1153,
    "pred_arrival": "2026-11-24T17:13:03Z",
-   "silent_h": 2.3,
-   "pred_route_km": 1113,
+   "silent_h": 2.6,
+   "pred_route_km": 1109,
    "route": [
     [
      53.646,
@@ -20146,8 +20117,8 @@
    ],
    "route_km": 1234,
    "pred_arrival": "2026-11-23T16:03:31Z",
-   "silent_h": 18.4,
-   "pred_route_km": 842,
+   "silent_h": 18.7,
+   "pred_route_km": 837,
    "route": [
     [
      54.42,
@@ -20317,8 +20288,8 @@
    ],
    "route_km": 1702,
    "pred_arrival": "2026-11-25T07:42:39Z",
-   "silent_h": 4.0,
-   "pred_route_km": 1619,
+   "silent_h": 4.3,
+   "pred_route_km": 1614,
    "route": [
     [
      56.773,
@@ -20435,8 +20406,8 @@
    ],
    "route_km": 2478,
    "pred_arrival": "2026-11-25T07:41:53Z",
-   "silent_h": 23.3,
-   "pred_route_km": 1916,
+   "silent_h": 23.5,
+   "pred_route_km": 1910,
    "route": [
     [
      54.69,
@@ -20607,8 +20578,8 @@
    ],
    "route_km": 3125,
    "pred_arrival": "2026-12-01T09:04:46Z",
-   "silent_h": 86.3,
-   "pred_route_km": 2257,
+   "silent_h": 86.6,
+   "pred_route_km": 2255,
    "route": [
     [
      39.095,
@@ -20813,8 +20784,8 @@
    ],
    "route_km": 3154,
    "pred_arrival": "2026-11-28T13:03:26Z",
-   "silent_h": 66.5,
-   "pred_route_km": 2214,
+   "silent_h": 66.8,
+   "pred_route_km": 2210,
    "route": [
     [
      39.145,
@@ -20969,8 +20940,8 @@
    ],
    "route_km": 3659,
    "pred_arrival": "2026-11-30T04:23:41Z",
-   "silent_h": 56.8,
-   "pred_route_km": 2837,
+   "silent_h": 57.0,
+   "pred_route_km": 2833,
    "route": [
     [
      38.813,
@@ -21365,11 +21336,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Suecas kanāls",
-   "lat": 35.9974,
-   "lon": -5.4591,
-   "sog": 9.4,
-   "cog": 255.1,
-   "last_seen": "2026-11-22T00:30:59Z",
+   "lat": 35.9882,
+   "lon": -5.5043,
+   "sog": 9.5,
+   "cog": 255.8,
+   "last_seen": "2026-11-22T00:45:29Z",
    "track": [
     [
      32.745,
@@ -21565,14 +21536,19 @@
      35.997,
      -5.459,
      "2026-11-22T00:30"
+    ],
+    [
+     35.988,
+     -5.504,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 4504,
-   "pred_arrival": "2026-12-03T17:42:32Z",
+   "route_km": 4503,
+   "pred_arrival": "2026-12-03T14:57:05Z",
    "route": [
     [
-     35.997,
-     -5.459
+     35.988,
+     -5.504
     ],
     [
      43.4,
@@ -21722,8 +21698,8 @@
    ],
    "route_km": 8860,
    "pred_arrival": "2026-12-12T00:35:23Z",
-   "silent_h": 15.1,
-   "pred_route_km": 8589,
+   "silent_h": 15.4,
+   "pred_route_km": 8584,
    "route": [
     [
      35.23,
@@ -21988,8 +21964,8 @@
    ],
    "route_km": 13885,
    "pred_arrival": "2026-11-25T06:31:03Z",
-   "silent_h": 412.9,
-   "pred_route_km": 2206,
+   "silent_h": 413.2,
+   "pred_route_km": 2199,
    "route": [
     [
      -34.913,
@@ -22092,106 +22068,6 @@
   }
  ],
  "arrived": [
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "STEN FJELL",
-   "imo": 9460241,
-   "port": "Porvo / Šēldvika",
-   "gas": false,
-   "terminal": null,
-   "draught": 8.6,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "SAANA",
-   "imo": 9739836,
-   "port": "Porvo / Šēldvika",
-   "gas": false,
-   "terminal": null,
-   "draught": 6.1,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "AALTO",
-   "imo": 5422203,
-   "port": "Kokola",
-   "gas": false,
-   "terminal": null,
-   "draught": 2.7,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "PARTHENON TS",
-   "imo": 9724348,
-   "port": "Porvo / Šēldvika",
-   "gas": false,
-   "terminal": null,
-   "draught": 8.9,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "SEAGAS",
-   "imo": 7382691,
-   "port": "Turku / Nāntali",
-   "gas": true,
-   "terminal": null,
-   "draught": 3.1,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "NORDIC SAGA",
-   "imo": 9346512,
-   "port": "Gdaņska",
-   "gas": false,
-   "terminal": null,
-   "draught": 5,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-18T03:39:25Z",
-   "name": "WARRIOR SPIRIT",
-   "imo": 9293129,
-   "port": "Ustjluga",
-   "gas": false,
-   "terminal": null,
-   "draught": 9.0,
-   "how": "prognoze"
-  },
-  {
-   "time": "2026-11-18T08:31:41Z",
-   "name": "LINDANGER",
-   "imo": 9725299,
-   "port": "Svinoujsce / Ščecina",
-   "gas": false,
-   "terminal": null,
-   "draught": 10.7,
-   "how": "prognoze"
-  },
-  {
-   "time": "2026-11-21T23:01:05Z",
-   "name": "NAVIGATOR YAUZA",
-   "imo": 9761176,
-   "port": "Rostoka",
-   "gas": false,
-   "terminal": null,
-   "draught": 8.4,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-21T00:06:15Z",
-   "name": "RHOGAS",
-   "imo": 9618848,
-   "port": "Rīga",
-   "gas": true,
-   "terminal": null,
-   "draught": 6.4,
-   "how": "prognoze"
-  },
   {
    "time": "2026-11-21T23:16:05Z",
    "name": "KEY SOUTH",
@@ -22891,6 +22767,106 @@
    "terminal": null,
    "draught": 6.4,
    "how": "prognoze"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "NORDSTRAUM",
+   "imo": 9523548,
+   "port": "Gdaņska",
+   "gas": false,
+   "terminal": null,
+   "draught": 7.1,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "THUN GAZELLE",
+   "imo": 9393333,
+   "port": "Malme",
+   "gas": false,
+   "terminal": null,
+   "draught": 5.8,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "ORIOLE",
+   "imo": 9547570,
+   "port": "Paldiski",
+   "gas": false,
+   "terminal": null,
+   "draught": 5.7,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "PARTHENON TS",
+   "imo": 9724348,
+   "port": "Porvo / Šēldvika",
+   "gas": false,
+   "terminal": null,
+   "draught": 8.9,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "SEAGAS",
+   "imo": 7382691,
+   "port": "Turku / Nāntali",
+   "gas": true,
+   "terminal": null,
+   "draught": 3.1,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "GOLFSTRAUM",
+   "imo": 9390991,
+   "port": "Porvo / Šēldvika",
+   "gas": false,
+   "terminal": null,
+   "draught": 7.5,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "STEN BERGEN",
+   "imo": 9407988,
+   "port": "Turku / Nāntali",
+   "gas": false,
+   "terminal": null,
+   "draught": 9.1,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "STEN FJELL",
+   "imo": 9460241,
+   "port": "Porvo / Šēldvika",
+   "gas": false,
+   "terminal": null,
+   "draught": 8.6,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-22T00:46:05Z",
+   "name": "SAANA",
+   "imo": 9739836,
+   "port": "Porvo / Šēldvika",
+   "gas": false,
+   "terminal": null,
+   "draught": 6.1,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-21T00:06:15Z",
+   "name": "RHOGAS",
+   "imo": 9618848,
+   "port": "Rīga",
+   "gas": true,
+   "terminal": null,
+   "draught": 6.4,
+   "how": "prognoze"
   }
  ],
  "_state_ships": [
@@ -22915,11 +22891,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.4625,
-   "lon": 24.6501,
+   "lat": 59.4624,
+   "lon": 24.65,
    "sog": 0.0,
    "cog": 24.5,
-   "last_seen": "2026-11-22T00:19:45Z",
+   "last_seen": "2026-11-22T00:31:45Z",
    "route_km": 13,
    "track": [
     [
@@ -23856,17 +23832,12 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 51.8241,
-   "lon": 4.5578,
-   "sog": 10.2,
-   "cog": 165.7,
-   "last_seen": "2026-11-21T23:44:09Z",
+   "lat": 51.7008,
+   "lon": 4.5532,
+   "sog": 11,
+   "cog": 253.5,
+   "last_seen": "2026-11-22T00:45:10Z",
    "track": [
-    [
-     51.41,
-     4.032,
-     "2026-11-09T17:46"
-    ],
     [
      51.369,
      4.084,
@@ -24261,12 +24232,15 @@
      51.824,
      4.558,
      "2026-11-21T23:44"
+    ],
+    [
+     51.701,
+     4.553,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 503,
-   "pred_arrival": "2026-11-23T04:40:35Z",
-   "silent_h": 0.8,
-   "pred_route_km": 489
+   "route_km": 514,
+   "pred_arrival": "2026-11-23T04:11:32Z"
   },
   {
    "mmsi": 205581790,
@@ -24289,11 +24263,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 51.3488,
-   "lon": 4.2677,
-   "sog": 2.6,
-   "cog": 94.3,
-   "last_seen": "2026-11-21T23:44:24Z",
+   "lat": 51.348,
+   "lon": 4.2711,
+   "sog": 0.6,
+   "cog": 162.8,
+   "last_seen": "2026-11-22T00:45:56Z",
    "track": [
     [
      51.37,
@@ -24800,8 +24774,8 @@
    ],
    "route_km": 13885,
    "pred_arrival": "2026-11-25T06:31:03Z",
-   "silent_h": 412.9,
-   "pred_route_km": 2206
+   "silent_h": 413.2,
+   "pred_route_km": 2199
   },
   {
    "mmsi": 636023657,
@@ -25213,8 +25187,8 @@
    ],
    "route_km": 1046,
    "pred_arrival": "2026-11-24T10:12:54Z",
-   "silent_h": 2.5,
-   "pred_route_km": 1003
+   "silent_h": 2.8,
+   "pred_route_km": 998
   },
   {
    "mmsi": 273331580,
@@ -25497,8 +25471,8 @@
    ],
    "route_km": 10600,
    "pred_arrival": "2026-12-01T03:00:07Z",
-   "silent_h": 222.7,
-   "pred_route_km": 5249
+   "silent_h": 223.0,
+   "pred_route_km": 5243
   },
   {
    "mmsi": 352004616,
@@ -25930,8 +25904,8 @@
    ],
    "route_km": 6504,
    "pred_arrival": "2026-12-04T07:53:49Z",
-   "silent_h": 0.5,
-   "pred_route_km": 6492
+   "silent_h": 0.8,
+   "pred_route_km": 6487
   },
   {
    "mmsi": 314175000,
@@ -25954,11 +25928,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Gibraltārs",
-   "lat": 59.8463,
-   "lon": 26.0204,
-   "sog": 0.0,
-   "cog": 177.5,
-   "last_seen": "2026-11-22T00:27:02Z",
+   "lat": 59.8462,
+   "lon": 26.0205,
+   "sog": 0.1,
+   "cog": 141.7,
+   "last_seen": "2026-11-22T00:42:03Z",
    "track": [
     [
      51.787,
@@ -26470,8 +26444,8 @@
    ],
    "route_km": 8151,
    "pred_arrival": "2026-12-09T14:49:27Z",
-   "silent_h": 175.7,
-   "pred_route_km": 5756
+   "silent_h": 175.9,
+   "pred_route_km": 5753
   },
   {
    "mmsi": 248531000,
@@ -26903,8 +26877,8 @@
    ],
    "route_km": 453,
    "pred_arrival": "2026-11-22T08:40:15Z",
-   "silent_h": 15.2,
-   "pred_route_km": 158
+   "silent_h": 15.4,
+   "pred_route_km": 153
   },
   {
    "mmsi": 259285000,
@@ -26971,7 +26945,7 @@
    "lon": 4.146,
    "sog": 0,
    "cog": 360,
-   "last_seen": "2026-11-21T18:01:19Z",
+   "last_seen": "2026-11-22T00:43:52Z",
    "track": [
     [
      51.282,
@@ -27442,8 +27416,8 @@
    ],
    "route_km": 534,
    "pred_arrival": "2026-11-22T23:36:21Z",
-   "silent_h": 3.3,
-   "pred_route_km": 468
+   "silent_h": 3.5,
+   "pred_route_km": 463
   },
   {
    "mmsi": 538012112,
@@ -27560,8 +27534,8 @@
    ],
    "route_km": 3608,
    "pred_arrival": "2026-12-02T02:07:57Z",
-   "silent_h": 56.6,
-   "pred_route_km": 2923
+   "silent_h": 56.8,
+   "pred_route_km": 2920
   },
   {
    "mmsi": 273391340,
@@ -27999,8 +27973,8 @@
    ],
    "route_km": 1038,
    "pred_arrival": "2026-11-23T13:42:13Z",
-   "silent_h": 17.7,
-   "pred_route_km": 703
+   "silent_h": 17.9,
+   "pred_route_km": 699
   },
   {
    "mmsi": 636018917,
@@ -28221,11 +28195,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Suecas kanāls",
-   "lat": 35.9974,
-   "lon": -5.4591,
-   "sog": 9.4,
-   "cog": 255.1,
-   "last_seen": "2026-11-22T00:30:59Z",
+   "lat": 35.9882,
+   "lon": -5.5043,
+   "sog": 9.5,
+   "cog": 255.8,
+   "last_seen": "2026-11-22T00:45:29Z",
    "track": [
     [
      32.745,
@@ -28421,10 +28395,15 @@
      35.997,
      -5.459,
      "2026-11-22T00:30"
+    ],
+    [
+     35.988,
+     -5.504,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 4504,
-   "pred_arrival": "2026-12-03T17:42:32Z"
+   "route_km": 4503,
+   "pred_arrival": "2026-12-03T14:57:05Z"
   },
   {
    "mmsi": 244000935,
@@ -28982,8 +28961,8 @@
    ],
    "route_km": 1032,
    "pred_arrival": "2026-11-23T23:21:27Z",
-   "silent_h": 6.3,
-   "pred_route_km": 910
+   "silent_h": 6.5,
+   "pred_route_km": 905
   },
   {
    "mmsi": 269057316,
@@ -29137,11 +29116,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Vācu līcis",
-   "lat": 59.8512,
+   "lat": 59.8505,
    "lon": 25.9236,
-   "sog": 0.1,
-   "cog": 27.5,
-   "last_seen": "2026-11-22T00:25:07Z",
+   "sog": 0.2,
+   "cog": 314.6,
+   "last_seen": "2026-11-22T00:40:09Z",
    "track": [
     [
      57.788,
@@ -29568,11 +29547,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Skagena",
-   "lat": 59.8797,
+   "lat": 59.8801,
    "lon": 26.0545,
-   "sog": 0.1,
-   "cog": 175.1,
-   "last_seen": "2026-11-22T00:25:33Z",
+   "sog": 0.0,
+   "cog": 21.6,
+   "last_seen": "2026-11-22T00:40:31Z",
    "track": [
     [
      57.806,
@@ -29999,11 +29978,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Gibraltārs",
-   "lat": 50.1949,
-   "lon": -0.659,
-   "sog": 9.2,
-   "cog": 76.6,
-   "last_seen": "2026-11-22T00:12:43Z",
+   "lat": 50.2138,
+   "lon": -0.5301,
+   "sog": 9.4,
+   "cog": 77.3,
+   "last_seen": "2026-11-22T00:45:24Z",
    "track": [
     [
      36.068,
@@ -30099,17 +30078,22 @@
      50.195,
      -0.659,
      "2026-11-22T00:12"
+    ],
+    [
+     50.214,
+     -0.53,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 2001,
-   "pred_arrival": "2026-11-27T07:50:48Z"
+   "route_km": 1992,
+   "pred_arrival": "2026-11-27T05:07:11Z"
   },
   {
    "mmsi": 219015298,
    "first_seen": "2026-11-16T09:45:31Z",
    "name": "TARNBRIS",
    "imo": 9372652,
-   "ais_type": 89,
+   "ais_type": 80,
    "flag": "Dānija",
    "length": 129,
    "draught": 8.1,
@@ -30125,11 +30109,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 59.825,
-   "lon": 25.1984,
-   "sog": 4.8,
-   "cog": 79.6,
-   "last_seen": "2026-11-22T00:28:24Z",
+   "lat": 59.8283,
+   "lon": 25.2335,
+   "sog": 4.9,
+   "cog": 80.4,
+   "last_seen": "2026-11-22T00:41:54Z",
    "track": [
     [
      53.705,
@@ -30532,8 +30516,8 @@
      "2026-11-22T00:28"
     ]
    ],
-   "route_km": 56,
-   "pred_arrival": "2026-11-22T07:21:28Z"
+   "route_km": 55,
+   "pred_arrival": "2026-11-22T07:19:24Z"
   },
   {
    "mmsi": 249081000,
@@ -30625,8 +30609,8 @@
    ],
    "route_km": 3125,
    "pred_arrival": "2026-12-01T09:04:46Z",
-   "silent_h": 86.3,
-   "pred_route_km": 2257
+   "silent_h": 86.6,
+   "pred_route_km": 2255
   },
   {
    "mmsi": 249279000,
@@ -31165,8 +31149,8 @@
    ],
    "route_km": 7488,
    "pred_arrival": "2026-12-06T03:52:11Z",
-   "silent_h": 118.5,
-   "pred_route_km": 5551
+   "silent_h": 118.7,
+   "pred_route_km": 5547
   },
   {
    "mmsi": 667002590,
@@ -31258,8 +31242,8 @@
    ],
    "route_km": 3659,
    "pred_arrival": "2026-11-30T04:23:41Z",
-   "silent_h": 56.8,
-   "pred_route_km": 2837
+   "silent_h": 57.0,
+   "pred_route_km": 2833
   },
   {
    "mmsi": 261182611,
@@ -31436,8 +31420,8 @@
    ],
    "route_km": 3154,
    "pred_arrival": "2026-11-28T13:03:26Z",
-   "silent_h": 66.5,
-   "pred_route_km": 2214
+   "silent_h": 66.8,
+   "pred_route_km": 2210
   },
   {
    "mmsi": 255890000,
@@ -31799,96 +31783,8 @@
    ],
    "route_km": 246,
    "pred_arrival": "2026-11-22T07:36:42Z",
-   "silent_h": 6.5,
-   "pred_route_km": 128
-  },
-  {
-   "mmsi": 255915968,
-   "first_seen": "2026-11-18T03:16:42Z",
-   "name": "DREAM SYRAX",
-   "imo": 9719513,
-   "ais_type": 80,
-   "flag": null,
-   "length": 100,
-   "draught": 5.9,
-   "destination": "PLGDN",
-   "eta": "18.11 22:00 UTC",
-   "port_id": "gdansk",
-   "port": "Gdaņska",
-   "country": "PL",
-   "dest_pos": [
-    54.4,
-    18.68
-   ],
-   "gas": false,
-   "terminal": null,
-   "from_area": "Bornholma",
-   "lat": 54.4439,
-   "lon": 18.8921,
-   "sog": 0.1,
-   "cog": 157.1,
-   "last_seen": "2026-11-22T00:28:02Z",
-   "track": [
-    [
-     56.034,
-     15.053,
-     "2026-11-18T03:31"
-    ],
-    [
-     55.996,
-     15.184,
-     "2026-11-18T03:58"
-    ],
-    [
-     55.974,
-     15.261,
-     "2026-11-18T04:14"
-    ],
-    [
-     55.954,
-     15.327,
-     "2026-11-18T04:28"
-    ],
-    [
-     55.93,
-     15.411,
-     "2026-11-18T04:45"
-    ],
-    [
-     54.731,
-     19.0,
-     "2026-11-18T17:12"
-    ],
-    [
-     54.639,
-     19.064,
-     "2026-11-18T17:43"
-    ],
-    [
-     54.517,
-     18.996,
-     "2026-11-18T18:27"
-    ],
-    [
-     54.489,
-     18.969,
-     "2026-11-18T18:40"
-    ],
-    [
-     54.459,
-     18.934,
-     "2026-11-18T18:55"
-    ],
-    [
-     54.446,
-     18.889,
-     "2026-11-18T19:57"
-    ]
-   ],
-   "route_km": 15,
-   "pred_arrival": "2026-11-18T21:06:00Z",
-   "silent_h": 0.5,
-   "pred_route_km": 11
+   "silent_h": 6.8,
+   "pred_route_km": 124
   },
   {
    "mmsi": 248024000,
@@ -32192,11 +32088,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 55.1559,
-   "lon": 14.2985,
-   "sog": 13.3,
-   "cog": 93.4,
-   "last_seen": "2026-11-22T00:29:56Z",
+   "lat": 55.1892,
+   "lon": 14.3651,
+   "sog": 12.4,
+   "cog": 41.6,
+   "last_seen": "2026-11-22T00:45:08Z",
    "track": [
     [
      51.256,
@@ -32457,10 +32353,15 @@
      55.156,
      14.299,
      "2026-11-22T00:29"
+    ],
+    [
+     55.189,
+     14.365,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 353,
-   "pred_arrival": "2026-11-22T16:05:09Z"
+   "route_km": 348,
+   "pred_arrival": "2026-11-22T17:14:45Z"
   },
   {
    "mmsi": 629009576,
@@ -32484,10 +32385,10 @@
    "terminal": null,
    "from_area": "Somu līcis",
    "lat": 60.0258,
-   "lon": 28.4702,
-   "sog": 0.0,
-   "cog": 182.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lon": 28.47,
+   "sog": 0.5,
+   "cog": 171.3,
+   "last_seen": "2026-11-22T00:42:01Z",
    "track": [
     [
      60.045,
@@ -32820,8 +32721,8 @@
    ],
    "route_km": 1006,
    "pred_arrival": "2026-11-23T16:45:17Z",
-   "silent_h": 7.0,
-   "pred_route_km": 857
+   "silent_h": 7.3,
+   "pred_route_km": 852
   },
   {
    "mmsi": 273120040,
@@ -32844,11 +32745,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.3248,
-   "lon": 28.024,
-   "sog": 0.0,
-   "cog": 123.6,
-   "last_seen": "2026-11-22T00:23:57Z",
+   "lat": 60.3247,
+   "lon": 28.0239,
+   "sog": 0.2,
+   "cog": 262.9,
+   "last_seen": "2026-11-22T00:41:11Z",
    "track": [
     [
      60.032,
@@ -33281,8 +33182,8 @@
    ],
    "route_km": 1016,
    "pred_arrival": "2026-11-24T05:38:22Z",
-   "silent_h": 1.6,
-   "pred_route_km": 987
+   "silent_h": 1.8,
+   "pred_route_km": 982
   },
   {
    "mmsi": 636023557,
@@ -33882,11 +33783,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Fehmarna / Kīle",
-   "lat": 59.6038,
-   "lon": 23.6201,
-   "sog": 11.7,
-   "cog": 69.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 59.6221,
+   "lon": 23.7384,
+   "sog": 11.9,
+   "cog": 73.8,
+   "last_seen": "2026-11-22T00:46:01Z",
    "track": [
     [
      54.987,
@@ -34102,10 +34003,15 @@
      59.604,
      23.62,
      "2026-11-22T00:27"
+    ],
+    [
+     59.622,
+     23.738,
+     "2026-11-22T00:46"
     ]
    ],
-   "route_km": 52,
-   "pred_arrival": "2026-11-22T03:03:19Z"
+   "route_km": 48,
+   "pred_arrival": "2026-11-22T03:07:02Z"
   },
   {
    "mmsi": 249073000,
@@ -34128,11 +34034,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 54.4215,
-   "lon": 11.7109,
-   "sog": 11.6,
-   "cog": 115.6,
-   "last_seen": "2026-11-22T00:30:48Z",
+   "lat": 54.406,
+   "lon": 11.7804,
+   "sog": 11.7,
+   "cog": 95.9,
+   "last_seen": "2026-11-22T00:44:19Z",
    "track": [
     [
      51.441,
@@ -34358,10 +34264,15 @@
      54.422,
      11.711,
      "2026-11-22T00:30"
+    ],
+    [
+     54.406,
+     11.78,
+     "2026-11-22T00:44"
     ]
    ],
-   "route_km": 1101,
-   "pred_arrival": "2026-11-24T08:12:20Z"
+   "route_km": 1096,
+   "pred_arrival": "2026-11-24T07:43:01Z"
   },
   {
    "mmsi": 235108533,
@@ -34433,8 +34344,8 @@
    ],
    "route_km": 3566,
    "pred_arrival": "2026-11-28T22:47:58Z",
-   "silent_h": 43.0,
-   "pred_route_km": 2833
+   "silent_h": 43.2,
+   "pred_route_km": 2829
   },
   {
    "mmsi": 403745000,
@@ -34457,11 +34368,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Vācu līcis",
-   "lat": 57.4897,
-   "lon": 11.3754,
-   "sog": 12.7,
-   "cog": 159.4,
-   "last_seen": "2026-11-22T00:27:26Z",
+   "lat": 57.4328,
+   "lon": 11.4226,
+   "sog": 12.6,
+   "cog": 155.8,
+   "last_seen": "2026-11-22T00:45:15Z",
    "track": [
     [
      52.406,
@@ -34572,10 +34483,15 @@
      57.49,
      11.375,
      "2026-11-22T00:27"
+    ],
+    [
+     57.433,
+     11.423,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 986,
-   "pred_arrival": "2026-11-23T22:02:28Z"
+   "route_km": 979,
+   "pred_arrival": "2026-11-23T22:22:38Z"
   },
   {
    "mmsi": 273273150,
@@ -34703,8 +34619,8 @@
    ],
    "route_km": 1702,
    "pred_arrival": "2026-11-25T07:42:39Z",
-   "silent_h": 4.0,
-   "pred_route_km": 1619
+   "silent_h": 4.3,
+   "pred_route_km": 1614
   },
   {
    "mmsi": 255916483,
@@ -34727,11 +34643,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 54.3586,
-   "lon": 9.8743,
-   "sog": 7.5,
-   "cog": 116,
-   "last_seen": "2026-11-22T00:29:22Z",
+   "lat": 54.3436,
+   "lon": 9.9221,
+   "sog": 7.1,
+   "cog": 118,
+   "last_seen": "2026-11-22T00:45:23Z",
    "track": [
     [
      51.279,
@@ -34912,10 +34828,15 @@
      54.359,
      9.874,
      "2026-11-22T00:29"
+    ],
+    [
+     54.344,
+     9.922,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 311,
-   "pred_arrival": "2026-11-23T00:48:08Z"
+   "route_km": 308,
+   "pred_arrival": "2026-11-23T02:13:29Z"
   },
   {
    "mmsi": 273350220,
@@ -35380,8 +35301,8 @@
    ],
    "route_km": 796,
    "pred_arrival": "2026-11-22T12:22:29Z",
-   "silent_h": 21.7,
-   "pred_route_km": 281
+   "silent_h": 22.0,
+   "pred_route_km": 275
   },
   {
    "mmsi": 261183700,
@@ -35408,7 +35329,7 @@
    "lon": 18.7166,
    "sog": 0,
    "cog": 360,
-   "last_seen": "2026-11-22T00:00:12Z",
+   "last_seen": "2026-11-22T00:44:14Z",
    "track": [
     [
      54.408,
@@ -35429,10 +35350,10 @@
    "first_seen": "2026-11-20T15:32:38Z",
    "name": "NEPTUNUS",
    "imo": 9410519,
-   "ais_type": 80,
+   "ais_type": 89,
    "flag": "Zviedrija",
    "length": 119,
-   "draught": 5.0,
+   "draught": 5,
    "destination": "FI SKV",
    "eta": "20.11 22:00 UTC",
    "port_id": "porvoo",
@@ -35445,11 +35366,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.022,
+   "lat": 60.0221,
    "lon": 25.4892,
-   "sog": 0.3,
-   "cog": 162.4,
-   "last_seen": "2026-11-22T00:31:00Z",
+   "sog": 0.4,
+   "cog": 155.0,
+   "last_seen": "2026-11-22T00:40:00Z",
    "track": [
     [
      59.499,
@@ -35545,8 +35466,8 @@
    ],
    "route_km": 699,
    "pred_arrival": "2026-11-22T22:23:25Z",
-   "silent_h": 31.4,
-   "pred_route_km": 287
+   "silent_h": 31.7,
+   "pred_route_km": 284
   },
   {
    "mmsi": 244784000,
@@ -35569,11 +35490,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 63.3777,
-   "lon": 20.4968,
-   "sog": 12.1,
-   "cog": 226.8,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 63.3396,
+   "lon": 20.4228,
+   "sog": 12.4,
+   "cog": 217.6,
+   "last_seen": "2026-11-22T00:42:02Z",
    "track": [
     [
      61.094,
@@ -35814,10 +35735,15 @@
      63.378,
      20.497,
      "2026-11-22T00:27"
+    ],
+    [
+     63.34,
+     20.423,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 658,
-   "pred_arrival": "2026-11-23T08:21:40Z"
+   "route_km": 653,
+   "pred_arrival": "2026-11-23T07:37:02Z"
   },
   {
    "mmsi": 538008852,
@@ -35840,11 +35766,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.8291,
-   "lon": 25.7589,
-   "sog": 0.1,
-   "cog": 197.6,
-   "last_seen": "2026-11-22T00:24:37Z",
+   "lat": 59.8307,
+   "lon": 25.7583,
+   "sog": 0.3,
+   "cog": 187.7,
+   "last_seen": "2026-11-22T00:39:37Z",
    "track": [
     [
      59.833,
@@ -35875,17 +35801,12 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas līcis",
-   "lat": 60.2561,
-   "lon": 19.0085,
+   "lat": 60.2056,
+   "lon": 19.0176,
    "sog": 12.3,
-   "cog": 176.1,
-   "last_seen": "2026-11-22T00:29:27Z",
+   "cog": 175.3,
+   "last_seen": "2026-11-22T00:44:16Z",
    "track": [
-    [
-     65.534,
-     24.41,
-     "2026-11-20T17:58"
-    ],
     [
      65.497,
      24.337,
@@ -36280,10 +36201,15 @@
      60.256,
      19.009,
      "2026-11-22T00:29"
+    ],
+    [
+     60.206,
+     19.018,
+     "2026-11-22T00:44"
     ]
    ],
-   "route_km": 543,
-   "pred_arrival": "2026-11-23T02:22:46Z"
+   "route_km": 537,
+   "pred_arrival": "2026-11-23T02:22:24Z"
   },
   {
    "mmsi": 212123000,
@@ -36482,8 +36408,8 @@
    ],
    "route_km": 942,
    "pred_arrival": "2026-11-23T18:53:16Z",
-   "silent_h": 7.0,
-   "pred_route_km": 809
+   "silent_h": 7.2,
+   "pred_route_km": 804
   },
   {
    "mmsi": 273129840,
@@ -36541,11 +36467,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Jitlande",
-   "lat": 54.5877,
-   "lon": 11.0352,
-   "sog": 13.7,
-   "cog": 100.3,
-   "last_seen": "2026-11-22T00:30:32Z",
+   "lat": 54.5782,
+   "lon": 11.1208,
+   "sog": 14,
+   "cog": 100.7,
+   "last_seen": "2026-11-22T00:43:37Z",
    "track": [
     [
      57.713,
@@ -36721,10 +36647,15 @@
      54.588,
      11.035,
      "2026-11-22T00:30"
+    ],
+    [
+     54.578,
+     11.121,
+     "2026-11-22T00:43"
     ]
    ],
-   "route_km": 110,
-   "pred_arrival": "2026-11-22T05:12:39Z"
+   "route_km": 104,
+   "pred_arrival": "2026-11-22T05:05:40Z"
   },
   {
    "mmsi": 461000219,
@@ -36836,8 +36767,8 @@
    ],
    "route_km": 1234,
    "pred_arrival": "2026-11-23T16:03:31Z",
-   "silent_h": 18.4,
-   "pred_route_km": 842
+   "silent_h": 18.7,
+   "pred_route_km": 837
   },
   {
    "mmsi": 257357000,
@@ -36964,8 +36895,8 @@
    ],
    "route_km": 681,
    "pred_arrival": "2026-11-22T11:04:36Z",
-   "silent_h": 15.4,
-   "pred_route_km": 277
+   "silent_h": 15.7,
+   "pred_route_km": 270
   },
   {
    "mmsi": 311046300,
@@ -37012,8 +36943,8 @@
    ],
    "route_km": 1628,
    "pred_arrival": "2026-11-24T18:49:41Z",
-   "silent_h": 23.0,
-   "pred_route_km": 1209
+   "silent_h": 23.2,
+   "pred_route_km": 1204
   },
   {
    "mmsi": 538005408,
@@ -37055,8 +36986,8 @@
    ],
    "route_km": 2478,
    "pred_arrival": "2026-11-25T07:41:53Z",
-   "silent_h": 23.3,
-   "pred_route_km": 1916
+   "silent_h": 23.5,
+   "pred_route_km": 1910
   },
   {
    "mmsi": 273291710,
@@ -37079,11 +37010,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 59.322,
-   "lon": 22.0383,
-   "sog": 9.4,
-   "cog": 233.2,
-   "last_seen": "2026-11-22T00:27:00Z",
+   "lat": 59.2983,
+   "lon": 21.9789,
+   "sog": 9.3,
+   "cog": 231.4,
+   "last_seen": "2026-11-22T00:41:49Z",
    "track": [
     [
      57.666,
@@ -37414,10 +37345,15 @@
      59.322,
      22.038,
      "2026-11-22T00:27"
+    ],
+    [
+     59.298,
+     21.979,
+     "2026-11-22T00:41"
     ]
    ],
-   "route_km": 825,
-   "pred_arrival": "2026-11-24T03:58:02Z"
+   "route_km": 829,
+   "pred_arrival": "2026-11-24T05:00:45Z"
   },
   {
    "mmsi": 245313000,
@@ -37609,8 +37545,8 @@
    ],
    "route_km": 1153,
    "pred_arrival": "2026-11-24T17:13:03Z",
-   "silent_h": 2.3,
-   "pred_route_km": 1113
+   "silent_h": 2.6,
+   "pred_route_km": 1109
   },
   {
    "mmsi": 538012078,
@@ -37838,8 +37774,8 @@
    ],
    "route_km": 722,
    "pred_arrival": "2026-11-24T01:12:39Z",
-   "silent_h": 7.0,
-   "pred_route_km": 631
+   "silent_h": 7.3,
+   "pred_route_km": 627
   },
   {
    "mmsi": 265072000,
@@ -37966,8 +37902,8 @@
    ],
    "route_km": 625,
    "pred_arrival": "2026-11-22T23:04:34Z",
-   "silent_h": 8.5,
-   "pred_route_km": 454
+   "silent_h": 8.8,
+   "pred_route_km": 449
   },
   {
    "mmsi": 538004215,
@@ -38120,8 +38056,8 @@
    ],
    "route_km": 1122,
    "pred_arrival": "2026-11-23T23:53:41Z",
-   "silent_h": 1.0,
-   "pred_route_km": 1098
+   "silent_h": 1.3,
+   "pred_route_km": 1092
   },
   {
    "mmsi": 248020000,
@@ -38278,8 +38214,8 @@
    ],
    "route_km": 640,
    "pred_arrival": "2026-11-23T04:00:29Z",
-   "silent_h": 4.1,
-   "pred_route_km": 557
+   "silent_h": 4.3,
+   "pred_route_km": 552
   },
   {
    "mmsi": 636017797,
@@ -38576,8 +38512,8 @@
    ],
    "route_km": 409,
    "pred_arrival": "2026-11-22T19:14:56Z",
-   "silent_h": 1.1,
-   "pred_route_km": 386
+   "silent_h": 1.3,
+   "pred_route_km": 381
   },
   {
    "mmsi": 261186488,
@@ -38602,9 +38538,9 @@
    "from_area": "Pomožes līcis",
    "lat": 53.4153,
    "lon": 14.5859,
-   "sog": 0.1,
-   "cog": 76.4,
-   "last_seen": "2026-11-21T23:58:07Z",
+   "sog": 0.2,
+   "cog": 62.3,
+   "last_seen": "2026-11-22T00:45:17Z",
    "track": [
     [
      53.415,
@@ -38700,8 +38636,8 @@
    ],
    "route_km": 8860,
    "pred_arrival": "2026-12-12T00:35:23Z",
-   "silent_h": 15.1,
-   "pred_route_km": 8589
+   "silent_h": 15.4,
+   "pred_route_km": 8584
   },
   {
    "mmsi": 259272000,
@@ -38724,11 +38660,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas līcis",
-   "lat": 64.6723,
+   "lat": 64.6734,
    "lon": 21.651,
-   "sog": 2.5,
-   "cog": 10.7,
-   "last_seen": "2026-11-22T00:26:54Z",
+   "sog": 2.0,
+   "cog": 359.7,
+   "last_seen": "2026-11-22T00:28:43Z",
    "track": [
     [
      63.022,
@@ -38991,11 +38927,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.0246,
-   "lon": 25.5219,
-   "sog": 0.6,
-   "cog": 151.6,
-   "last_seen": "2026-11-22T00:25:50Z",
+   "lat": 60.0247,
+   "lon": 25.5214,
+   "sog": 0.0,
+   "cog": 175.6,
+   "last_seen": "2026-11-22T00:40:48Z",
    "track": [
     [
      59.157,
@@ -39197,11 +39133,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Ēresunds",
-   "lat": 54.4445,
-   "lon": 11.7477,
+   "lat": 54.4551,
+   "lon": 11.7009,
    "sog": 6.9,
-   "cog": 286.2,
-   "last_seen": "2026-11-22T00:27:19Z",
+   "cog": 301.6,
+   "last_seen": "2026-11-22T00:42:38Z",
    "track": [
     [
      55.562,
@@ -39272,10 +39208,15 @@
      54.439,
      11.786,
      "2026-11-22T00:15"
+    ],
+    [
+     54.455,
+     11.701,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 158,
-   "pred_arrival": "2026-11-22T13:55:20Z"
+   "route_km": 155,
+   "pred_arrival": "2026-11-22T13:54:05Z"
   },
   {
    "mmsi": 255916284,
@@ -39464,8 +39405,8 @@
    ],
    "route_km": 979,
    "pred_arrival": "2026-11-24T04:56:15Z",
-   "silent_h": 0.8,
-   "pred_route_km": 965
+   "silent_h": 1.0,
+   "pred_route_km": 960
   },
   {
    "mmsi": 273538310,
@@ -39509,11 +39450,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Stokholmas pieeja",
-   "lat": 58.6734,
-   "lon": 18.4892,
-   "sog": 11.3,
-   "cog": 72.1,
-   "last_seen": "2026-11-22T00:29:27Z",
+   "lat": 58.6872,
+   "lon": 18.5703,
+   "sog": 11.4,
+   "cog": 71.8,
+   "last_seen": "2026-11-22T00:43:28Z",
    "track": [
     [
      59.532,
@@ -39609,10 +39550,15 @@
      58.673,
      18.489,
      "2026-11-22T00:29"
+    ],
+    [
+     58.687,
+     18.57,
+     "2026-11-22T00:43"
     ]
    ],
-   "route_km": 556,
-   "pred_arrival": "2026-11-23T05:21:26Z"
+   "route_km": 551,
+   "pred_arrival": "2026-11-23T05:06:24Z"
   },
   {
    "mmsi": 266420000,
@@ -39694,8 +39640,8 @@
    ],
    "route_km": 299,
    "pred_arrival": "2026-11-22T12:48:38Z",
-   "silent_h": 7.0,
-   "pred_route_km": 191
+   "silent_h": 7.3,
+   "pred_route_km": 187
   },
   {
    "mmsi": 236111974,
@@ -39719,10 +39665,10 @@
    "terminal": null,
    "from_area": "Somu līcis",
    "lat": 60.3121,
-   "lon": 25.5568,
-   "sog": 0,
+   "lon": 25.5569,
+   "sog": 0.0,
    "cog": 52.9,
-   "last_seen": "2026-11-22T00:27:22Z",
+   "last_seen": "2026-11-22T00:39:21Z",
    "track": [
     [
      60.312,
@@ -39753,11 +39699,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 60.0272,
-   "lon": 19.2374,
-   "sog": 11.4,
-   "cog": 138.3,
-   "last_seen": "2026-11-22T00:26:55Z",
+   "lat": 59.982,
+   "lon": 19.317,
+   "sog": 11.5,
+   "cog": 140.5,
+   "last_seen": "2026-11-22T00:45:46Z",
    "track": [
     [
      61.336,
@@ -39898,10 +39844,15 @@
      60.027,
      19.237,
      "2026-11-22T00:26"
+    ],
+    [
+     59.982,
+     19.317,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 223,
-   "pred_arrival": "2026-11-22T11:55:41Z"
+   "route_km": 227,
+   "pred_arrival": "2026-11-22T12:20:07Z"
   },
   {
    "mmsi": 255806146,
@@ -39924,11 +39875,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Botnijas jūra",
-   "lat": 59.7271,
-   "lon": 20.4138,
-   "sog": 13.2,
-   "cog": 109.0,
-   "last_seen": "2026-11-22T00:26:58Z",
+   "lat": 59.6966,
+   "lon": 20.5022,
+   "sog": 13.8,
+   "cog": 144.0,
+   "last_seen": "2026-11-22T00:41:59Z",
    "track": [
     [
      61.234,
@@ -40069,10 +40020,15 @@
      59.727,
      20.414,
      "2026-11-22T00:26"
+    ],
+    [
+     59.697,
+     20.502,
+     "2026-11-22T00:41"
     ]
    ],
-   "route_km": 362,
-   "pred_arrival": "2026-11-22T16:32:41Z"
+   "route_km": 367,
+   "pred_arrival": "2026-11-22T16:18:12Z"
   },
   {
    "mmsi": 352006339,
@@ -40158,7 +40114,9 @@
     ]
    ],
    "route_km": 675,
-   "pred_arrival": "2026-11-23T07:54:44Z"
+   "pred_arrival": "2026-11-23T07:54:44Z",
+   "silent_h": 0.6,
+   "pred_route_km": 663
   },
   {
    "mmsi": 511101845,
@@ -40300,8 +40258,8 @@
    ],
    "route_km": 554,
    "pred_arrival": "2026-11-22T00:55:47Z",
-   "silent_h": 3.6,
-   "pred_route_km": 57
+   "silent_h": 3.8,
+   "pred_route_km": 22
   },
   {
    "mmsi": 219034373,
@@ -40328,7 +40286,7 @@
    "lon": 25.5513,
    "sog": 0.0,
    "cog": 356.6,
-   "last_seen": "2026-11-22T00:25:14Z",
+   "last_seen": "2026-11-22T00:40:17Z",
    "track": [
     [
      60.305,
@@ -40359,11 +40317,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Jitlande",
-   "lat": 57.7115,
-   "lon": 8.6567,
-   "sog": 7.7,
-   "cog": 84.1,
-   "last_seen": "2026-11-22T00:30:10Z",
+   "lat": 57.7141,
+   "lon": 8.704,
+   "sog": 7.6,
+   "cog": 83.9,
+   "last_seen": "2026-11-22T00:41:59Z",
    "track": [
     [
      57.679,
@@ -40411,8 +40369,8 @@
      "2026-11-22T00:30"
     ]
    ],
-   "route_km": 1698,
-   "pred_arrival": "2026-11-27T09:57:22Z"
+   "route_km": 1701,
+   "pred_arrival": "2026-11-27T12:02:05Z"
   },
   {
    "mmsi": 255806519,
@@ -40435,11 +40393,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Gdaņskas līcis",
-   "lat": 54.6139,
-   "lon": 19.1218,
-   "sog": 8,
-   "cog": 348,
-   "last_seen": "2026-11-22T00:28:54Z",
+   "lat": 54.6522,
+   "lon": 19.106,
+   "sog": 8.6,
+   "cog": 346,
+   "last_seen": "2026-11-22T00:45:35Z",
    "track": [
     [
      54.408,
@@ -40480,10 +40438,15 @@
      54.614,
      19.122,
      "2026-11-22T00:28"
+    ],
+    [
+     54.652,
+     19.106,
+     "2026-11-22T00:45"
     ]
    ],
-   "route_km": 192,
-   "pred_arrival": "2026-11-22T14:34:50Z"
+   "route_km": 189,
+   "pred_arrival": "2026-11-22T13:41:06Z"
   },
   {
    "mmsi": 538010193,
@@ -40506,11 +40469,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Lamanšs",
-   "lat": 50.2902,
-   "lon": -0.0366,
-   "sog": null,
-   "cog": null,
-   "last_seen": "2026-11-22T00:29:26Z",
+   "lat": 50.302,
+   "lon": 0.0316,
+   "sog": 11.2,
+   "cog": 74.6,
+   "last_seen": "2026-11-22T00:43:20Z",
    "track": [
     [
      50.19,
@@ -40541,10 +40504,15 @@
      50.29,
      -0.037,
      "2026-11-22T00:29"
+    ],
+    [
+     50.302,
+     0.032,
+     "2026-11-22T00:43"
     ]
    ],
-   "route_km": 848,
-   "pred_arrival": "2026-11-23T20:54:13Z"
+   "route_km": 843,
+   "pred_arrival": "2026-11-23T20:53:42Z"
   },
   {
    "mmsi": 538006076,
@@ -40586,8 +40554,8 @@
    ],
    "route_km": 4172,
    "pred_arrival": "2026-11-30T13:42:59Z",
-   "silent_h": 2.3,
-   "pred_route_km": 4126
+   "silent_h": 2.5,
+   "pred_route_km": 4121
   },
   {
    "mmsi": 266466000,
@@ -40639,8 +40607,8 @@
    ],
    "route_km": 190,
    "pred_arrival": "2026-11-22T09:59:06Z",
-   "silent_h": 1.0,
-   "pred_route_km": 171
+   "silent_h": 1.3,
+   "pred_route_km": 166
   },
   {
    "mmsi": 244090097,
@@ -40696,7 +40664,9 @@
     ]
    ],
    "route_km": 859,
-   "pred_arrival": "2026-11-23T15:00:44Z"
+   "pred_arrival": "2026-11-23T15:00:44Z",
+   "silent_h": 0.5,
+   "pred_route_km": 847
   },
   {
    "mmsi": 667002070,
@@ -40715,27 +40685,6 @@
    "dest_pos": [
     59.68,
     28.4
-   ],
-   "gas": false,
-   "terminal": null
-  },
-  {
-   "mmsi": 258152000,
-   "first_seen": "2026-11-21T23:16:05Z",
-   "name": "NORDSTRAUM",
-   "imo": 9523548,
-   "ais_type": 80,
-   "flag": "Norvēģija",
-   "length": 119,
-   "draught": 7.1,
-   "destination": "FIPRV > PLGDN",
-   "eta": "20.11 19:00 UTC",
-   "port_id": "gdansk",
-   "port": "Gdaņska",
-   "country": "PL",
-   "dest_pos": [
-    54.4,
-    18.68
    ],
    "gas": false,
    "terminal": null
@@ -40782,7 +40731,7 @@
    "imo": 9427471,
    "ais_type": 80,
    "flag": "Bahamas",
-   "length": 229,
+   "length": 228,
    "draught": 9.2,
    "destination": "RU ULU",
    "eta": "22.11 04:00 UTC",
@@ -40796,11 +40745,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 57.6648,
-   "lon": 32.5359,
-   "sog": 75.4,
-   "cog": 12.7,
-   "last_seen": "2026-11-22T00:27:02Z",
+   "lat": 57.6717,
+   "lon": 32.5293,
+   "sog": 39.8,
+   "cog": 212.3,
+   "last_seen": "2026-11-22T00:41:18Z",
    "track": [
     [
      57.678,
@@ -40809,7 +40758,7 @@
     ]
    ],
    "route_km": 536,
-   "pred_arrival": "2026-11-22T04:37:31Z"
+   "pred_arrival": "2026-11-22T08:35:09Z"
   },
   {
    "mmsi": 257942000,
@@ -40853,11 +40802,11 @@
    "gas": false,
    "terminal": null,
    "from_area": "Somu līcis",
-   "lat": 60.402,
-   "lon": 26.8784,
-   "sog": 13.9,
-   "cog": 244.0,
-   "last_seen": "2026-11-22T00:27:01Z",
+   "lat": 60.3815,
+   "lon": 26.769,
+   "sog": 13.8,
+   "cog": 251.0,
+   "last_seen": "2026-11-22T00:42:02Z",
    "track": [
     [
      60.428,
@@ -40868,31 +40817,15 @@
      60.402,
      26.878,
      "2026-11-22T00:27"
+    ],
+    [
+     60.382,
+     26.769,
+     "2026-11-22T00:42"
     ]
    ],
-   "route_km": 579,
-   "pred_arrival": "2026-11-23T00:54:01Z"
-  },
-  {
-   "mmsi": 246541000,
-   "first_seen": "2026-11-22T00:01:15Z",
-   "name": "THUN GAZELLE",
-   "imo": 9393333,
-   "ais_type": 81,
-   "flag": "Nīderlande",
-   "length": 116,
-   "draught": 5.8,
-   "destination": "SEMMA",
-   "eta": "20.11 15:30 UTC",
-   "port_id": "malmo",
-   "port": "Malme",
-   "country": "SE",
-   "dest_pos": [
-    55.62,
-    12.98
-   ],
-   "gas": false,
-   "terminal": null
+   "route_km": 573,
+   "pred_arrival": "2026-11-23T01:03:57Z"
   },
   {
    "mmsi": 563330900,
