@@ -1,17 +1,100 @@
 {
- "updated": "2026-11-25T15:27:17Z",
+ "updated": "2026-11-25T15:42:18Z",
  "buoy": [
   56.062,
   20.958
  ],
  "learned_buoy": null,
- "messages_heard": 1515,
+ "messages_heard": 5005,
  "diag": {
-  "static_msgs": 801,
-  "ships_heard": 713,
-  "within_60km": 0,
-  "nearest": [],
+  "static_msgs": 1342,
+  "ships_heard": 2395,
+  "within_60km": 8,
+  "nearest": [
+   {
+    "mmsi": 275340000,
+    "name": "",
+    "km": 50.5,
+    "sog": 0
+   },
+   {
+    "mmsi": 275442000,
+    "name": "LIVA",
+    "km": 50.5,
+    "sog": 0.1
+   },
+   {
+    "mmsi": 275346000,
+    "name": "LV WARSHIP M-06",
+    "km": 50.5,
+    "sog": 0.1
+   },
+   {
+    "mmsi": 305094000,
+    "name": "VALDAY",
+    "km": 50.7,
+    "sog": 0
+   },
+   {
+    "mmsi": 275041216,
+    "name": "SILJE",
+    "km": 50.7,
+    "sog": 0
+   },
+   {
+    "mmsi": 209151000,
+    "name": "RIX ATLANTIC",
+    "km": 52.7,
+    "sog": 0
+   },
+   {
+    "mmsi": 209992000,
+    "name": "RIX UNION",
+    "km": 53.8,
+    "sog": 0
+   },
+   {
+    "mmsi": 210547000,
+    "name": "SWE-FREIGHTER",
+    "km": 53.8,
+    "sog": 0
+   }
+  ],
   "dest_like_butinge": []
  },
- "ships": []
+ "ships": [
+  {
+   "mmsi": 235108533,
+   "first_seen": "2026-11-25T15:42:18Z",
+   "name": "KMARIN RESTRAINT",
+   "imo": 9683075,
+   "callsign": "2ICI6",
+   "ais_type": 89,
+   "length": 250,
+   "beam": 44,
+   "destination": "LT BOT",
+   "dest_match": true,
+   "eta": "27.11 20:00 UTC",
+   "draught": 15,
+   "static_time": "2026-11-25T15:42:18Z",
+   "lat": 57.79461,
+   "lon": 10.76975,
+   "sog": 10.5,
+   "cog": 101.2,
+   "nav_status": 0,
+   "pos_time": "2026-11-25T15:40:12Z",
+   "last_seen": "2026-11-25T15:42:18Z",
+   "dist_buoy_km": 646.8,
+   "status": "ceļā",
+   "dwt": 110000,
+   "dwt_source": "novērtēts",
+   "max_draught": 14.8,
+   "load_pct": 100,
+   "empty_pct": 0,
+   "cargo_t_est": 104500,
+   "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
+   "cargo_state": "pilns",
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m"
+  }
+ ]
 }
