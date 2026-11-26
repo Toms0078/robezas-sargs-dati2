@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-26T13:02:31Z",
- "total": 72,
+ "updated": "2026-11-26T13:17:31Z",
+ "total": 73,
  "by_port": {
   "Būtiņģe": 1,
   "Klaipēda": 28,
   "Kunda": 1,
-  "Liepāja": 4,
+  "Liepāja": 5,
   "Mērsrags": 1,
   "Paldiski": 1,
   "Rīga": 6,
@@ -54,7 +54,9 @@
    "cargo_t_est": 104500,
    "cargo_guess": "jēlnafta (ORLEN Mažeiķu rūpnīcai)",
    "cargo_state": "pilns",
-   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m"
+   "cargo_basis": "Būtiņģe ir jēlnaftas terminālis, iegrime 15 m",
+   "silent_h": 0.5,
+   "pred_route_km": 671
   },
   {
    "mmsi": 255620000,
@@ -87,8 +89,8 @@
    "dist_km": 110,
    "route_km": 141,
    "pred_arrival": "2026-11-26T13:28:49Z",
-   "silent_h": 7.3,
-   "pred_route_km": 8
+   "silent_h": 7.5,
+   "pred_route_km": 3
   },
   {
    "mmsi": 314396000,
@@ -183,8 +185,8 @@
    "dist_km": 298,
    "route_km": 336,
    "pred_arrival": "2026-11-26T14:13:52Z",
-   "silent_h": 19.3,
-   "pred_route_km": 19
+   "silent_h": 19.6,
+   "pred_route_km": 15
   },
   {
    "mmsi": 255806513,
@@ -217,8 +219,8 @@
    "dist_km": 313,
    "route_km": 361,
    "pred_arrival": "2026-11-26T16:22:29Z",
-   "silent_h": 11.8,
-   "pred_route_km": 79
+   "silent_h": 12.0,
+   "pred_route_km": 74
   },
   {
    "mmsi": 210048000,
@@ -260,8 +262,8 @@
    "cargo_state": "daļēji pilns",
    "cargo_basis": "mazs tankkuģis (110 m), iegrime 5.4 m",
    "pred_arrival": "2026-11-26T17:02:56Z",
-   "silent_h": 18.6,
-   "pred_route_km": 68
+   "silent_h": 18.8,
+   "pred_route_km": 64
   },
   {
    "mmsi": 266420000,
@@ -303,8 +305,8 @@
    "cargo_state": "daļēji pilns",
    "cargo_basis": "produktu tankkuģa izmērs (149 m), iegrime 6.8 m",
    "pred_arrival": "2026-11-27T12:59:25Z",
-   "silent_h": 0.5,
-   "pred_route_km": 469
+   "silent_h": 0.8,
+   "pred_route_km": 464
   },
   {
    "mmsi": 257312000,
@@ -337,8 +339,8 @@
    "dist_km": 384,
    "route_km": 387,
    "pred_arrival": "2026-11-27T07:52:46Z",
-   "silent_h": 2.0,
-   "pred_route_km": 350
+   "silent_h": 2.3,
+   "pred_route_km": 345
   },
   {
    "mmsi": 231906000,
@@ -401,7 +403,9 @@
    "last_seen": "2026-11-26T12:47:31Z",
    "dist_km": 408,
    "route_km": 411,
-   "pred_arrival": "2026-11-27T06:16:36Z"
+   "pred_arrival": "2026-11-27T06:16:36Z",
+   "silent_h": 0.5,
+   "pred_route_km": 399
   },
   {
    "mmsi": 246878000,
@@ -426,14 +430,14 @@
    "lon": 13.6378,
    "sog": 10.0,
    "cog": 69.3,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     55.7,
     21.12
    ],
    "dist_km": 481,
    "route_km": 492,
-   "pred_arrival": "2026-11-27T17:55:53Z",
+   "pred_arrival": "2026-11-27T18:10:53Z",
    "dwt": 35000,
    "dwt_source": "novērtēts",
    "max_draught": 10.5,
@@ -498,14 +502,14 @@
     12.6818
    ],
    "from_area": "Ēresunds",
-   "lat": 55.688,
-   "lon": 12.6818,
-   "sog": 8,
-   "cog": 179,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "lat": 55.6598,
+   "lon": 12.6843,
+   "sog": 8.2,
+   "cog": 167.6,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dist_km": 529,
-   "route_km": 561,
-   "pred_arrival": "2026-11-28T06:12:05Z"
+   "route_km": 558,
+   "pred_arrival": "2026-11-28T05:13:54Z"
   },
   {
    "mmsi": 257319000,
@@ -563,7 +567,7 @@
    "lon": 26.9088,
    "sog": 0.0,
    "cog": 230.2,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     55.7,
     21.12
@@ -579,29 +583,29 @@
    "type": "kravas kuģis",
    "ais_type": 79,
    "length": 174,
-   "draught": 8.4,
+   "draught": 8.7,
    "destination": "LT KLJ",
    "port_id": "klaipeda",
    "port": "Klaipēda",
-   "eta": "27.11 18:00 UTC",
+   "eta": "27.11 23:59 UTC",
    "country": "LT",
    "first_pos": [
     35.9792,
     -5.5167
    ],
    "from_area": "Gibraltārs",
-   "lat": 55.1169,
-   "lon": 11.039,
+   "lat": 55.0768,
+   "lon": 11.0312,
    "sog": 11.5,
-   "cog": 186.9,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "cog": 185,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     55.7,
     21.12
    ],
-   "dist_km": 639,
-   "route_km": 717,
-   "pred_arrival": "2026-11-28T01:38:58Z"
+   "dist_km": 640,
+   "route_km": 714,
+   "pred_arrival": "2026-11-28T01:45:22Z"
   },
   {
    "mmsi": 563315500,
@@ -611,7 +615,7 @@
    "type": "tankkuģis",
    "ais_type": 80,
    "length": 295,
-   "draught": 11.2,
+   "draught": 11.3,
    "destination": "LTKLJ",
    "port_id": "klaipeda",
    "port": "Klaipēda",
@@ -624,12 +628,12 @@
    "dwt": 300000,
    "dwt_source": "novērtēts",
    "max_draught": 16.0,
-   "load_pct": 45,
-   "empty_pct": 55,
-   "cargo_t_est": 129500,
+   "load_pct": 47,
+   "empty_pct": 53,
+   "cargo_t_est": 132800,
    "cargo_guess": "visticamāk jēlnafta",
    "cargo_state": "daļēji pilns",
-   "cargo_basis": "liels tankkuģis (295 m, Aframax+), iegrime 11.2 m",
+   "cargo_basis": "liels tankkuģis (295 m, Aframax+), iegrime 11.3 m",
    "first_pos": [
     57.6431,
     10.6618
@@ -748,8 +752,8 @@
    "dist_km": 1053,
    "route_km": 1087,
    "pred_arrival": "2026-11-27T23:49:43Z",
-   "silent_h": 8.0,
-   "pred_route_km": 883
+   "silent_h": 8.3,
+   "pred_route_km": 877
   },
   {
    "mmsi": 636024660,
@@ -782,8 +786,8 @@
    "dist_km": 2937,
    "route_km": 3216,
    "pred_arrival": "2026-12-06T12:38:19Z",
-   "silent_h": 38.0,
-   "pred_route_km": 2776
+   "silent_h": 38.2,
+   "pred_route_km": 2773
   },
   {
    "mmsi": 668116311,
@@ -816,8 +820,8 @@
    "dist_km": 4074,
    "route_km": 4723,
    "pred_arrival": "2026-12-02T20:36:29Z",
-   "silent_h": 128.4,
-   "pred_route_km": 2557
+   "silent_h": 128.7,
+   "pred_route_km": 2552
   },
   {
    "mmsi": 636025010,
@@ -850,8 +854,8 @@
    "dist_km": 9962,
    "route_km": 12645,
    "pred_arrival": "2026-12-26T20:09:04Z",
-   "silent_h": 38.0,
-   "pred_route_km": 12017
+   "silent_h": 38.2,
+   "pred_route_km": 12013
   },
   {
    "mmsi": 249203000,
@@ -971,7 +975,7 @@
    "lon": 27.1701,
    "sog": 0.0,
    "cog": 0.0,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.52,
     26.53
@@ -998,18 +1002,50 @@
     23.7604
    ],
    "from_area": "Botnijas līcis",
-   "lat": 56.6003,
-   "lon": 20.7461,
-   "sog": 13.6,
-   "cog": 153.1,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "lat": 56.5522,
+   "lon": 20.7839,
+   "sog": 13.8,
+   "cog": 163.4,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     56.52,
     21.0
    ],
-   "dist_km": 18,
-   "route_km": 18,
-   "pred_arrival": "2026-11-26T13:48:57Z"
+   "dist_km": 14,
+   "route_km": 14,
+   "pred_arrival": "2026-11-26T13:52:32Z"
+  },
+  {
+   "mmsi": 244770997,
+   "first_seen": "2026-11-26T13:17:31Z",
+   "name": "LONGEON",
+   "imo": 9988102,
+   "type": "kravas kuģis",
+   "ais_type": 70,
+   "length": 130,
+   "draught": 4,
+   "destination": "LVLPX",
+   "port_id": "liepaja",
+   "port": "Liepāja",
+   "eta": "27.11 07:00 UTC",
+   "country": "LV",
+   "first_pos": [
+    59.4205,
+    18.5075
+   ],
+   "from_area": "Ālandu jūra",
+   "lat": 59.4205,
+   "lon": 18.5075,
+   "sog": 11,
+   "cog": 146.8,
+   "last_seen": "2026-11-26T13:17:31Z",
+   "dest_pos": [
+    56.52,
+    21.0
+   ],
+   "dist_km": 354,
+   "route_km": 463,
+   "pred_arrival": "2026-11-27T13:59:38Z"
   },
   {
    "mmsi": 218856000,
@@ -1034,16 +1070,14 @@
     11.6485
    ],
    "from_area": "Fehmarna / Kīle",
-   "lat": 54.4204,
-   "lon": 11.7443,
-   "sog": 7.4,
-   "cog": 115.2,
-   "last_seen": "2026-11-26T02:29:34Z",
-   "dist_km": 628,
-   "route_km": 682,
-   "pred_arrival": "2026-11-28T08:35:47Z",
-   "silent_h": 10.5,
-   "pred_route_km": 549
+   "lat": 54.9859,
+   "lon": 14.0522,
+   "sog": 9.2,
+   "cog": 60.4,
+   "last_seen": "2026-11-26T13:17:31Z",
+   "dist_km": 467,
+   "route_km": 516,
+   "pred_arrival": "2026-11-27T22:11:13Z"
   },
   {
    "mmsi": 304036000,
@@ -1064,18 +1098,18 @@
     -8.6844
    ],
    "from_area": "Biskaja / Spānija",
-   "lat": 54.5814,
-   "lon": 10.9378,
+   "lat": 54.5835,
+   "lon": 10.9939,
    "sog": 7.8,
-   "cog": 83.4,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "cog": 86.1,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     56.52,
     21.0
    ],
-   "dist_km": 668,
-   "route_km": 737,
-   "pred_arrival": "2026-11-28T20:31:15Z"
+   "dist_km": 664,
+   "route_km": 734,
+   "pred_arrival": "2026-11-28T20:30:19Z"
   },
   {
    "mmsi": 304957000,
@@ -1127,8 +1161,8 @@
    "dist_km": 169,
    "route_km": 638,
    "pred_arrival": "2026-11-27T00:35:49Z",
-   "silent_h": 21.6,
-   "pred_route_km": 222
+   "silent_h": 21.8,
+   "pred_route_km": 218
   },
   {
    "mmsi": 255845000,
@@ -1149,18 +1183,18 @@
     17.8566
    ],
    "from_area": "Stokholmas pieeja",
-   "lat": 59.0872,
-   "lon": 20.5087,
+   "lat": 59.1013,
+   "lon": 20.5986,
    "sog": 9.9,
-   "cog": 72.8,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "cog": 72.7,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.35,
     24.05
    ],
-   "dist_km": 204,
-   "route_km": 338,
-   "pred_arrival": "2026-11-27T09:03:44Z"
+   "dist_km": 198,
+   "route_km": 342,
+   "pred_arrival": "2026-11-27T09:34:29Z"
   },
   {
    "mmsi": 230724000,
@@ -1193,8 +1227,8 @@
    "dist_km": 219,
    "route_km": 237,
    "pred_arrival": "2026-11-26T23:36:35Z",
-   "silent_h": 1.8,
-   "pred_route_km": 203
+   "silent_h": 2.0,
+   "pred_route_km": 199
   },
   {
    "mmsi": 210546000,
@@ -1227,8 +1261,8 @@
    "dist_km": 279,
    "route_km": 500,
    "pred_arrival": "2026-11-27T18:22:18Z",
-   "silent_h": 2.3,
-   "pred_route_km": 465
+   "silent_h": 2.5,
+   "pred_route_km": 461
   },
   {
    "mmsi": 244978000,
@@ -1238,7 +1272,7 @@
    "type": "kravas kuģis",
    "ais_type": 70,
    "length": 88,
-   "draught": 3.0,
+   "draught": 3,
    "destination": "LVRIX",
    "port_id": "riga",
    "port": "Rīga",
@@ -1249,18 +1283,18 @@
     21.4544
    ],
    "from_area": "Botnijas jūra",
-   "lat": 61.1133,
-   "lon": 21.2106,
-   "sog": 10.5,
-   "cog": 293.5,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "lat": 61.1291,
+   "lon": 21.1144,
+   "sog": 9.4,
+   "cog": 248.8,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     57.05,
     24.03
    ],
-   "dist_km": 480,
-   "route_km": 748,
-   "pred_arrival": "2026-11-28T06:50:04Z"
+   "dist_km": 483,
+   "route_km": 747,
+   "pred_arrival": "2026-11-28T11:54:16Z"
   },
   {
    "mmsi": 636024820,
@@ -1302,8 +1336,8 @@
    "cargo_state": "pilns",
    "cargo_basis": "produktu tankkuģa izmērs (180 m), iegrime 10.2 m",
    "pred_arrival": "2026-11-28T15:48:52Z",
-   "silent_h": 8.5,
-   "pred_route_km": 900
+   "silent_h": 8.8,
+   "pred_route_km": 895
   },
   {
    "mmsi": 341425000,
@@ -1336,8 +1370,8 @@
    "dist_km": 1746,
    "route_km": 1926,
    "pred_arrival": "2026-11-28T19:47:47Z",
-   "silent_h": 29.0,
-   "pred_route_km": 1259
+   "silent_h": 29.2,
+   "pred_route_km": 1254
   },
   {
    "mmsi": 305299000,
@@ -1377,18 +1411,18 @@
     18.7164
    ],
    "from_area": "Botnijas līcis",
-   "lat": 60.496,
-   "lon": 18.967,
+   "lat": 60.4526,
+   "lon": 18.9735,
    "sog": 10.4,
-   "cog": 182.2,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "cog": 176.1,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     57.75,
     24.35
    ],
-   "dist_km": 433,
-   "route_km": 658,
-   "pred_arrival": "2026-11-28T02:11:05Z"
+   "dist_km": 429,
+   "route_km": 653,
+   "pred_arrival": "2026-11-28T02:10:15Z"
   },
   {
    "mmsi": 258763000,
@@ -1421,8 +1455,8 @@
    "dist_km": 686,
    "route_km": 785,
    "pred_arrival": "2026-11-27T23:58:38Z",
-   "silent_h": 12.0,
-   "pred_route_km": 583
+   "silent_h": 12.3,
+   "pred_route_km": 579
   },
   {
    "mmsi": 314001134,
@@ -1447,14 +1481,14 @@
     7.7747
    ],
    "from_area": "Jitlande",
-   "lat": 55.2649,
-   "lon": 12.7908,
+   "lat": 55.253,
+   "lon": 12.8488,
    "sog": 9,
-   "cog": 109.7,
-   "last_seen": "2026-11-26T13:02:31Z",
-   "dist_km": 1006,
-   "route_km": 1145,
-   "pred_arrival": "2026-11-29T15:42:50Z"
+   "cog": 110.7,
+   "last_seen": "2026-11-26T13:17:31Z",
+   "dist_km": 1003,
+   "route_km": 1146,
+   "pred_arrival": "2026-11-29T16:01:13Z"
   },
   {
    "mmsi": 351053000,
@@ -1487,8 +1521,8 @@
    "dist_km": 3492,
    "route_km": 3848,
    "pred_arrival": "2026-12-07T16:37:54Z",
-   "silent_h": 1.3,
-   "pred_route_km": 3830
+   "silent_h": 1.5,
+   "pred_route_km": 3826
   },
   {
    "mmsi": 273279660,
@@ -1530,8 +1564,8 @@
    "cargo_state": "tukšs / balastā — brauc iekraut",
    "cargo_basis": "liels tankkuģis (251 m, Aframax+), iegrime 8.5 m",
    "pred_arrival": "2026-12-03T08:43:40Z",
-   "silent_h": 41.5,
-   "pred_route_km": 3375
+   "silent_h": 41.7,
+   "pred_route_km": 3369
   },
   {
    "mmsi": 210641000,
@@ -1571,11 +1605,11 @@
     26.4356
    ],
    "from_area": "Somu līcis",
-   "lat": 59.8864,
-   "lon": 26.0726,
-   "sog": 0.1,
-   "cog": 103.2,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "lat": 59.8865,
+   "lon": 26.071,
+   "sog": 0.7,
+   "cog": 96.3,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.45,
     24.77
@@ -1623,8 +1657,8 @@
    "dist_km": 659,
    "route_km": 854,
    "pred_arrival": "2026-11-28T04:59:00Z",
-   "silent_h": 18.3,
-   "pred_route_km": 585
+   "silent_h": 18.6,
+   "pred_route_km": 582
   },
   {
    "mmsi": 352003390,
@@ -1649,7 +1683,7 @@
    "lon": 15.6849,
    "sog": 13.1,
    "cog": 75.0,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.45,
     24.77
@@ -1665,7 +1699,7 @@
    "cargo_guess": "naftas produkti: dīzelis, benzīns vai aviodegviela",
    "cargo_state": "daļēji pilns",
    "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.0 m",
-   "pred_arrival": "2026-11-27T23:26:01Z"
+   "pred_arrival": "2026-11-27T23:41:01Z"
   },
   {
    "mmsi": 352004497,
@@ -1698,8 +1732,8 @@
    "dist_km": 765,
    "route_km": 837,
    "pred_arrival": "2026-11-27T17:56:15Z",
-   "silent_h": 9.8,
-   "pred_route_km": 625
+   "silent_h": 10.0,
+   "pred_route_km": 620
   },
   {
    "mmsi": 667002590,
@@ -1741,8 +1775,40 @@
    "cargo_state": "daļēji pilns",
    "cargo_basis": "mazs tankkuģis (107 m), iegrime 6 m",
    "pred_arrival": "2026-11-29T05:21:03Z",
-   "silent_h": 1.5,
-   "pred_route_km": 1085
+   "silent_h": 1.7,
+   "pred_route_km": 1081
+  },
+  {
+   "mmsi": 477165600,
+   "first_seen": "2026-11-23T01:53:26Z",
+   "name": "FU XIANG",
+   "imo": 9603465,
+   "type": "kravas kuģis",
+   "ais_type": 70,
+   "length": 197,
+   "draught": 6.4,
+   "destination": "EE TLL",
+   "port_id": "tallinn",
+   "port": "Tallina",
+   "eta": "26.11 04:00 UTC",
+   "country": "EE",
+   "first_pos": [
+    53.7583,
+    -4.2651
+   ],
+   "from_area": "Lamanšs",
+   "lat": 57.8047,
+   "lon": 10.5633,
+   "sog": 11.5,
+   "cog": 91,
+   "last_seen": "2026-11-26T13:17:31Z",
+   "dest_pos": [
+    59.45,
+    24.77
+   ],
+   "dist_km": 841,
+   "route_km": 1259,
+   "pred_arrival": "2026-11-29T05:32:32Z"
   },
   {
    "mmsi": 229716000,
@@ -1767,7 +1833,7 @@
    "lon": 13.4556,
    "sog": 9.1,
    "cog": 68.9,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.45,
     24.77
@@ -1783,39 +1849,7 @@
    "cargo_guess": "visticamāk jēlnafta",
    "cargo_state": "daļēji pilns",
    "cargo_basis": "liels tankkuģis (252 m, Aframax+), iegrime 8.9 m",
-   "pred_arrival": "2026-11-29T00:29:09Z"
-  },
-  {
-   "mmsi": 477165600,
-   "first_seen": "2026-11-23T01:53:26Z",
-   "name": "FU XIANG",
-   "imo": 9603465,
-   "type": "kravas kuģis",
-   "ais_type": 70,
-   "length": 197,
-   "draught": 6.4,
-   "destination": "EE TLL",
-   "port_id": "tallinn",
-   "port": "Tallina",
-   "eta": "26.11 04:00 UTC",
-   "country": "EE",
-   "first_pos": [
-    53.7583,
-    -4.2651
-   ],
-   "from_area": "Lamanšs",
-   "lat": 57.8035,
-   "lon": 10.3844,
-   "sog": 11.3,
-   "cog": 88.4,
-   "last_seen": "2026-11-26T12:47:31Z",
-   "dest_pos": [
-    59.45,
-    24.77
-   ],
-   "dist_km": 851,
-   "route_km": 1269,
-   "pred_arrival": "2026-11-29T06:41:28Z"
+   "pred_arrival": "2026-11-29T00:44:09Z"
   },
   {
    "mmsi": 314747000,
@@ -1836,18 +1870,18 @@
     -4.8811
    ],
    "from_area": "Gibraltārs",
-   "lat": 57.6367,
-   "lon": 9.5847,
-   "sog": 12.3,
-   "cog": 68.3,
-   "last_seen": "2026-11-26T12:47:31Z",
+   "lat": 57.6699,
+   "lon": 9.7469,
+   "sog": 12.1,
+   "cog": 69.8,
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     59.45,
     24.77
    ],
-   "dist_km": 902,
-   "route_km": 1320,
-   "pred_arrival": "2026-11-29T03:45:48Z"
+   "dist_km": 891,
+   "route_km": 1309,
+   "pred_arrival": "2026-11-29T04:48:11Z"
   },
   {
    "mmsi": 210568000,
@@ -1880,8 +1914,8 @@
    "dist_km": 942,
    "route_km": 1028,
    "pred_arrival": "2026-11-27T09:00:14Z",
-   "silent_h": 22.8,
-   "pred_route_km": 480
+   "silent_h": 23.1,
+   "pred_route_km": 474
   },
   {
    "mmsi": 477520900,
@@ -1946,8 +1980,8 @@
    "dist_km": 1362,
    "route_km": 1510,
    "pred_arrival": "2026-11-28T18:56:26Z",
-   "silent_h": 1.5,
-   "pred_route_km": 1469
+   "silent_h": 1.7,
+   "pred_route_km": 1463
   },
   {
    "mmsi": 341492001,
@@ -1980,8 +2014,8 @@
    "dist_km": 1417,
    "route_km": 1557,
    "pred_arrival": "2026-11-29T21:01:27Z",
-   "silent_h": 19.3,
-   "pred_route_km": 1254
+   "silent_h": 19.6,
+   "pred_route_km": 1250
   },
   {
    "mmsi": 311002425,
@@ -2023,8 +2057,8 @@
    "cargo_state": "daļēji pilns",
    "cargo_basis": "produktu tankkuģa izmērs (183 m), iegrime 7.5 m",
    "pred_arrival": "2026-11-29T15:50:22Z",
-   "silent_h": 30.2,
-   "pred_route_km": 1211
+   "silent_h": 30.5,
+   "pred_route_km": 1207
   },
   {
    "mmsi": 352002186,
@@ -2057,8 +2091,8 @@
    "dist_km": 2080,
    "route_km": 7580,
    "pred_arrival": "2026-12-11T01:02:12Z",
-   "silent_h": 336.4,
-   "pred_route_km": 3854
+   "silent_h": 336.7,
+   "pred_route_km": 3851
   },
   {
    "mmsi": 352002086,
@@ -2091,8 +2125,8 @@
    "dist_km": 2597,
    "route_km": 5647,
    "pred_arrival": "2026-12-15T13:42:23Z",
-   "silent_h": 61.2,
-   "pred_route_km": 4980
+   "silent_h": 61.4,
+   "pred_route_km": 4977
   },
   {
    "mmsi": 352007083,
@@ -2125,8 +2159,8 @@
    "dist_km": 2657,
    "route_km": 5837,
    "pred_arrival": "2026-12-06T04:37:28Z",
-   "silent_h": 34.0,
-   "pred_route_km": 5090
+   "silent_h": 34.2,
+   "pred_route_km": 5085
   },
   {
    "mmsi": 630001207,
@@ -2168,8 +2202,8 @@
    "cargo_state": "tukšs / balastā — brauc iekraut",
    "cargo_basis": "liels tankkuģis (274 m, Aframax+), iegrime 8.6 m",
    "pred_arrival": "2026-12-02T03:47:25Z",
-   "silent_h": 107.8,
-   "pred_route_km": 2250
+   "silent_h": 108.0,
+   "pred_route_km": 2246
   },
   {
    "mmsi": 356792000,
@@ -2202,8 +2236,8 @@
    "dist_km": 3409,
    "route_km": 3758,
    "pred_arrival": "2026-12-06T11:03:39Z",
-   "silent_h": 9.8,
-   "pred_route_km": 3609
+   "silent_h": 10.0,
+   "pred_route_km": 3606
   },
   {
    "mmsi": 577247000,
@@ -2236,8 +2270,8 @@
    "dist_km": 3439,
    "route_km": 3797,
    "pred_arrival": "2026-12-09T16:44:05Z",
-   "silent_h": 7.3,
-   "pred_route_km": 3711
+   "silent_h": 7.5,
+   "pred_route_km": 3709
   },
   {
    "mmsi": 636015701,
@@ -2289,8 +2323,8 @@
    "dist_km": 132,
    "route_km": 173,
    "pred_arrival": "2026-11-26T13:53:47Z",
-   "silent_h": 8.8,
-   "pred_route_km": 15
+   "silent_h": 9.0,
+   "pred_route_km": 11
   },
   {
    "mmsi": 305466000,
@@ -2323,8 +2357,8 @@
    "dist_km": 477,
    "route_km": 538,
    "pred_arrival": "2026-11-27T11:16:58Z",
-   "silent_h": 10.3,
-   "pred_route_km": 368
+   "silent_h": 10.5,
+   "pred_route_km": 363
   },
   {
    "mmsi": 403745000,
@@ -2349,14 +2383,14 @@
    "lon": 13.7325,
    "sog": 12.8,
    "cog": 73.5,
-   "last_seen": "2026-11-26T13:02:31Z",
+   "last_seen": "2026-11-26T13:17:31Z",
    "dest_pos": [
     57.4,
     21.55
    ],
    "dist_km": 556,
    "route_km": 617,
-   "pred_arrival": "2026-11-27T17:20:00Z",
+   "pred_arrival": "2026-11-27T17:35:00Z",
    "dwt": 35000,
    "dwt_source": "novērtēts",
    "max_draught": 10.5,
@@ -2388,51 +2422,6 @@
   }
  ],
  "arrived": [
-  {
-   "time": "2026-11-26T05:29:34Z",
-   "name": "ROGALAND",
-   "imo": 9505596,
-   "port": "Kunda",
-   "type": "kravas kuģis",
-   "draught": 8.4,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-26T05:29:34Z",
-   "name": "ZIRCONE",
-   "imo": 9010929,
-   "port": "Tallina",
-   "type": "tankkuģis",
-   "draught": 5.0,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-26T05:29:34Z",
-   "name": "ARINA",
-   "imo": 9173446,
-   "port": "Muuga",
-   "type": "kravas kuģis",
-   "draught": 4.0,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-26T05:44:34Z",
-   "name": "PAREA",
-   "imo": 9433652,
-   "port": "Klaipēda",
-   "type": "kravas kuģis",
-   "draught": 9.3,
-   "how": "AIS"
-  },
-  {
-   "time": "2026-11-26T05:44:34Z",
-   "name": "ROGALAND",
-   "imo": 9505596,
-   "port": "Kunda",
-   "type": "kravas kuģis",
-   "draught": 8.4,
-   "how": "AIS"
-  },
   {
    "time": "2026-11-26T05:44:34Z",
    "name": "ARINA",
@@ -2931,6 +2920,51 @@
    "port": "Tallina",
    "type": "tankkuģis",
    "draught": 5.0,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-26T13:17:31Z",
+   "name": "ROGALAND",
+   "imo": 9505596,
+   "port": "Kunda",
+   "type": "kravas kuģis",
+   "draught": 8.4,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-26T13:17:31Z",
+   "name": "ZIRCONE",
+   "imo": 9010929,
+   "port": "Tallina",
+   "type": "tankkuģis",
+   "draught": 5.0,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-26T13:17:31Z",
+   "name": "ARINA",
+   "imo": 9173446,
+   "port": "Muuga",
+   "type": "kravas kuģis",
+   "draught": 4.0,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-26T13:17:31Z",
+   "name": "GENCA",
+   "imo": 9307372,
+   "port": "Paldiski",
+   "type": "kravas kuģis",
+   "draught": 7.0,
+   "how": "AIS"
+  },
+  {
+   "time": "2026-11-26T13:17:31Z",
+   "name": "CMA CGM MERMAID",
+   "imo": 9961283,
+   "port": "Tallina",
+   "type": "kravas kuģis",
+   "draught": 9.3,
    "how": "AIS"
   }
  ]
