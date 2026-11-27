@@ -1,9 +1,28 @@
 {
- "updatedAt": "2026-11-26T14:18:32Z",
- "checkedAt": "2026-11-26T23:05:35Z",
- "note": "Mūsu reģionā aktīvu trauksmju nav.",
+ "updatedAt": "2026-11-27T04:59:30Z",
+ "checkedAt": "2026-11-27T04:59:30Z",
+ "note": "Mūsu reģionā aktīvu trauksmju nav; Krievijā: 1.",
  "source": "GitHub Actions + Gemini",
  "alerts": [
+  {
+   "id": "lv-2026-11-27-0043",
+   "cc": "LV",
+   "kind": "air",
+   "level": "yellow",
+   "status": "ended",
+   "start": "2026-11-27T00:00:00Z",
+   "end": "2026-11-27T00:30:00Z",
+   "areas": [
+    "LV-ludzas",
+    "LV-balvu"
+   ],
+   "channel": "official",
+   "title": "Atcelti gaisa telpas apdraudējuma brīdinājumi Ludzas un Balvu novados",
+   "text": "Nacionālie bruņotie spēki informē, ka trauksme ir beigusies.",
+   "source": "lsm_lv",
+   "url": "https://www.lsm.lv/raksts/zinas/latvija/27.11.2026-atcelti-bridinajumi-par-gaisa-telpas-iespejamo-apdraudejumu-balvu-un-ludzas-novados.a673685/?utm_source=rss&utm_campaign=rss&utm_medium=links",
+   "via": "gemini-fast"
+  },
   {
    "id": "lv-2026-11-26-0814",
    "cc": "LV",
@@ -97,6 +116,24 @@
    "via": "gemini-fast"
   },
   {
+   "id": "ru-2026-11-27-0419",
+   "cc": "RU",
+   "kind": "air",
+   "level": "red",
+   "status": "active",
+   "start": "2026-11-27T01:19:13Z",
+   "end": null,
+   "areas": [
+    "RU-spb"
+   ],
+   "channel": "official",
+   "title": "Sanktpēterburgā izsludināta bezpilota lidaparātu bīstamība",
+   "text": "Iedzīvotājiem jāievēro drošības pasākumi saistībā ar gaisa telpas apdraudējumu.",
+   "source": "Мойка78.ру",
+   "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNUHRZdmk2Q05HbWFlWTdGOXdfdGRvY2cwcnFNMXhkc0c2MkVlcnpvd2pWaDVyVHdyZmJCNjVBSl9rQ2NWSTFzaURVeGItWXpHeW5jelhxTEx3RDFic3dKa2ZoZ1dkUUhLRFY0b2VFQ3dRaXJZdm1tMFBFQTNNU3c2b0F6NkVBeld3dUdpeTc4eWkyUQ?oc=5",
+   "via": "gemini-fast"
+  },
+  {
    "id": "ru-2026-11-22-0839",
    "cc": "RU",
    "kind": "air",
@@ -169,5 +206,5 @@
    "via": "gemini-fast"
   }
  ],
- "fastCheckedAt": "2026-11-26T23:05:35Z"
+ "fastCheckedAt": "2026-11-27T04:59:30Z"
 }
