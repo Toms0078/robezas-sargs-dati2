@@ -1,9 +1,32 @@
 {
- "updatedAt": "2026-11-27T04:59:30Z",
- "checkedAt": "2026-11-27T04:59:30Z",
- "note": "Mūsu reģionā aktīvu trauksmju nav; Krievijā: 1.",
+ "updatedAt": "2026-11-27T14:50:39Z",
+ "checkedAt": "2026-11-27T14:50:39Z",
+ "note": "Mūsu reģionā aktīvu trauksmju nav.",
  "source": "GitHub Actions + Gemini",
  "alerts": [
+  {
+   "id": "ee-2026-11-27-0446",
+   "cc": "EE",
+   "kind": "air",
+   "level": "red",
+   "status": "ended",
+   "start": "2026-11-27T03:40:00Z",
+   "end": "2026-11-27T04:30:00Z",
+   "areas": [
+    "EE-valga",
+    "EE-voru",
+    "EE-polva",
+    "EE-tartu",
+    "EE-parnu",
+    "EE-viljandi"
+   ],
+   "channel": "official",
+   "title": "Dienvidigaunijā izsludināts un atcelts gaisa telpas apdraudējuma brīdinājums",
+   "text": "Iedzīvotāji tika brīdināti par iespējamu gaisa apdraudējumu, trauksme atcelta pēc aptuveni 50 minūtēm.",
+   "source": "ERR",
+   "url": "https://news.err.ee/1610208679/potential-air-threat-alert-warning-issued-across-south-estonia",
+   "via": "gemini-fast"
+  },
   {
    "id": "lv-2026-11-27-0043",
    "cc": "LV",
@@ -97,37 +120,18 @@
    "via": "gemini-fast"
   },
   {
-   "id": "pl-2026-11-20-0147",
-   "cc": "PL",
-   "kind": "air",
-   "level": "red",
-   "status": "ended",
-   "start": "2026-11-20T00:47:00Z",
-   "end": "2026-11-20T07:30:00Z",
-   "areas": [
-    "PL-lubelskie",
-    "PL-podkarpackie"
-   ],
-   "channel": "sms",
-   "title": "Polijā atsaukts RCB brīdinājums par gaisa apdraudējumu",
-   "text": "Iedzīvotājiem vairs nav draudu, situācija normalizējusies.",
-   "source": "WiadomosciLublin",
-   "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNeHZjenprZFVvdlRiLTdhUDZRTy1YczdYTEVoUmx6Tzc1bHJkZGU2eXhMUF8wRFd4X19tUzVSc2FDa0RXMnd5WFZOTXBLUHNDRUU1MFQ3TlZiUExMTGtHVi1oWTdXU3JWZ2lGdE1NNE5CeFZXQkxxTkJFaDJKSldiOXhFSlY3Z0RlUlc5NkhlX0h5OWdGa0tSUjlWYWM0N1IzdlY0dlUxdGNOQm1LVlQtdWpSUmxOTVVnN3ZUaE5qQ3lJVVlMS21aNm13WDU3RHVvbEF6bk1XMHNpZDho?oc=5",
-   "via": "gemini-fast"
-  },
-  {
    "id": "ru-2026-11-27-0419",
    "cc": "RU",
    "kind": "air",
    "level": "red",
-   "status": "active",
+   "status": "ended",
    "start": "2026-11-27T01:19:13Z",
    "end": null,
    "areas": [
     "RU-spb"
    ],
    "channel": "official",
-   "title": "Sanktpēterburgā izsludināta bezpilota lidaparātu bīstamība",
+   "title": "Sanktpēterburgā izsludināta bezpilota lidaparātu bīstamība (beigas nav paziņotas)",
    "text": "Iedzīvotājiem jāievēro drošības pasākumi saistībā ar gaisa telpas apdraudējumu.",
    "source": "Мойка78.ру",
    "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNUHRZdmk2Q05HbWFlWTdGOXdfdGRvY2cwcnFNMXhkc0c2MkVlcnpvd2pWaDVyVHdyZmJCNjVBSl9rQ2NWSTFzaURVeGItWXpHeW5jelhxTEx3RDFic3dKa2ZoZ1dkUUhLRFY0b2VFQ3dRaXJZdm1tMFBFQTNNU3c2b0F6NkVBeld3dUdpeTc4eWkyUQ?oc=5",
@@ -206,5 +210,5 @@
    "via": "gemini-fast"
   }
  ],
- "fastCheckedAt": "2026-11-27T04:59:30Z"
+ "fastCheckedAt": "2026-11-27T14:50:39Z"
 }
